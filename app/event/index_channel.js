@@ -28,7 +28,12 @@ ulogin_reset.addEventListener("click",function(event){
 });
 
 // Receive reply from remote server
-
+ipcRenderer.on('login-success', (event, arg) => {
+    console.log(arg) // 印出 "pong"
+})
+ipcRenderer.on('login-error', (event, arg) => {
+    console.log(arg) // 印出 "pong"
+})
 /*
 console.log(ipcRenderer.sendSync('synchronous-message', 'ping')) // prints "pong"
 ipcRenderer.on('asynchronous-reply', (event, arg) => {

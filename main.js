@@ -8,10 +8,10 @@ const app = electron.app
 // module to create native browser window
 const BrowserWindow = electron.BrowserWindow
 const dialog = electron.dialog;
-const event = require('./src/ui/event');
 const path = require('path');
 const url = require('url');
 
+let event = null;
 let mainWindow = null;
 
 // Create Window
@@ -31,7 +31,7 @@ function create_window(){
         protocol: 'file:',
         slashes: true
     }))
-
+    event = require('./src/ui/event');
     // Emitted when the windows is closed
     mainWindow.on('closed',function(){
         // if you have multi-window, can store in array 
