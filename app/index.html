@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+    <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="./lib/custom/main.css">
+    <link rel="stylesheet" href="./lib/css/bootstrap.min.css">
+    <title>Trader APP</title>
+    </head>
+    <body>
+        <!-- ================================================ Landing Page ================================================ -->
+        <div class="container-fluid">
+            <h1 class="text-center"> Trader App </h1>
+            <div class="container">
+                <p class="text-center alert-success round"> v0.0.1 
+                    <span><a href="./about.html">, EFACANI - Trader App Team</a></span>
+                </p>
+            </div>
+            <!-- LOGIN -->
+            <div class="container jumbotron">
+                <!-- Basic Information -->
+                <h2 class="text-center">User Information</h2>
+                <hr>
+                <form action="#" id="ulogin">
+                    <!-- User input -->
+                    <div class="form-group">
+                        <label for="username">Username: </label>
+                        <input type="text" class="form-control" id="username" placeholder="efacani">
+                    </div>
+                    <div class="form-group">
+                        <label for="passwd">Password: </label>
+                        <input type="text" class="form-control" id="passwd" placeholder="efacani-code">
+                    </div>
+                    <hr>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-info">LOGIN</button>
+                        <button id="ulogin-reset" type="button" class="btn btn-danger">RESET</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- ================================================ Footer ================================================ -->
+        <div class="container-fluid">
+            <p style="text-align:left;">
+                Copyright © 2018 by Kevin Cyu. All rights reserved.
+            <span style="float:right;">EFACANI, Trader App Team</span>
+            </p>
+        </div>
+    </body>
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<!-- In Electron, this is the correct way to include jQuery -->
+<script>window.$ = window.jQuery = require('./lib/js/jquery-3.3.1.min.js');</script>
+<!-- <script src='./renderer.js'></script> -->
+<script type="text/javascript" charset="utf-8">require('./event/renderer.js')</script>
+</html>
