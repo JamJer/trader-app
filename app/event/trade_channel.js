@@ -27,7 +27,8 @@ cmd_block.addEventListener("submit", function(event){
     if(cmd_map[cmd_id].flag==1){
         console.log(`Found command: ${cmd_id}, with body: ${cmd_body}`)
         // send target command to main process
-        ipcRenderer.send(cmd_map[cmd_id],{
+        ipcRenderer.send(cmd_id,{
+            cmd_id,
             cmd_body
         });
     }
