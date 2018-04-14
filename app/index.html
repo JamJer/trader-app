@@ -8,6 +8,7 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="./lib/custom/main.css">
     <link rel="stylesheet" href="./lib/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./lib/css/font-awesome/fontawesome.css">
     <title>Trader APP</title>
     </head>
     <body>
@@ -36,13 +37,19 @@
                     </div>
                     <hr>
                     <div class="text-center">
+                        <div id="ulogin-loader" style="display:none">
+                            <i class="fa fa-spinner fa-spin" style="font-size:24px"></i> Loading
+                        </div>
+                    </div>
+                    <div class="text-center">
                         <button type="submit" class="btn btn-info">LOGIN</button>
                         <button id="ulogin-reset" type="button" class="btn btn-danger">RESET</button>
                     </div>
+                    <hr>
                 </form>
+                
             </div>
         </div>
-
         <!-- ================================================ Footer ================================================ -->
         <div class="container-fluid">
             <p style="text-align:left;">
