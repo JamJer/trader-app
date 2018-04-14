@@ -1,16 +1,19 @@
 /**
  * Here is the Render Process running in frontend (webview)
  * 
+ * cooperate with index.html only
  */
 const { remote, ipcRenderer } = require('electron');
 const currentWindow = remote.getCurrentWindow();
+const path = require('path');
+const url = require('url');
 
 // User login
 let ulogin = document.querySelector("#ulogin");
 // Submit and store the file
 ulogin.addEventListener("submit", function(event){
     // stop the form from submitting
-    event.preventDefault();   
+    event.preventDefault();
     // get the user input
     let username=document.getElementById('username').value;
     let passwd=document.getElementById('passwd').value;
@@ -29,7 +32,10 @@ ulogin.addEventListener("submit", function(event){
 // User login - reset event
 let ulogin_reset = document.querySelector("#ulogin-reset");
 ulogin_reset.addEventListener("click",function(event){
-    console.log("Press!");
+    console.log(__dirname);
+    // set all value to default
+    document.getElementById('username').value="";
+    document.getElementById('passwd').value="";
 });
 
 // Receive reply from remote server
@@ -41,7 +47,8 @@ ipcRenderer.on('login-success', (event, arg) => {
     document.getElementById('passwd').disabled=false;
     // hide loader bar
     document.getElementById('ulogin-loader').setAttribute("style","display:none");
-    // Enter next page
+    // Enter next page - trade page
+    window.location.href="trade.html";
 })
 ipcRenderer.on('login-error', (event, arg) => {
     console.log(arg) 

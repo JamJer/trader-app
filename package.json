@@ -10,6 +10,7 @@
         "electron": "~1.7.8",
         "electron-packager": "~9.1.0",
         "electron-tabs": "^0.7.3",
+        "request": "^2.85.0",
         "remote": "^0.2.6"
     }
 }

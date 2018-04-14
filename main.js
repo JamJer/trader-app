@@ -23,13 +23,14 @@ function create_window(){
     })
 
     // devTools
-    mainWindow.webContents.openDevTools()
+    //mainWindow.webContents.openDevTools()
 
     // load index.html of the app
     mainWindow.loadURL(url.format({
         pathname: path.join(__dirname,'app','index.html'),
         protocol: 'file:',
-        slashes: true
+        slashes: true,
+        baseUrl: 'app'
     }))
     event = require('./src/ui/event');
     // Emitted when the windows is closed
