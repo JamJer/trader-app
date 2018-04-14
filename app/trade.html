@@ -27,7 +27,23 @@
                 <!-- Basic Information -->
                 <h2 class="text-center"> Trading Bot control panel </h2>
                 <hr>
-
+                <!-- Command Panel -->
+                <form action="#" id="cmd_block">
+                    <div class="input-group">
+                        <!-- Command goes here -->
+                        <input id="cmd" class="form-control">
+                        <span class="input-group-btn">
+                            <button type="submit" class="btn btn-info">Go</button>
+                        </span>
+                    </div>
+                </form>
+                <!-- This part use to display the data fetching by command -->
+                <hr>
+                <div>
+                    <ol id="cmd_display">
+                        <!-- Found policy will display in here -->
+                    </ol>
+                </div>
             </div>
         </div>
 
@@ -44,4 +60,5 @@
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
 <!-- In Electron, this is the correct way to include jQuery -->
 <script>window.$ = window.jQuery = require('./lib/js/jquery-3.3.1.min.js');</script>
+<script type="text/javascript" charset="utf-8">require('./event/trade_channel.js')</script>
 </html>

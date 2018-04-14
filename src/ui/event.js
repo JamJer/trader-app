@@ -5,6 +5,7 @@
 const {ipcMain} = require('electron');
 // FIXME: need to use https when this program release
 const request = require('request');
+const timer = require('../model/strategist');
 const server_url = "http://localhost",port=3000;
 
 ipcMain.on('ulogin',(event,arg) => {
@@ -17,7 +18,23 @@ ipcMain.on('ulogin',(event,arg) => {
 
         // if res.msg == OK, then represent this user is legal
         // FIXME: In debug mode, all msg will return OK, without compare user data
-        event.sender.send('login-success',1);
+        // And when this user login success, it will get a unique key of this user to activate trade bot
+        event.sender.send('login-success',res.product_key);
+    });
+})
+
+ipcMain.on('ucmd',(event,arg) => {
+    // Send message to (remote server)/(local) to fetch policy, or do other command
+    // console.log(arg);
+    request.post(server_url+":"+port+"/user/ulogin", {form: arg }, function (error, httpResponse, body){
+        // Body will be the result
+        let res = JSON.parse(body);
+        console.log(res.msg);
+
+        // if res.msg == OK, then represent this user is legal
+        // FIXME: In debug mode, all msg will return OK, without compare user data
+        // And when this user login success, it will get a unique key of this user to activate trade bot
+        event.sender.send('login-success',res.product_key);
     });
 })
 
