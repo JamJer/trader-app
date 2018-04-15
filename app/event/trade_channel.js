@@ -36,7 +36,7 @@ cmd_block.addEventListener("submit", function(event){
         // Create entries
         for (var k in cmd_map) {
             // Display message on it
-            let node = document.createElement("LI");
+            /*let node = document.createElement("LI");
             let id = document.createTextNode(`${k}`);
             let desc = document.createTextNode(`${cmd_map[k].description}`);
             // Create Node (id - description)
@@ -50,7 +50,21 @@ cmd_block.addEventListener("submit", function(event){
             desnode.appendChild(desbtn);
             // Build node
             node.appendChild(spannode);  
-            node.appendChild(desnode);
+            node.appendChild(desnode);*/
+            let node=document.createElement("A")
+            node.href="#"
+            node.setAttribute("class","list-group-item list-group-item-action flex-column align-items-start")
+            let wrapper=document.createElement("DIV")
+            wrapper.setAttribute("class","d-flex w-100 justify-content-between");
+            let cmd_title=document.createElement("H5");
+            cmd_title.setAttribute("class","mb-1")
+            cmd_title.innerHTML=k;
+            let cmd_desc=document.createElement("P");
+            cmd_desc.setAttribute("class","mb-1")
+            cmd_desc.innerHTML=cmd_map[k].description;
+            wrapper.appendChild(cmd_title)
+            node.appendChild(wrapper)
+            node.appendChild(cmd_desc)
             // Append into display block
             document.getElementById("cmd_display").appendChild(node);
         }
