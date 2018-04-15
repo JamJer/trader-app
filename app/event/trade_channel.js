@@ -36,21 +36,8 @@ cmd_block.addEventListener("submit", function(event){
         // Create entries
         for (var k in cmd_map) {
             // Display message on it
-            /*let node = document.createElement("LI");
-            let id = document.createTextNode(`${k}`);
-            let desc = document.createTextNode(`${cmd_map[k].description}`);
-            // Create Node (id - description)
-            let spannode = document.createElement("SPAN"),desnode=document.createElement("SPAN");
-            let btn = document.createElement("BUTTON"),desbtn=document.createElement("BUTTON");
-            spannode.setAttribute("class","input-group-btn"),desnode.setAttribute("class","input-group-btn");
-            btn.setAttribute("class","btn btn-info"),desbtn.setAttribute("class","btn btn-warning");
-            btn.appendChild(id);
-            desbtn.appendChild(desc);
-            spannode.appendChild(btn);
-            desnode.appendChild(desbtn);
-            // Build node
-            node.appendChild(spannode);  
-            node.appendChild(desnode);*/
+            // Using bootstrap list group to illustrate the information
+            // Link: https://v4-alpha.getbootstrap.com/components/list-group/#custom-content
             let node=document.createElement("A")
             node.href="#"
             node.setAttribute("class","list-group-item list-group-item-action flex-column align-items-start")
