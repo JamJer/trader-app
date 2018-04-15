@@ -5,6 +5,9 @@
 
 const request = require('request');
 const config = require('../config/config.default');
+const {db} = require('./db');
+// init
+db.init();
 
 class cmder{
     /**

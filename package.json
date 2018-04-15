@@ -2,6 +2,7 @@
     "name": "trader-app",
     "version": "0.0.1",
     "scripts": {
+        "postinstall": "electron-rebuild -f -w sqlite3",
         "start": "electron .",
         "release": "electron-packager ."
     },
@@ -9,8 +10,10 @@
     "dependencies": {
         "electron": "~1.7.8",
         "electron-packager": "~9.1.0",
+        "electron-rebuild": "^1.7.3",
         "electron-tabs": "^0.7.3",
+        "remote": "^0.2.6",
         "request": "^2.85.0",
-        "remote": "^0.2.6"
+        "sqlite3": "https://github.com/mapbox/node-sqlite3/tarball/master"
     }
 }
