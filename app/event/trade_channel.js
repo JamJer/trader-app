@@ -57,3 +57,20 @@ cmd_block.addEventListener("submit", function(event){
         }
     }
 });
+
+// ================================= Receive messages from user command =================================
+ipcRenderer.on('list_remote',(event,arg)=>{
+    console.log(arg);
+})
+
+ipcRenderer.on('list_local',(event,arg)=>{
+    console.log(arg);
+})
+
+ipcRenderer.on('select',(event,arg)=>{
+    console.log(arg);
+})
+
+ipcRenderer.on('buy',(event,arg)=>{
+    console.log(arg);
+})

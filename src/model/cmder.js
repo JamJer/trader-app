@@ -4,7 +4,7 @@
  */
 
 const request = require('request');
-const server_url = "http://localhost",port=3000;
+const config = require('../config/config.default');
 
 class cmder{
     /**
@@ -14,6 +14,13 @@ class cmder{
      */
     list_remote(event,arg){
         console.log(`[Main Process] content: ${arg.cmd_body}`);
+        // Send request back
+        request.post(config.server_url+":"+config.port+"/ucmd/list_remote", {form: arg }, function (error, httpResponse, body){
+            // Body will be the result
+            let res = JSON.parse(body);
+            // Send to render process
+            event.sender.send('list_remote',res);
+        });
     }
     
     /**
@@ -23,7 +30,6 @@ class cmder{
      * @param {*} arg 
      */
     list_local(event,arg){
-        console.log(arg);
         console.log(`[Main Process] content: ${arg.cmd_body}`);
     }
     

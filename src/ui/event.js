@@ -6,13 +6,13 @@ const {ipcMain} = require('electron');
 // FIXME: need to use https when this program release
 const request = require('request');
 const strategist = require('../model/strategist');
-const {cmder} = require('../model/cmd');
-const server_url = "http://localhost",port=3000;
+const {cmder} = require('../model/cmder');
+const config = require('../config/config.default');
 
 ipcMain.on('ulogin',(event,arg) => {
     // Send message to remote server enroll 
     // console.log(arg);
-    request.post(server_url+":"+port+"/user/ulogin", {form: arg }, function (error, httpResponse, body){
+    request.post(config.server_url+":"+config.port+"/user/ulogin", {form: arg }, function (error, httpResponse, body){
         // Body will be the result
         let res = JSON.parse(body);
         console.log(res.msg);
