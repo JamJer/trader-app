@@ -32,6 +32,11 @@ class cmder{
      */
     list_local(event,arg){
         console.log(`[Main Process] content: ${arg.cmd_body}`);
+        db.list_exist_policy((err,policies)=>{
+            //console.log(policies);
+            // send data to render process
+            event.sender.send('list_local',policies);
+        })
     }
     
     /**

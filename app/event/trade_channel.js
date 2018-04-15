@@ -64,7 +64,29 @@ ipcRenderer.on('list_remote',(event,arg)=>{
 })
 
 ipcRenderer.on('list_local',(event,arg)=>{
-    console.log(arg);
+    // console.log(arg);
+    // Receive the data from database in main process
+    for (var k in arg) {
+        // Display message on it
+        // Using bootstrap list group to illustrate the information
+        // Link: https://v4-alpha.getbootstrap.com/components/list-group/#custom-content
+        let node=document.createElement("A")
+        node.href="#"
+        node.setAttribute("class","list-group-item list-group-item-action flex-column align-items-start")
+        let wrapper=document.createElement("DIV")
+        wrapper.setAttribute("class","d-flex w-100 justify-content-between");
+        let cmd_title=document.createElement("H5");
+        cmd_title.setAttribute("class","mb-1")
+        cmd_title.innerHTML=arg[k].trade_policy_id;
+        let cmd_desc=document.createElement("P");
+        cmd_desc.setAttribute("class","mb-1")
+        cmd_desc.innerHTML=arg[k].trade_policy_loc;
+        wrapper.appendChild(cmd_title)
+        node.appendChild(wrapper)
+        node.appendChild(cmd_desc)
+        // Append into display block
+        document.getElementById("cmd_display").appendChild(node);
+    }
 })
 
 ipcRenderer.on('select',(event,arg)=>{

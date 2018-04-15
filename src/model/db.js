@@ -29,7 +29,7 @@ class db {
              * id: name of trade policy name
              * loc: storage location of this trade policy 
              */
-            self.db.run("CREATE TABLE trade_policy \
+            self.db.run("CREATE TABLE if not exists trade_policy \
                     (\
                         trade_policy_id TEXT,\
                         trade_policy_loc TEXT\
@@ -66,6 +66,20 @@ class db {
             else{
                 // Existed -> Do update?
                 cb(1,"existed");
+            }
+        })
+    }
+
+    list_exist_policy(cb){
+        this.db.all("SELECT * FROM trade_policy",{},function(err,rows){
+            if(rows==undefined){
+                // Not found
+                cb(0,[]);
+            }
+            else{
+                // Return row array with format: 
+                // [ { trade_policy_id: 'name',trade_policy_loc: '/tmp/name.json' } ]
+                cb(0,rows);
             }
         })
     }
