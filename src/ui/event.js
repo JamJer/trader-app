@@ -9,7 +9,44 @@ const rp = require('request-promise');
 const strategist = require('../model/strategist');
 const {cmder} = require('../model/cmder');
 const {db} = require('../model/db');
+const {trader} = require('../model/trader');
 const config = require('../config/config.default');
+
+ipcMain.on('updateBinanceCfg',(event,arg) => {
+	console.log("Receive update binance config request");
+    console.log(arg);
+	db.store_binance_api_key(arg.username, arg.apikey, arg.apisecret,
+		(err,msg)=>{
+			if(err)
+				console.log(err);
+			console.log(msg);
+		}
+	);
+});
+
+ipcMain.on('tradebotBuy', async (event,arg) => {
+	console.log("Receive trade bot buy request");
+	// Test data
+	let symbol = "BTCUSDT";
+	let quantity = 1;
+	let price = 100;
+	
+	let result = await trader.buy(symbol, quantity, price);
+	console.log(result);
+	db.store_trade_log(arg.username, "BUY", symbol, quantity, price);
+});
+
+ipcMain.on('tradebotSell', async (event,arg) => {
+	console.log("Receive trade bot sell request");
+	// Test data
+	let symbol = "BTCUSDT";
+	let quantity = 1;
+	let price = 100;
+	
+	let result = await trader.sell(symbol, quantity, price);
+	console.log(result);
+	db.store_trade_log(arg.username, "SELL", symbol, quantity, price);
+});
 
 ipcMain.on('ulogin',(event,arg) => {
     // Send message to remote server enroll 
@@ -33,6 +70,7 @@ ipcMain.on('ulogin',(event,arg) => {
                                 // FIXME: In debug mode, all msg will return OK, without compare user data
                                 // And when this user login success, it will get a unique key of this user to activate trade bot
                                 event.sender.send('login-success',res.key);
+								trader.prepare(arg.username);
                             });
                     }
                     else{

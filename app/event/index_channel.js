@@ -47,6 +47,9 @@ ipcRenderer.on('login-success', (event, arg) => {
     document.getElementById('passwd').disabled=false;
     // hide loader bar
     document.getElementById('ulogin-loader').setAttribute("style","display:none");
+	// store username to localstorage
+	let username = document.getElementById('username').value;
+	localStorage.setItem('username', username);
     // Enter next page - trade page
     window.location.href="trade.html";
 })
