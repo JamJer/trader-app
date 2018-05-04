@@ -23,6 +23,8 @@ class db {
                         username TEXT,\
                         passwd TEXT,\
                         product_key TEXT\
+						binance_apikey TEXT\
+						binance_apisecret TEXT\
                     )");
             // ======================= trading policy =======================
             /**
@@ -33,6 +35,17 @@ class db {
                     (\
                         trade_policy_id TEXT,\
                         trade_policy_loc TEXT\
+                    )");
+					
+					
+			self.db.run("CREATE TABLE if not exists trade_log \
+                    (\
+                        username TEXT,\
+                        timestamp TEXT,\
+                        action TEXT,\
+						symbol TEXT,\
+                        quantity TEXT,\
+                        price TEXT\
                     )");
             // ======================= debug data can insert here =======================
             /*var stmt = db.prepare("INSERT INTO user_info VALUES (?)");
@@ -83,6 +96,49 @@ class db {
             }
         })
     }
+	
+	store_binance_api_key(uname,key,secret,cb){
+        // Detect if current user have enroll before
+        let self=this;
+        this.db.get("SELECT username FROM user WHERE username=$name",{
+            $name: uname
+        },function(err,row){
+            if(row==undefined){
+                // User does not exist, should not happen.
+				cb(1,"unexpected error.");
+            }
+            else{
+				// Store api key to db.
+                let stmt = self.db.prepare("UPDATE user SET binance_apikey=?, binance_apisecret=? WHERE username=?");
+                stmt.run(key, secret, uname);
+                cb(0,"successfully store the key");
+            }
+        })
+    }
+	
+	get_binance_api_key(uname, cb) {
+		this.db.get("SELECT binance_apikey,binance_apisecret FROM user WHERE username=$name",{
+            $name: uname
+        },function(err,row){
+            if(row==undefined){
+                // User does not exist, should not happen.
+				cb(1,"unexpected error.");
+            }else{
+				if(row.binance_apikey==null) {
+					cb(1,"api key not found.");
+				}else{
+					// return Binance API Key
+					cb(0,row);
+				}
+            }
+        })
+	}
+	
+	store_trade_log(uname, action, symbol, quantity, price) {
+		const timestamp = Math.round(+new Date()/1000);
+		let stmt = this.db.prepare("INSERT INTO trade_log (username,timestamp,action,symbol,quantity,price) VALUES (?,?,?,?,?,?)");
+		stmt.run(uname,timestamp,action,symbol,quantity,price);
+	}
 }
 
 module.exports = {
