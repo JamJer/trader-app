@@ -50,6 +50,16 @@ tradebot_sell.addEventListener("submit", function(event){
 	ipcRenderer.send('tradebotSell',{username});
 });
 
+let tradebot_getma = document.querySelector("#tradebot_getma");
+tradebot_getma.addEventListener("submit", function(event){
+	// stop the form from submitting
+    event.preventDefault();
+	
+	
+	let maType = "7d";
+	ipcRenderer.send('tradebotUpdateMA',{maType});
+});
+
 let cmd_block = document.querySelector("#cmd_block");
 // Submit and store the file
 cmd_block.addEventListener("submit", function(event){

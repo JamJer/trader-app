@@ -48,6 +48,27 @@ ipcMain.on('tradebotSell', async (event,arg) => {
 	db.store_trade_log(arg.username, "SELL", symbol, quantity, price);
 });
 
+ipcMain.on('tradebotUpdateMA',(event,arg) => {
+	var options = {
+		uri: config.server_url+":"+config.port+"/trade/ma/"+arg.maType,
+		json: true // Automatically parses the JSON string in the response
+	};
+
+	rp(options)
+		.then(function (repos) {
+			if(repos.msg) {
+				console.log(repos.msg);
+			}else{
+				console.log('Response %d data', repos.length);
+			}
+			
+		})
+		.catch(function (err) {
+			// API call failed...
+			console.log(err);
+		});
+})
+
 ipcMain.on('ulogin',(event,arg) => {
     // Send message to remote server enroll 
     // console.log(arg);
