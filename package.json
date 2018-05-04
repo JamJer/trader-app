@@ -3,6 +3,7 @@
     "version": "0.0.1",
     "scripts": {
         "postinstall": "electron-rebuild -f -w sqlite3",
+        "all": "npm install && npm run start",
         "start": "electron .",
         "release": "electron-packager ."
     },
