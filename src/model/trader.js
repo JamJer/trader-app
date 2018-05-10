@@ -35,7 +35,7 @@ class trader {
 			const dateTime = Date.now();
 			const timestamp = Math.floor(dateTime);
 			var serverTime = await client.time();
-			var recvWindow = config.trade_binance_recvWindow;
+			var recvWindow = config.trade.binance_recvWindow;
 			if (timestamp < (serverTime + 1000) && (serverTime - timestamp) <= recvWindow) {
 				return await client.order({
 				  symbol: symbol,
@@ -67,7 +67,7 @@ class trader {
 			const dateTime = Date.now();
 			const timestamp = Math.floor(dateTime);
 			var serverTime = await client.time();
-			var recvWindow = config.trade_binance_recvWindow;
+			var recvWindow = config.trade.binance_recvWindow;
 			if (timestamp < (serverTime + 1000) && (serverTime - timestamp) <= recvWindow) {
 			  return await client.order({
 				symbol: symbol,

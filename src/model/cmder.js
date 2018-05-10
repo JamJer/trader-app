@@ -16,7 +16,7 @@ class cmder{
     list_remote(event,arg){
         console.log(`[Main Process] content: ${arg.cmd_body}`);
         // Send request back
-        request.post(config.server_url+":"+config.port+"/ucmd/list_remote", {form: arg }, function (error, httpResponse, body){
+        request.post(config.server.url+":"+config.server.port+"/ucmd/list_remote", {form: arg }, function (error, httpResponse, body){
             // Body will be the result
             let res = JSON.parse(body);
             // Send to render process

@@ -50,7 +50,7 @@ ipcMain.on('tradebotSell', async (event,arg) => {
 
 ipcMain.on('tradebotUpdateMA',(event,arg) => {
 	var options = {
-		uri: config.server_url+":"+config.port+"/trade/ma/"+arg.maType,
+		uri: config.server.url+":"+config.server.port+"/trade/ma/"+arg.maType,
 		json: true // Automatically parses the JSON string in the response
 	};
 
@@ -72,7 +72,7 @@ ipcMain.on('tradebotUpdateMA',(event,arg) => {
 ipcMain.on('ulogin',(event,arg) => {
     // Send message to remote server enroll 
     // console.log(arg);
-    rp.post(config.server_url+":"+config.port+"/user/login", {simple: false, resolveWithFullResponse: true,form: arg})
+    rp.post(config.server.url+":"+config.server.port+"/user/login", {simple: false, resolveWithFullResponse: true,form: arg})
         .then((res,body)=>{
             // redirect to new link
             rp.post(res.headers['location'],{form: arg})
