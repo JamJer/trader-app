@@ -50,8 +50,8 @@ ipcRenderer.on('login-success', (event, arg) => {
 	// store username to localstorage
 	let username = document.getElementById('username').value;
 	localStorage.setItem('username', username);
-    // Enter next page - trade page
-    window.location.href="trade.html";
+    // Enter next page - control panel
+    window.location.href="control_panel.html";
 })
 ipcRenderer.on('login-error', (event, arg) => {
     console.log(arg) 

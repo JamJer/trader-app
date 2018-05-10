@@ -1,0 +1,4 @@
+/**
+ * ipcRenderer - control panel
+ * 
+ */

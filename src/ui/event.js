@@ -91,7 +91,8 @@ ipcMain.on('ulogin',(event,arg) => {
                                 // FIXME: In debug mode, all msg will return OK, without compare user data
                                 // And when this user login success, it will get a unique key of this user to activate trade bot
                                 event.sender.send('login-success',res.key);
-								trader.prepare(arg.username);
+								
+								// trader.prepare(arg.username);
                             });
                     }
                     else{

@@ -1,5 +1,7 @@
 <!--
-    Template page, copy and paste to use
+    Control Panel,
+    
+    Provide docker hub like 
 -->
 
 <!doctype html>
@@ -21,9 +23,27 @@
             <div class="container">
                 <p class="text-center alert-success round"> v0.0.1 </p>
             </div>
-            
-            
-
+            <!-- Basic Information -->
+            <h2 class="text-center"> Trading Bot control panel </h2>
+            <div class="container jumbotron">
+                <!-- Command Panel -->
+                <form action="#" id="cmd_block">
+                    <div class="input-group">
+                        <!-- Command goes here -->
+                        <input id="cmd" class="form-control">
+                        <span class="input-group-btn">
+                            <button type="submit" class="btn btn-info">Go</button>
+                        </span>
+                    </div>
+                </form>
+                <!-- This part use to display the data fetching by command -->
+                <hr>
+                <div>
+                    <div class="list_group" id="cmd_display">
+                        <!-- Found policy will display in here -->
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- ================================================ Footer ================================================ -->
