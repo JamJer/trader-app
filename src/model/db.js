@@ -13,7 +13,7 @@ const config = require("../config/config.default");
 class db {
     constructor(){
         // need to specify from repository root
-        this.db = new sqlite3.Database('./src/db/storage.db');
+        this.db = new sqlite3.Database('./storage.db');
         let self=this;
         this.db.serialize(function() {
             // create schema 
