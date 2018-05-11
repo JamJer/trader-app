@@ -8,7 +8,11 @@ const path = require('path');
 const url = require('url');
 const cmd_map = require('../config/cmd_map');
 // utils
-const utils = require('../utils/control_channel');
+const utils = require('../utils/ui');
+
+
+// Create first 
+utils.create_block("Welcome!","Please using `help` to list all available commands.","cmd_display");
 
 // fetch block -> cmd_block
 let cmd_block = document.querySelector("#cmd_block");
@@ -52,19 +56,24 @@ cmd_block.addEventListener("submit", function(event){
                 // Display message on it
                 // Using bootstrap list group to illustrate the information
                 // Link: https://v4-alpha.getbootstrap.com/components/list-group/#custom-content
-                utils.create_block(k,cmd_map[k].description,"cmd_display");
+                utils.create_block(cmd_map[k].placeholder,cmd_map[k].description,"cmd_display");
             }
         }
     }
     
 });
 
+
 // ================================= Receive messages from user command =================================
-ipcRenderer.on('list_remote',(event,arg)=>{
+ipcRenderer.on('status',(event,arg)=>{
     console.log(arg);
 })
 
-ipcRenderer.on('list_local',(event,arg)=>{
+ipcRenderer.on('create',(event,arg)=>{
+    console.log(arg);
+})
+
+ipcRenderer.on('list',(event,arg)=>{
     // console.log(arg);
     // Receive the data from database in main process
     for (var k in arg) {
@@ -75,10 +84,25 @@ ipcRenderer.on('list_local',(event,arg)=>{
     }
 })
 
-ipcRenderer.on('select',(event,arg)=>{
+ipcRenderer.on('use',(event,arg)=>{
     console.log(arg);
 })
 
-ipcRenderer.on('buy',(event,arg)=>{
+ipcRenderer.on('pull',(event,arg)=>{
     console.log(arg);
+})
+
+ipcRenderer.on('push',(event,arg)=>{
+    console.log(arg);
+})
+
+ipcRenderer.on('purchase',(event,arg)=>{
+    console.log(arg);
+})
+
+// Handle page change 
+ipcRenderer.on('trade',(event,arg)=>{
+    // page change to trade.html
+    // Enter next page - trade
+    window.location.href="trade.html";
 })

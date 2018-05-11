@@ -115,12 +115,16 @@ ipcMain.on('ulogin',(event,arg) => {
 /**
  * Send message to (remote server)/(local) to fetch policy, or do other command
  */
-ipcMain.on('list_remote',cmder.list_remote);
-ipcMain.on('list_local',cmder.list_local);
-// Send message to local to fetch policy
-ipcMain.on('select',cmder.select);
-// Send message to remote server to buy policy
-ipcMain.on('buy',cmder.buy);
+ipcMain.on('status',cmder.status);
+ipcMain.on('create',cmder.create);
+ipcMain.on('list',cmder.list);
+ipcMain.on('use',cmder.use);
+ipcMain.on('pull',cmder.pull);
+ipcMain.on('push',cmder.push);
+ipcMain.on('purchase',cmder.purchase);
+
+ipcMain.on('trade',cmder.trade);
+ipcMain.on('debug',cmder.debug);
 
 // Async Example
 /*ipcMain.on('asynchronous-message', (event, arg) => {
