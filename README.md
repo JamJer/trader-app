@@ -11,7 +11,7 @@
     * config/ -> main process 的配置檔
     * model/ -> 除 main process 外的其他功能
     * ui/ -> main process / ipcMain （主進入點）
-    * ~db/ -> 主要放置 sqlite3 所使用~
+    * ~~db/ -> 主要放置 sqlite3 所使用~~
         * 考慮到 release 後的程式不會有相對應的檔案夾配置，直接配置在跟本身 main.js 同個位置即可(跟 electron build 所得到的程式同層)
 
 ## Debug Mode 
