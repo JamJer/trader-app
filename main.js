@@ -32,7 +32,7 @@ function create_window(){
         slashes: true,
         baseUrl: 'app'
     }))
-    event = require('./src/ui/event');
+    event = require('./src/main/event');
     // Emitted when the windows is closed
     mainWindow.on('closed',function(){
         // if you have multi-window, can store in array 
