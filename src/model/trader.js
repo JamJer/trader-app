@@ -1,91 +1,75 @@
-const Binance = require('binance-api-node').default
+/**
+ * Trader channel
+ */
+const request = require('request');
+const rp = require('request-promise');
 const config = require("../config/config.default");
+const {op} = require('./operation');
 const {db} = require('./db');
 
-class trader {
-    constructor(){
-		let trade_binance_apiKey = null;
-		let trade_binance_apiSecret = null;
-    }
-	
-	/* 從db取得使用者API Key */
-	async prepare(username) {
-		let self = this;
-		console.log("prepare trader");
-		db.get_binance_api_key(username, (err,data)=>{
-			if(err) throw data;
-			self.trade_binance_apiKey = data.binance_apikey;
-			self.trade_binance_apiSecret = data.binance_apisecret;
-			console.log("success get user api key from db");
-		})
+class trader{
+	constructor(){
+
 	}
-	
-	/* 購買 */
-	async buy(symbol, quantity, price) {
-		var result={};
-		try {
-			let self = this;
-			if(self.trade_binance_apiKey==null) {
-				throw "mising binance api key";
-			}
-			const client = Binance({
-			  apiKey: self.trade_binance_apiKey,
-			  apiSecret: self.trade_binance_apiSecret,
-			});
-			const dateTime = Date.now();
-			const timestamp = Math.floor(dateTime);
-			var serverTime = await client.time();
-			var recvWindow = config.trade.binance_recvWindow;
-			if (timestamp < (serverTime + 1000) && (serverTime - timestamp) <= recvWindow) {
-				return await client.order({
-				  symbol: symbol,
-				  side: "BUY",
-				  quantity: quantity,
-				  price: price,
-				})
-			} else {
-			  throw "伺服器延遲過高或電腦時間不準確";
-			}
-		} catch(err) {
-			result.msg = err.message;
-			return result;
-		}
+
+	update_binance_cfg(event,arg){
+		console.log("Receive update binance config request");
+		console.log(arg);
+			db.store_binance_api_key(arg.username, arg.apikey, arg.apisecret,
+				(err,msg)=>{
+				if(err)
+					console.log(err);
+				console.log(msg);
+				}
+		);
 	}
+
+	async buy(event,arg){
+		console.log("Receive trade bot buy request");
+		// Test data
+		let symbol = "BTCUSDT";
+		let quantity = 1;
+		let price = 100;
+		
+		let result = await op.buy(symbol, quantity, price);
+		console.log(result);
+		db.store_trade_log(arg.username, "BUY", symbol, quantity, price);
+	}
+
+	async sell(event,arg){
+		console.log("Receive trade bot sell request");
+		// Test data
+		let symbol = "BTCUSDT";
+		let quantity = 1;
+		let price = 100;
+		
+		let result = await op.sell(symbol, quantity, price);
+		console.log(result);
+		db.store_trade_log(arg.username, "SELL", symbol, quantity, price);
+	}
+
+	update_ma(event,arg){
+		var options = {
+			uri: config.server.url+":"+config.server.port+"/trade/ma/"+arg.maType,
+			json: true // Automatically parses the JSON string in the response
+		};
 	
-	/* 賣出 */
-	async sell(symbol, quantity, price) {
-		var result={};
-		try {
-			let self = this;
-			if(self.trade_binance_apiKey==null) {
-				throw "mising binance api key";
-			}
-			const client = Binance({
-			  apiKey: self.trade_binance_apiKey,
-			  apiSecret: self.trade_binance_apiSecret,
+		rp(options)
+			.then(function (repos) {
+				if(repos.msg) {
+					console.log(repos.msg);
+				}else{
+					console.log('Response %d data', repos.length);
+				}
+				
+			})
+			.catch(function (err) {
+				// API call failed...
+				console.log(err);
 			});
-			const dateTime = Date.now();
-			const timestamp = Math.floor(dateTime);
-			var serverTime = await client.time();
-			var recvWindow = config.trade.binance_recvWindow;
-			if (timestamp < (serverTime + 1000) && (serverTime - timestamp) <= recvWindow) {
-			  return await client.order({
-				symbol: symbol,
-				side: "SELL",
-				quantity: quantity,
-				price: price
-			  })
-			} else {
-			  throw "伺服器延遲過高或電腦時間不準確";
-			}
-			
-		} catch(err) {
-			result.msg = err.message;
-			return result;
-		}
 	}
 }
 
 module.exports = {
-    trader: new trader()
+	trader: new trader()
 }

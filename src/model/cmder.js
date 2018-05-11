@@ -10,10 +10,15 @@ const {db} = require('./db');
 /**
  * cmder - command model for control panel 
  * 
- * @function list_remote
- * @function list_local
- * @function select 
- * @function buy
+ * @function status
+ * @function create 
+ * @function list 
+ * @function use 
+ * @function pull
+ * @function push 
+ * @function purchase 
+ * @function trade 
+ * @function debug
  * 
  */
 class cmder{
