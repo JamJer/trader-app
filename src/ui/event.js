@@ -9,7 +9,6 @@ const rp = require('request-promise');
 // const strategist = require('../model/strategist');
 const {user} = require('../model/user');
 const {cmder} = require('../model/cmder');
-const {db} = require('../model/db');
 const {trader} = require('../model/trader');
 const config = require('../config/config.default');
 
