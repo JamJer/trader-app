@@ -14,6 +14,20 @@
     * ~db/ -> 主要放置 sqlite3 所使用~
         * 考慮到 release 後的程式不會有相對應的檔案夾配置，直接配置在跟本身 main.js 同個位置即可(跟 electron build 所得到的程式同層)
 
+## Debug Mode 
+
+* 由於本身 app 需要在啟動 trader-server 與 trade-server-db 這兩個服務下才可以使用，所以為了加快啟動速度，提供腳本做運行
+
+```
+# 啟動兩個服務於背景
+./debugger.sh start
+
+# 檢查狀態，是否成功運行
+./debugger.sh check
+
+# 砍掉兩個在背景運行的 process
+./debugger.sh stop
+```
 
 ## sqlite3
 
