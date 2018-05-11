@@ -17,7 +17,7 @@ let mainWindow = null;
 // Create Window
 function create_window(){
     mainWindow = new BrowserWindow({
-        height: 600,
+        height: 800,
         width: 800,
         icon: path.join(__dirname,'app','img','logo_big-1-300x300.png') /* ICON */
     })

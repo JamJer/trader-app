@@ -7,6 +7,15 @@ const request = require('request');
 const config = require('../config/config.default');
 const {db} = require('./db');
 
+/**
+ * cmder - command model for control panel 
+ * 
+ * @function list_remote
+ * @function list_local
+ * @function select 
+ * @function buy
+ * 
+ */
 class cmder{
     /**
      * Send request to remote server, to get all trading policies (or get the first N trading policies)
@@ -32,6 +41,7 @@ class cmder{
      */
     list_local(event,arg){
         console.log(`[Main Process] content: ${arg.cmd_body}`);
+        // fetching the existed policy from local
         db.list_exist_policy((err,policies)=>{
             //console.log(policies);
             // send data to render process

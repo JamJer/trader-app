@@ -12,6 +12,11 @@ const {db} = require('../model/db');
 const {trader} = require('../model/trader');
 const config = require('../config/config.default');
 
+
+// ================================================== Trader bot channel ==================================================
+/**
+ * 
+ */
 ipcMain.on('updateBinanceCfg',(event,arg) => {
 	console.log("Receive update binance config request");
     console.log(arg);
@@ -69,6 +74,10 @@ ipcMain.on('tradebotUpdateMA',(event,arg) => {
 		});
 })
 
+// ================================================== User login channel ==================================================
+/**
+ * 
+ */
 ipcMain.on('ulogin',(event,arg) => {
     // Send message to remote server enroll 
     // console.log(arg);
@@ -102,7 +111,10 @@ ipcMain.on('ulogin',(event,arg) => {
         }) 
 })
 
-// Send message to (remote server)/(local) to fetch policy, or do other command
+// ================================================== Control panel channel ==================================================
+/**
+ * Send message to (remote server)/(local) to fetch policy, or do other command
+ */
 ipcMain.on('list_remote',cmder.list_remote);
 ipcMain.on('list_local',cmder.list_local);
 // Send message to local to fetch policy
