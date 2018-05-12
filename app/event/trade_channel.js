@@ -9,6 +9,28 @@ const path = require('path');
 const url = require('url');
 
 /**
+ * C3 chart - For displaying trading history
+ * 
+ */
+// FIXME: using the real data from sqlite3
+var sell = ['sell', 30, 200, 100, 400, 150, 250],
+	buy = ['buy', 50, 20, 10, 40, 15, 25],
+	income = ['income', -20,180,90,360,135,225]
+
+var chart = c3.generate({
+    bindto: '#chart',
+    data: {
+      columns: [ sell,buy,income],
+	  types: {
+		  income: 'bar' // Set the `income` using bar style
+	  }
+	},
+	regions: [
+        {axis: 'y', end: 0, class: 'negative'}, /** distinguish negative value from positive */
+    ]
+});
+
+/**
  * Need to config key 
  */
 let trade_op = document.querySelector('#trade_op')
@@ -62,6 +84,7 @@ ipcRenderer.on('settlement',(event,arg)=>{
 		]
 	});
 
+	// Reset the record, prepare for next day, next trade.
 	event.sender.send('trade_op',{
 		cmd: 'reset',
 		val: null
@@ -117,28 +140,3 @@ tradebot_getma.addEventListener("submit", function(event){
 	let maType = "7d";
 	ipcRenderer.send('tradebotUpdateMA',{maType});
 });*/
-
-/**
- * C3 chart 
- */
-// FIXME:
-var sell = ['sell', 30, 200, 100, 400, 150, 250],
-	buy = ['buy', 50, 20, 10, 40, 15, 25],
-	income = ['income', -20,180,90,360,135,225]
-
-var chart = c3.generate({
-    bindto: '#chart',
-    data: {
-      columns: [
-        sell,
-		buy,
-		income
-      ],
-	  types: {
-		  income: 'bar' // ADD
-	  }
-	},
-	regions: [
-        {axis: 'y', end: 0, class: 'negative'},
-    ]
-});

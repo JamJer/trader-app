@@ -37,7 +37,9 @@ class db {
                         trade_policy_loc TEXT\
                     )");
 					
-					
+            /**
+             * 
+             */
 			self.db.run("CREATE TABLE if not exists trade_log \
                     (\
                         username TEXT,\
@@ -47,6 +49,12 @@ class db {
                         quantity TEXT,\
                         price TEXT\
                     )");
+            
+            // ======================= trading record =======================
+            /**
+             * 
+             */
+            
             // ======================= debug data can insert here =======================
             /*var stmt = db.prepare("INSERT INTO user_info VALUES (?)");
             for (var i = 0; i < 10; i++) {
@@ -78,6 +86,26 @@ class db {
             }
             else{
                 // Existed -> Do update?
+                cb(1,"existed");
+            }
+        })
+    }
+
+    add_new_policy(id,loc,cb){
+        let self=this;
+        // check 
+        this.db.get("SELECT * FROM trade_policy WHERE trade_policy_id=$id",{
+            $id: id
+        },function(err,row){
+            if(row==undefined){
+                // Not exist, then store it
+                let stmt = self.db.prepare("INSERT INTO trade_policy (trade_policy_id,trade_policy_loc) VALUES (?,?)");
+                stmt.run(id,loc);
+                cb(0,"successfully add new policy");
+            }
+            else{
+                // Existed, do nothing
+                // FIXME -> open edit page?
                 cb(1,"existed");
             }
         })

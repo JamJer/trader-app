@@ -14,6 +14,21 @@ const url = require('url');
 let event = null;
 let mainWindow = null;
 
+// detect ./local , if not exist, create one
+function init(path){
+    fs.stat(path,function(err,stats){
+        console.log(stats)
+        if(stats==undefined){
+            // not exists 
+            fs.mkdir(path,()=>{
+                console.log("Create!")
+            });
+        }else{
+            console.log("Existed!")
+        }
+    })
+}
+
 // Create Window
 function create_window(){
     mainWindow = new BrowserWindow({
@@ -42,6 +57,7 @@ function create_window(){
 }
 
 app.on('ready', function() {
+    init('.local/')
     create_window()
 });
 

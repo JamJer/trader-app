@@ -2,6 +2,8 @@
 
 ## 檔案配置
 
+> 存在於專案原始碼當中
+
 * app/ 底下是 electron webview (render process)
     * config/ -> render process 的配置檔
     * event/ -> render process 的 ipc 
@@ -14,10 +16,18 @@
     * ~~db/ -> 主要放置 sqlite3 所使用~~
         * 考慮到 release 後的程式不會有相對應的檔案夾配置，直接配置在跟本身 main.js 同個位置即可(跟 electron build 所得到的程式同層)
 
+> 啟動後自動產生
+
+* `.local/` 
+    * 用來儲存本地端較大檔案、紀錄檔等等資訊
+    * 在程式呼叫啟動時產生
+    * 由執行檔程式來指定存放位置（不會有相對路徑問題）
+
 ## Debug Mode 
 
 * 由於本身 app 需要在啟動 trader-server 與 trade-server-db 這兩個服務下才可以使用，所以為了加快啟動速度，提供腳本做運行
-
+    * `注意！`： 在 start 啟動後，需要透過 `check` 來檢查狀態！
+    * 確認所有的 service 都開啟後在啟動 app
 ```
 # 啟動兩個服務於背景
 ./debugger.sh start

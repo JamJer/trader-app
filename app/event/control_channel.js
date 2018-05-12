@@ -71,6 +71,16 @@ ipcRenderer.on('status',(event,arg)=>{
 
 ipcRenderer.on('create',(event,arg)=>{
     console.log(arg);
+    /**
+     * @param arg.err
+     * @param arg.msg
+     * @param arg.id
+     */
+    let title = (arg.err == 0)?"Success!":"Failure!"
+    let style = (arg.err == 0)?"success":"danger"
+    
+    // create block
+    utils.create_block(title+" ID:"+arg.id,arg.msg,style,"cmd_display")
 })
 
 ipcRenderer.on('list',(event,arg)=>{

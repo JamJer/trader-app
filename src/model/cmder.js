@@ -3,6 +3,7 @@
  * Using docker command style
  */
 
+const rs = require('randomstring');
 const request = require('request');
 const config = require('../config/config.default');
 const {db} = require('./db');
@@ -45,7 +46,18 @@ class cmder{
      */
     create(event,arg){
         console.log(`[Main Process] content: ${arg.cmd_body}`);
-        event.sender.send('create',{});
+        
+        // FIXME - using the real func to create policy
+        let trade_id = rs.generate();
+        db.add_new_policy(trade_id,`/tmp/${trade_id}.json`,(err,msg)=>{
+            console.log(msg);
+            // send message to frontend
+            event.sender.send('create',{
+                err: err,
+                msg: msg,
+                id: trade_id
+            });
+        })
     }
     
     /**
