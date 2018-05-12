@@ -12,7 +12,7 @@ const utils = require('../utils/ui');
 
 
 // Create first 
-utils.create_block("Welcome!","Please using `help` to list all available commands.","cmd_display");
+utils.create_block("Welcome!","Please using `help` to list all available commands.","info","cmd_display");
 
 // fetch block -> cmd_block
 let cmd_block = document.querySelector("#cmd_block");
@@ -34,7 +34,7 @@ cmd_block.addEventListener("submit", function(event){
     if(cmd_map[cmd_id] == undefined){
         // Not found, display error 
         console.log("Display error");
-        utils.create_block("Not found","Please using `help` to list all available commands.","cmd_display");
+        utils.create_block("Not found","Please using `help` to list all available commands.","danger","cmd_display");
         return;
     }
     else{
@@ -56,7 +56,7 @@ cmd_block.addEventListener("submit", function(event){
                 // Display message on it
                 // Using bootstrap list group to illustrate the information
                 // Link: https://v4-alpha.getbootstrap.com/components/list-group/#custom-content
-                utils.create_block(cmd_map[k].placeholder,cmd_map[k].description,"cmd_display");
+                utils.create_block(cmd_map[k].placeholder,cmd_map[k].description,"success","cmd_display");
             }
         }
     }
@@ -80,7 +80,7 @@ ipcRenderer.on('list',(event,arg)=>{
         // Display message on it
         // Using bootstrap list group to illustrate the information
         // Link: https://v4-alpha.getbootstrap.com/components/list-group/#custom-content
-        utils.create_block(arg[k].trade_policy_id,arg[k].trade_policy_loc,"cmd_display");
+        utils.create_block(arg[k].trade_policy_id,arg[k].trade_policy_loc,"warning","cmd_display");
     }
 })
 

@@ -23,3 +23,8 @@ html, body, div {
 .round {
     border-radius: 5px;
 }
+
+/* c3 */
+.c3-region.negative {
+    fill: red;
+}

@@ -9,6 +9,11 @@ const path = require('path');
 const url = require('url');
 const cmd_map = require('../config/cmd_map');
 
+/**
+ * Need to config key 
+ */
+
+
 let config_binance = document.querySelector("#config_binance");
 // Submit and store the file
 config_binance.addEventListener("submit", function(event){
@@ -60,3 +65,23 @@ tradebot_getma.addEventListener("submit", function(event){
 	ipcRenderer.send('tradebotUpdateMA',{maType});
 });
 
+/**
+ * C3 chart 
+ */
+// FIXME:
+var chart = c3.generate({
+    bindto: '#chart',
+    data: {
+      columns: [
+        ['sell', 30, 200, 100, 400, 150, 250],
+		['buy', 50, 20, 10, 40, 15, 25],
+		['income', -20,180,90,360,135,225]
+      ],
+	  types: {
+		  income: 'bar' // ADD
+	  }
+	},
+	regions: [
+        {axis: 'y', end: 0, class: 'negative'},
+    ]
+});

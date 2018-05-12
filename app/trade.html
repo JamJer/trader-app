@@ -13,7 +13,8 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="./lib/custom/main.css">
-    <link rel="stylesheet" href="./lib/css/bootstrap.min.css">
+	<link rel="stylesheet" href="./lib/css/bootstrap.min.css">
+	<link rel="stylesheet" href="./lib/css/c3-0.5.4/c3.min.css">
     <title>Trader APP</title>
     </head>
     <body>
@@ -25,25 +26,49 @@
             </div>
             <div class="container jumbotron">
                 <!-- Basic Information -->
-                <h2 class="text-center"> Trading Bot control panel </h2>
-                <hr>
-				<h3>Binance API Config</h3>
-				<form action="#" id="config_binance">
-					<div class="form-group row">
-						<label for="apikey" class="col-sm-2 col-form-label">API KEY</label>
-						<div class="col-sm-10">
-						  <input type="text" class="form-control" id="apikey" placeholder="API KEY">
-						</div>
-					</div>
-					<div class="form-group row">
-						<label for="apisecret" class="col-sm-2 col-form-label">API SECRET</label>
-						<div class="col-sm-10">
-						  <input type="text" class="form-control" id="apisecret" placeholder="API SECRET">
-						</div>
-					</div>
-					<button type="submit" class="btn btn-info">Save</button>
-                </form>
+                <h2 class="text-center"> Trading Page </h2>
 				<hr>
+				<!--
+					Trading Record - Chart
+				-->
+				<div id="chart"></div>
+
+				<!-- 
+					API Configuration
+				 -->
+				<h3>Exchange API
+					<span>
+						<div class="btn-group btn-group-justified">
+							<button type="button" class="btn btn-primary">Binance</button>
+						</div>
+					</span>
+				</h3>
+				<hr>
+				<div>
+					<form action="#" id="config_binance">
+						<div class="form-group row">
+							<label for="apikey" class="col-sm-12 col-form-label">API KEY
+								<span>
+									<!-- config_binance : apikey -->
+									<input type="text" class="form-control" id="apikey" placeholder="API KEY">
+								</span>
+							</label>
+							<label for="apisecret" class="col-sm-12 col-form-label">API KEY
+								<span>
+									<!-- config_binance : apikey -->
+									<input type="text" class="form-control" id="apisecret" placeholder="API SECRET">
+								</span>
+							</label>
+						</div>
+						<!--Submit-->
+						<div class="text-center">
+							<button type="submit" class="btn btn-info">Save</button>
+						</div>
+						
+					</form>
+				</div>
+				<hr>
+
 				<div class="row">
 					<div class="col-4">
 						<h3>Buy Test</h3>
@@ -63,6 +88,7 @@
 							<button type="submit" class="btn btn-info">Get</button>
 						</form>
 					</div>
+
 				</div>
 				<hr>
             </div>
@@ -74,12 +100,14 @@
                 Copyright © 2018 by Kevin Cyu. All rights reserved.
             <span style="float:right;">EFACANI, Trader App Team</span>
             </p>
-        </div>
+		</div>
     </body>
 
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
 <!-- In Electron, this is the correct way to include jQuery -->
-<script>window.$ = window.jQuery = require('./lib/js/jquery-3.3.1.min.js');</script>
+<script src="https://d3js.org/d3.v5.js"></script>
+<script src="./lib/js/c3-0.5.4/c3.min.js"></script>
+<!-- <script>window.$ = window.jQuery = require('./lib/js/jquery-3.3.1.min.js');</script> -->
 <script type="text/javascript" charset="utf-8">require('./event/trade_channel.js')</script>
 </html>
