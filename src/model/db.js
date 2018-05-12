@@ -52,9 +52,17 @@ class db {
             
             // ======================= trading record =======================
             /**
-             * 
+             * trade_record: 
+             * @param date
+             * @param sell 
+             * @param buy
              */
-            
+            self.db.run("CREATE TABLE if not exists trade_record \
+                (\
+                    date: TEXT,\
+                    sell: TEXT,\
+                    buy: TEXT\
+                )");
             // ======================= debug data can insert here =======================
             /*var stmt = db.prepare("INSERT INTO user_info VALUES (?)");
             for (var i = 0; i < 10; i++) {
