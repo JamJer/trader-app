@@ -69,6 +69,43 @@
 				</div>
 				<hr>
 
+				<!-- For debug - trade operation -->
+				<div>
+					<h3> [Debug] Trade operation </h3>
+					<div>
+						<form action="#" id="trade_op">
+							<div class="form-group row">
+								<label for="cointype" class="col-sm-12 col-form-label">Coin Type
+									<span>
+										<input type="text" class="form-control" id="cointype" value="BTCUSD" disabled>
+									</span>
+								</label>
+								<label for="sell" class="col-sm-12 col-form-label">SELL
+									<span>
+										<!-- config_binance : apikey -->
+										<input type="text" class="form-control" id="sell" placeholder="0.00015">
+									</span>
+								</label>
+								<label for="buy" class="col-sm-12 col-form-label">BUY
+									<span>
+										<!-- config_binance : apikey -->
+										<input type="text" class="form-control" id="buy" placeholder="0.00015">
+									</span>
+								</label>
+							</div>
+							<!--Submit-->
+							<div class="text-center">
+								<button type="submit" class="btn btn-danger" value="sell">Sell</button>
+								<button type="submit" class="btn btn-warning" value="buy">Buy</button>
+								<button type="submit" class="btn btn-info" value="close">Close Today</button>
+							</div>
+							
+						</form>
+					</div>
+				</div>
+				<hr>
+
+				<!-- 
 				<div class="row">
 					<div class="col-4">
 						<h3>Buy Test</h3>
@@ -90,6 +127,7 @@
 					</div>
 
 				</div>
+				-->
 				<hr>
             </div>
         </div>
@@ -108,6 +146,6 @@
 <!-- In Electron, this is the correct way to include jQuery -->
 <script src="https://d3js.org/d3.v5.js"></script>
 <script src="./lib/js/c3-0.5.4/c3.min.js"></script>
-<!-- <script>window.$ = window.jQuery = require('./lib/js/jquery-3.3.1.min.js');</script> -->
+<script>window.$ = window.jQuery = require('./lib/js/jquery-3.3.1.min.js');</script>
 <script type="text/javascript" charset="utf-8">require('./event/trade_channel.js')</script>
 </html>

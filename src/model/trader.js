@@ -9,10 +9,48 @@ const {db} = require('./db');
 
 class trader{
 	constructor(){
-
+		this.sell = 0;
+		this.buy = 0;
 	}
 
-	update_binance_cfg(event,arg){
+	/**
+	 * Main Entry of trader, receive the trade operation command from ipcRenderer
+	 * - And then mapping to corresponding action
+	 * 
+	 * @param arg.cmd command type 
+	 * @param arg.coin coin type 
+	 * @param arg.val value with current command 
+	 * 
+	 */
+	main_entry(event,arg){
+		switch(arg.cmd){
+			case "sell": 
+				console.log(`User will sell: ${arg.val}(${arg.coin})`);
+				this.sell+=parseInt(arg.val);
+				console.log(this.sell)
+				break;
+			case "buy": 
+				console.log(`User will buy: ${arg.val}(${arg.coin})`);
+				this.buy+=parseInt(arg.val);
+				console.log(this.buy)
+				break;
+			case "close": 
+				// send back today value to display
+				let self = this;
+				event.sender.send('settlement',{
+					total_sell: this.sell,
+					total_buy: this.buy
+					/** TODO: coin type */
+				});
+				break;
+			case "reset":
+				this.sell = 0;
+				this.buy = 0;
+				break;
+		}
+	}
+
+	/*update_binance_cfg(event,arg){
 		console.log("Receive update binance config request");
 		console.log(arg);
 			db.store_binance_api_key(arg.username, arg.apikey, arg.apisecret,
@@ -67,9 +105,9 @@ class trader{
 				// API call failed...
 				console.log(err);
 			});
-	}
+	}*/
 }
 
-module.exports = {
-	trader: new trader()
-}
+const t = new trader();
+
+module.exports = t;

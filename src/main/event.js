@@ -9,7 +9,7 @@ const rp = require('request-promise');
 // const strategist = require('../model/strategist');
 const {user} = require('../model/user');
 const {cmder} = require('../model/cmder');
-const {trader} = require('../model/trader');
+const trader = require('../model/trader');
 const config = require('../config/config.default');
 
 
@@ -17,10 +17,13 @@ const config = require('../config/config.default');
 /**
  * 
  */
-ipcMain.on('updateBinanceCfg',trader.update_binance_cfg);
+/*ipcMain.on('updateBinanceCfg',trader.update_binance_cfg);
 ipcMain.on('tradebotBuy', trader.buy);
 ipcMain.on('tradebotSell', trader.sell);
-ipcMain.on('tradebotUpdateMA',trader.update_ma);
+ipcMain.on('tradebotUpdateMA',trader.update_ma);*/
+ipcMain.on('trade_op',(event,arg)=>{
+    trader.main_entry(event,arg);
+})
 
 // ================================================== User login channel ==================================================
 /**
