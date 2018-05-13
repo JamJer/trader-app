@@ -31,8 +31,31 @@
 				<!--
 					Trading Record - Chart
 				-->
-				<div id="chart"></div>
-
+				<div class="container">
+					<h3>Trading Chart</h3>
+					<div id="chart"></div>
+				</div>
+				<div class="container">
+					<h3>Trading Log</h3>
+					<p>Record the trading log which store in database.</p>
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th>ID</th>
+								<th>Date</th>
+								<th>Market</th>
+								<th>Quantity</th>
+								<th>賣出價格</th>
+								<th>買入價格</th>
+								<th>獲利</th>
+								<th>State</th>
+							</tr>
+						</thead>
+						<tbody id="trade_log_table">
+							<!-- Program will insert log here -->
+						</tbody>
+					</table>
+				</div>
 				<!-- 
 					API Configuration
 				 -->
@@ -44,6 +67,45 @@
 					</span>
 				</h3>
 				<hr>
+				
+
+				<!-- For debug - trade operation -->
+				<div>
+					<h3> [Debug] Trade operation </h3>
+					<div>
+						<form action="#" id="trade_op">
+							<div class="form-group row">
+								<label for="cointype" class="col-sm-12 col-form-label">Coin Type
+									<span>
+										<input type="text" class="form-control" id="cointype" value="BTC-USD" disabled>
+									</span>
+								</label>
+								<label for="sell" class="col-sm-12 col-form-label">Price SELL
+									<span>
+										<input type="text" class="form-control" id="price_sell" placeholder="Ex: BTC->USD price when you sell">
+									</span>
+								</label>
+								<label for="buy" class="col-sm-12 col-form-label">Price BUYIN
+									<span>
+										<input type="text" class="form-control" id="price_buyin" placeholder="Ex: BTC->USD price when you buyin">
+									</span>
+								</label>
+								<label for="quantity" class="col-sm-12 col-form-label">Quantity
+									<span>
+										<input type="text" class="form-control" id="quantity" placeholder="0.00015">
+									</span>
+								</label>
+							</div>
+							<!--Submit-->
+							<div class="text-center">
+								<button type="submit" class="btn btn-info" value="trade">trade</button>
+							</div>
+							
+						</form>
+					</div>
+				</div>
+				<hr>
+
 				<div>
 					<form action="#" id="config_binance">
 						<div class="form-group row">
@@ -68,43 +130,6 @@
 					</form>
 				</div>
 				<hr>
-
-				<!-- For debug - trade operation -->
-				<div>
-					<h3> [Debug] Trade operation </h3>
-					<div>
-						<form action="#" id="trade_op">
-							<div class="form-group row">
-								<label for="cointype" class="col-sm-12 col-form-label">Coin Type
-									<span>
-										<input type="text" class="form-control" id="cointype" value="BTCUSD" disabled>
-									</span>
-								</label>
-								<label for="sell" class="col-sm-12 col-form-label">SELL
-									<span>
-										<!-- config_binance : apikey -->
-										<input type="text" class="form-control" id="sell" placeholder="0.00015">
-									</span>
-								</label>
-								<label for="buy" class="col-sm-12 col-form-label">BUY
-									<span>
-										<!-- config_binance : apikey -->
-										<input type="text" class="form-control" id="buy" placeholder="0.00015">
-									</span>
-								</label>
-							</div>
-							<!--Submit-->
-							<div class="text-center">
-								<button type="submit" class="btn btn-danger" value="sell">Sell</button>
-								<button type="submit" class="btn btn-warning" value="buy">Buy</button>
-								<button type="submit" class="btn btn-info" value="close">Close Today</button>
-							</div>
-							
-						</form>
-					</div>
-				</div>
-				<hr>
-
 				<!-- 
 				<div class="row">
 					<div class="col-4">

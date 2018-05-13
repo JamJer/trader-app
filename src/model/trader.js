@@ -1,6 +1,8 @@
 /**
  * Trader channel
  */
+const rs = require('randomstring');
+const moment = require('moment');
 const request = require('request');
 const rp = require('request-promise');
 const config = require("../config/config.default");
@@ -9,43 +11,50 @@ const {db} = require('./db');
 
 class trader{
 	constructor(){
-		this.sell = 0;
-		this.buy = 0;
 	}
 
 	/**
 	 * Main Entry of trader, receive the trade operation command from ipcRenderer
 	 * - And then mapping to corresponding action
 	 * 
-	 * @param arg.cmd command type 
-	 * @param arg.coin coin type 
-	 * @param arg.val value with current command 
+	 * @param arg.cmd 				command type 
+	 * @param arg.market  			select coin market
+	 * @param arg.quantity 			quantity value
+	 * @param arg.price_sell		price when you sell 
+	 * @param arg.price_buyin		price when you buy in
 	 * 
 	 */
 	main_entry(event,arg){
 		switch(arg.cmd){
-			case "sell": 
-				console.log(`User will sell: ${arg.val}(${arg.coin})`);
-				this.sell+=parseInt(arg.val);
-				console.log(this.sell)
+			case "trade":
+				/**
+				 * Get the information of trade, and then store into database
+				 */
+				let trade_id = rs.generate(7);
+				let trade_date = moment().format('MMMM Do YYYY, h:mm:ss a');;
+
+				// calculate profit
+				let profit = parseFloat(arg.quantity)*(parseFloat(arg.price_sell)-parseFloat(arg.price_buyin));
+
+				// store in database
+				db.store_deal_log(trade_id,trade_date,arg.market,arg.quantity,arg.price_sell,arg.price_buyin,profit,"Completed",
+					(err,msg)=>{
+						// Get all the trading log from database
+						db.list_deal_log((err,rows)=>{
+							event.sender.send('update_trading_chart',{
+								rows: rows
+							});
+						})
+						
+					});
+
 				break;
-			case "buy": 
-				console.log(`User will buy: ${arg.val}(${arg.coin})`);
-				this.buy+=parseInt(arg.val);
-				console.log(this.buy)
-				break;
-			case "close": 
-				// send back today value to display
-				let self = this;
-				event.sender.send('settlement',{
-					total_sell: this.sell,
-					total_buy: this.buy
-					/** TODO: coin type */
-				});
-				break;
-			case "reset":
-				this.sell = 0;
-				this.buy = 0;
+			case "trade_log":
+				db.list_deal_log((err,rows)=>{
+					event.sender.send('update_trading_chart',{
+						rows: rows
+					});
+				})
 				break;
 		}
 	}

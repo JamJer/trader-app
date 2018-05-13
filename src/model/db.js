@@ -10,6 +10,12 @@
 const sqlite3 = require("sqlite3").verbose();
 const config = require("../config/config.default");
 
+// operation of diff module
+const logger = require("./db/logger");
+const policy_op = require("./db/policy");
+const trade_op = require("./db/trade");
+const user_op = require("./db/user");
+
 class db {
     constructor(){
         // need to specify from repository root
@@ -53,15 +59,25 @@ class db {
             // ======================= trading record =======================
             /**
              * trade_record: 
-             * @param date
-             * @param sell 
-             * @param buy
+             * @param trade_id          ID of this trade
+             * @param trade_date        date of this trade
+             * @param market            ex: BTC-SNT
+             * @param quantity          quantity of this trade
+             * @param price_buyin       price when this trade buy in
+             * @param price_sell        price when this trade sell
+             * @param profit            profit made by this trade
+             * @param state             current state of this trade
              */
             self.db.run("CREATE TABLE if not exists trade_record \
                 (\
-                    date: TEXT,\
-                    sell: TEXT,\
-                    buy: TEXT\
+                    trade_id TEXT,\
+                    trade_date TEXT,\
+                    market TEXT,\
+                    quantity TEXT,\
+                    price_sell TEXT,\
+                    price_buyin TEXT,\
+                    profit TEXT,\
+                    state TEXT\
                 )");
             // ======================= debug data can insert here =======================
             /*var stmt = db.prepare("INSERT INTO user_info VALUES (?)");
@@ -80,100 +96,41 @@ class db {
     /**
      * Database of client side
      */
+
+    // ================================== User-based ==================================
     store_product_key(uname,upass,key,cb){
-        // Detect if current user have enroll before
-        let self=this;
-        this.db.get("SELECT username,passwd,product_key FROM user WHERE username=$name AND passwd=$pass AND product_key=$key",{
-            $name: uname, $pass: upass, $key: key
-        },function(err,row){
-            if(row==undefined){
-                // Not exist, then store it
-                let stmt = self.db.prepare("INSERT INTO user (username,passwd,product_key) VALUES (?,?,?)");
-                stmt.run(uname,upass,key);
-                cb(0,"successfully insert the key");
-            }
-            else{
-                // Existed -> Do update?
-                cb(1,"existed");
-            }
-        })
+        user_op.store_product_key(this,uname,upass,key,cb)
     }
 
+    // ================================== Policy-based ==================================
     add_new_policy(id,loc,cb){
-        let self=this;
-        // check 
-        this.db.get("SELECT * FROM trade_policy WHERE trade_policy_id=$id",{
-            $id: id
-        },function(err,row){
-            if(row==undefined){
-                // Not exist, then store it
-                let stmt = self.db.prepare("INSERT INTO trade_policy (trade_policy_id,trade_policy_loc) VALUES (?,?)");
-                stmt.run(id,loc);
-                cb(0,"successfully add new policy");
-            }
-            else{
-                // Existed, do nothing
-                // FIXME -> open edit page?
-                cb(1,"existed");
-            }
-        })
+        policy_op.add_new_policy(this,id,loc,cb)
     }
 
     list_exist_policy(cb){
-        this.db.all("SELECT * FROM trade_policy",{},function(err,rows){
-            if(rows==undefined){
-                // Not found
-                cb(0,[]);
-            }
-            else{
-                // Return row array with format: 
-                // [ { trade_policy_id: 'name',trade_policy_loc: '/tmp/name.json' } ]
-                cb(0,rows);
-            }
-        })
+        policy_op.list_exist_policy(this,cb)
     }
-	
+    
+    // ================================== Log-based ==================================
+    store_deal_log(trade_id,trade_date,market,quantity,price_sell,price_buyin,profit,state,cb){
+        logger.store_deal_log(this,trade_id,trade_date,market,quantity,price_sell,price_buyin,profit,state,cb)
+    }
+
+    list_deal_log(cb){
+        logger.list_deal_log(this,cb)
+    }
+
+    // ================================== Trade-based (WIP, fixing) ==================================
 	store_binance_api_key(uname,key,secret,cb){
-        // Detect if current user have enroll before
-        let self=this;
-        this.db.get("SELECT username FROM user WHERE username=$name",{
-            $name: uname
-        },function(err,row){
-            if(row==undefined){
-                // User does not exist, should not happen.
-				cb(1,"unexpected error.");
-            }
-            else{
-				// Store api key to db.
-                let stmt = self.db.prepare("UPDATE user SET binance_apikey=?, binance_apisecret=? WHERE username=?");
-                stmt.run(key, secret, uname);
-                cb(0,"successfully store the key");
-            }
-        })
+        trade_op.store_binance_api_key(this,uname,key,secret,cb)
     }
 	
 	get_binance_api_key(uname, cb) {
-		this.db.get("SELECT binance_apikey,binance_apisecret FROM user WHERE username=$name",{
-            $name: uname
-        },function(err,row){
-            if(row==undefined){
-                // User does not exist, should not happen.
-				cb(1,"unexpected error.");
-            }else{
-				if(row.binance_apikey==null) {
-					cb(1,"api key not found.");
-				}else{
-					// return Binance API Key
-					cb(0,row);
-				}
-            }
-        })
+		trade_op.get_binance_api_key(this,uname,cb)
 	}
 	
 	store_trade_log(uname, action, symbol, quantity, price) {
-		const timestamp = Math.round(+new Date()/1000);
-		let stmt = this.db.prepare("INSERT INTO trade_log (username,timestamp,action,symbol,quantity,price) VALUES (?,?,?,?,?,?)");
-		stmt.run(uname,timestamp,action,symbol,quantity,price);
+		trade_op.store_trade_log(this,uname, action, symbol, quantity, price)
 	}
 }
 

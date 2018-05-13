@@ -8,27 +8,38 @@ const currentWindow = remote.getCurrentWindow();
 const path = require('path');
 const url = require('url');
 
+const utils = require('../utils/ui')
+
 /**
  * C3 chart - For displaying trading history
  * 
  */
 // FIXME: using the real data from sqlite3
-var sell = ['sell', 30, 200, 100, 400, 150, 250],
-	buy = ['buy', 50, 20, 10, 40, 15, 25],
-	income = ['income', -20,180,90,360,135,225]
+let quantity=['quantity'],profit=['profit']
 
 var chart = c3.generate({
     bindto: '#chart',
     data: {
-      columns: [ sell,buy,income],
-	  types: {
-		  income: 'bar' // Set the `income` using bar style
+	  columns: [ quantity,profit ],
+	  axes: {
+		  quantity: 'y',
+		  profit: 'y2'
 	  }
 	},
 	regions: [
         {axis: 'y', end: 0, class: 'negative'}, /** distinguish negative value from positive */
-    ]
+	],
+	axis: {
+		y2: {
+			show: true
+		}
+	}
 });
+
+// send the message to update chart
+ipcRenderer.send('trade_op',{
+	cmd: "trade_log"
+})
 
 /**
  * Need to config key 
@@ -38,29 +49,14 @@ trade_op.addEventListener("submit",function(event){
 	event.preventDefault();
 	// console.log(document.activeElement.getAttribute('value'));
 	switch(document.activeElement.getAttribute('value')){
-		case "sell":
-			// send sell command 
-			console.log(document.getElementById('sell').value);
-			ipcRenderer.send('trade_op',{
-				cmd: "sell",
-				coin: document.getElementById('cointype').value,
-				val: document.getElementById('sell').value
-			});
-			break;
-		case "buy":
-			// send buy command 
-			console.log(document.getElementById('buy').value);
-			ipcRenderer.send('trade_op',{
-				cmd: "buy",
-				coin: document.getElementById('cointype').value,
-				val: document.getElementById('buy').value
-			});
-			break;
-		case "close":
+		case "trade":
 			// close today trade
 			ipcRenderer.send('trade_op',{
-				cmd: "close",
-				val: null
+				cmd: "trade",
+				market: document.getElementById('cointype').value,
+				quantity: document.getElementById('quantity').value,
+				price_sell: document.getElementById('price_sell').value,
+				price_buyin: document.getElementById('price_buyin').value
 			});
 			break;
 	}
@@ -69,25 +65,41 @@ trade_op.addEventListener("submit",function(event){
 /**
  * ipc Render channel go here
  * 
- * @func settlement
+ * @func update_trading_chart
  */
-ipcRenderer.on('settlement',(event,arg)=>{
+ipcRenderer.on('update_trading_chart',(event,arg)=>{
 	console.log(arg);
-	sell.push(arg.total_sell);
-	buy.push(arg.total_buy);
-	income.push(arg.total_sell-arg.total_buy);
-	chart.load({
-		columns: [
-			sell,
-			buy,
-			income
-		]
-	});
 
-	// Reset the record, prepare for next day, next trade.
-	event.sender.send('trade_op',{
-		cmd: 'reset',
-		val: null
+	let quantity=['quantity'],profit = ['profit'];
+
+	// drop
+	let list = document.getElementById("trade_log_table")
+	while (list.firstChild) {
+		list.removeChild(list.firstChild);
+	}
+	
+
+	// Parsing the data from 
+	for(let i in arg.rows){
+		quantity.push(arg.rows[i].quantity)
+		profit.push(arg.rows[i].profit)
+		// And then add element into table
+		let merge_arr = [
+			arg.rows[i].trade_id,
+			arg.rows[i].trade_date,
+			arg.rows[i].market,
+			arg.rows[i].quantity,
+			arg.rows[i].price_sell,
+			arg.rows[i].price_buyin,
+			arg.rows[i].profit,
+			arg.rows[i].state
+		]
+		utils.insert_element_into_table(merge_arr,"trade_log_table")
+	}
+
+	// reload the chart
+	chart.load({
+		columns: [ quantity, profit ]
 	});
 })
 /*let config_binance = document.querySelector("#config_binance");

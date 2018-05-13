@@ -24,4 +24,18 @@ utils.create_block = function(title,desc,style,display_id){
     document.getElementById(display_id).appendChild(node);
 }
 
+// insert element into table 
+utils.insert_element_into_table = function(arr,tbody_id){
+
+    let tr = document.createElement("TR");
+    for(let i in arr){
+        let td=document.createElement("TD")
+        td.innerHTML = arr[i]
+        tr.appendChild(td)
+    }
+
+    // append into target
+    document.getElementById(tbody_id).appendChild(tr)
+}
+
 module.exports = utils;
