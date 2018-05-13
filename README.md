@@ -39,6 +39,9 @@
 ./debugger.sh stop
 ```
 
+* 注意： 在 `trade-server-db` 內，裡頭的 database 需要先做註冊一組使用者！
+    * 參考該專案內的說明！
+
 ## sqlite3
 
 在配置當下需要重新編譯的動作，目前指令放置於 package.json 內的 `postinstall`. 將於 npm install 後執行
