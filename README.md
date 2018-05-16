@@ -28,16 +28,19 @@
 * 由於本身 app 需要在啟動 trader-server 與 trade-server-db 這兩個服務下才可以使用，所以為了加快啟動速度，提供腳本做運行
     * `注意！`： 在 start 啟動後，需要透過 `check` 來檢查狀態！
     * 確認所有的 service 都開啟後在啟動 app
-```
-# 啟動兩個服務於背景
-./debugger.sh start
+    ```bash
+    # 啟動兩個服務於背景
+    ./debugger.sh start
 
-# 檢查狀態，是否成功運行
-./debugger.sh check
+    # 檢查狀態，是否成功運行
+    ./debugger.sh check
 
-# 砍掉兩個在背景運行的 process
-./debugger.sh stop
-```
+    # 砍掉兩個在背景運行的 process
+    ./debugger.sh stop
+    ```
+
+* 注意： 在 `trade-server-db` 內，裡頭的 database 需要先做註冊一組使用者！
+    * 參考該專案內的說明！
 
 ## sqlite3
 
