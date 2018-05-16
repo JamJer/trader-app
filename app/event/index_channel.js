@@ -37,6 +37,14 @@ ulogin_reset.addEventListener("click",function(event){
     document.getElementById('username').value="";
     document.getElementById('passwd').value="";
 });
+// User login - skip event
+let uskip = document.querySelector("#skip");
+uskip.addEventListener("click",function(event){
+    console.log(__dirname);
+    // go to command line mode
+    // Enter next page - control panel
+    window.location.href="control_panel.html";
+});
 
 // Receive reply from remote server
 ipcRenderer.on('login-success', (event, arg) => {

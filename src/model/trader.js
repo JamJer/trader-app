@@ -25,7 +25,19 @@ class trader{
 	 * 
 	 */
 	main_entry(event,arg){
+		/**
+		 * 
+		 * @param arg.cmd 
+		 * 
+		 * @function trade store one deal into database
+		 * 
+		 * @function trade_log fetch all the trading log return
+		 * 
+		 */
 		switch(arg.cmd){
+			/**
+			 * ==================== cmd: trade ====================
+			 */
 			case "trade":
 				/**
 				 * Get the information of trade, and then store into database
@@ -49,6 +61,9 @@ class trader{
 					});
 
 				break;
+			/**
+			 * ==================== cmd: trade_log ====================
+			 */
 			case "trade_log":
 				db.list_deal_log((err,rows)=>{
 					event.sender.send('update_trading_chart',{
