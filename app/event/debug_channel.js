@@ -37,6 +37,32 @@ check_alive();
 // get_prices();
 
 
+// IPC Channel
+// Binance API configuration
+let api_config = document.querySelector("#config_binance");
+api_config.addEventListener("submit",function(event){
+    console.log(__dirname);
+    event.preventDefault();
+    // fetch API key 
+    let uname = document.getElementById("username").value;
+    let upass = document.getElementById("passwd").value;
+    let apikey = document.getElementById("apikey").value;
+    let apisecret = document.getElementById("apisecret").value;
+
+    // console.log(`${apikey}, ${apisecret}`)
+    // sent to local database
+    ipcRenderer.send('api_config',{
+        uname,
+        upass,
+        apikey,
+        apisecret
+    })
+});
+
+ipcRenderer.on('api_config_success',(event,arg)=>{
+    
+})
+
 // some implementation
 function get_prices(){
     client.prices().then((instance)=>{

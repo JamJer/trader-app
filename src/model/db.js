@@ -28,8 +28,8 @@ class db {
                     (\
                         username TEXT,\
                         passwd TEXT,\
-                        product_key TEXT\
-						binance_apikey TEXT\
+                        product_key TEXT,\
+						binance_apikey TEXT,\
 						binance_apisecret TEXT\
                     )");
             // ======================= trading policy =======================
@@ -100,6 +100,10 @@ class db {
     // ================================== User-based ==================================
     store_product_key(uname,upass,key,cb){
         user_op.store_product_key(this,uname,upass,key,cb)
+    }
+
+    store_api_ks(uname,upass,apikey,apisecret,cb){
+        user_op.store_api_ks(this,uname,upass,apikey,apisecret,cb)
     }
 
     // ================================== Policy-based ==================================

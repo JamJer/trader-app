@@ -67,6 +67,8 @@ cmd_block.addEventListener("submit", function(event){
 // ================================= Receive messages from user command =================================
 ipcRenderer.on('status',(event,arg)=>{
     console.log(arg);
+    
+    utils.create_block("Not found","Please using `help` to list all available commands.","danger","cmd_display");
 })
 
 ipcRenderer.on('create',(event,arg)=>{
@@ -86,28 +88,38 @@ ipcRenderer.on('create',(event,arg)=>{
 ipcRenderer.on('list',(event,arg)=>{
     // console.log(arg);
     // Receive the data from database in main process
-    for (var k in arg) {
-        // Display message on it
-        // Using bootstrap list group to illustrate the information
-        // Link: https://v4-alpha.getbootstrap.com/components/list-group/#custom-content
-        utils.create_block(arg[k].trade_policy_id,arg[k].trade_policy_loc,"warning","cmd_display");
+    if(arg.length != 0)
+        for (var k in arg) {
+            // Display message on it
+            // Using bootstrap list group to illustrate the information
+            // Link: https://v4-alpha.getbootstrap.com/components/list-group/#custom-content
+            utils.create_block(arg[k].trade_policy_id,arg[k].trade_policy_loc,"warning","cmd_display");
+        }
+    else{
+        utils.create_block("Not found","Please using `help` to list all available commands.","danger","cmd_display");
     }
 })
 
 ipcRenderer.on('use',(event,arg)=>{
     console.log(arg);
+    utils.create_block("Not found","Please using `help` to list all available commands.","danger","cmd_display");
 })
 
 ipcRenderer.on('pull',(event,arg)=>{
     console.log(arg);
+    utils.create_block("Not found","Please using `help` to list all available commands.","danger","cmd_display");
 })
 
 ipcRenderer.on('push',(event,arg)=>{
     console.log(arg);
+
+    utils.create_block("Not found","Please using `help` to list all available commands.","danger","cmd_display");
 })
 
 ipcRenderer.on('purchase',(event,arg)=>{
     console.log(arg);
+
+    utils.create_block("Not found","Please using `help` to list all available commands.","danger","cmd_display");
 })
 
 // Handle page change 

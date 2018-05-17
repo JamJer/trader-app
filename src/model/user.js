@@ -45,6 +45,25 @@ class user{
                 })
         }) 
     }
+
+    api_config(event,arg){
+        /**
+         * @param arg.uname         username
+         * @param arg.upass         passwd
+         * @param arg.apikey        apikey (for current user)
+         * @param arg.apisecret     apisecret (for current user)
+         */
+        db.store_api_ks(arg.uname,arg.upass,arg.apikey,arg.apisecret,
+            (err,msg)=>{
+                if(err){
+                    console.error("Error when api config...");
+                    console.log(err);
+                }
+                else{
+                    event.sender.send("api_config_success",{})
+                }
+            })
+    }
 }
 
 module.exports = {

@@ -29,7 +29,8 @@ ipcMain.on('trade_op',(event,arg)=>{
 /**
  * 
  */
-ipcMain.on('ulogin',user.login)
+ipcMain.on('ulogin',user.login);
+ipcMain.on('api_config',user.api_config);
 
 // ================================================== Control panel channel ==================================================
 /**

@@ -6,8 +6,12 @@ const utils={};
 
 // Create display block in display 
 utils.create_block = function(title,desc,style,display_id){
-    let node=document.createElement("A")
-    node.href="#"
+    let node=document.createElement("div")
+    // node.href="#"
+    node.onclick=function() { 
+        // fill in the value
+        document.getElementById("cmd").value = title; 
+    };
     node.setAttribute("class","list-group-item list-group-item-action flex-column align-items-start list-group-item-"+style)
     let wrapper=document.createElement("DIV")
     wrapper.setAttribute("class","d-flex w-100 justify-content-between");
