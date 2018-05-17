@@ -6,6 +6,7 @@
  */
 
 const { remote, ipcRenderer } = require('electron');
+const dialog = require('electron').dialog;
 const currentWindow = remote.getCurrentWindow();
 const path = require('path');
 const url = require('url');
@@ -60,7 +61,9 @@ api_config.addEventListener("submit",function(event){
 });
 
 ipcRenderer.on('api_config_success',(event,arg)=>{
-    
+    console.log("Success");
+    document.getElementById("api_status").setAttribute("class","btn btn-success")
+    document.getElementById("api_status").innerHTML = "Configured!"
 })
 
 // some implementation
