@@ -1,0 +1,57 @@
+<!--
+    Debug Page, 
+
+    Currently implement trading operation.
+-->
+
+<!doctype html>
+<html lang="en">
+    <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="./lib/custom/main.css">
+    <link rel="stylesheet" href="./lib/css/bootstrap.min.css">
+    <title>Trader APP</title>
+    </head>
+    <body>
+        <!-- ================================================ Landing Page ================================================ -->
+        <div class="container-fluid">
+            <h1 class="text-center"> <a href="./index.html"> Trader App </a></h1>
+            <div class="container">
+                <p class="text-center alert-success round"> v0.0.1 </p>
+            </div>
+
+            <h2 class="text-center"> Trading Operation Test </h2>
+
+            <div class="container jumbotron">
+                <!-- Test binance connectivity -->
+                <h3>幣安</h3>
+                <div class="text-center">
+                    <h4>伺服器狀態: 
+                        <div class="btn-group btn-group-justified">
+                            <button id="server_status" type="button" class="btn">Unchecked</button>
+                        </div>
+                    </h4>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ================================================ Footer ================================================ -->
+        <div class="container-fluid">
+            <p style="text-align:left;">
+                Copyright © 2018 by Kevin Cyu. All rights reserved.
+            <span style="float:right;">EFACANI, Trader App Team</span>
+            </p>
+        </div>
+    </body>
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<!-- In Electron, this is the correct way to include jQuery -->
+<script>window.$ = window.jQuery = require('./lib/js/jquery-3.3.1.min.js');</script>
+<script type="text/javascript" charset="utf-8" async>require('./event/debug_channel.js')</script>
+</html>

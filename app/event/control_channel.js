@@ -116,3 +116,9 @@ ipcRenderer.on('trade',(event,arg)=>{
     // Enter next page - trade
     window.location.href="trade.html";
 })
+
+// Handle debug page 
+ipcRenderer.on('debug',(event,arg)=>{
+    // Enter debug page
+    window.location.href="debug.html";
+})

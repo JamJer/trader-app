@@ -132,6 +132,8 @@ class cmder{
      */
     debug(event,arg){
         console.log(`[Main Process] content: ${arg.cmd_body}`);
+        // page change
+        event.sender.send('debug',{name: 'debug'});
     }
 }
 
