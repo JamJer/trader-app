@@ -1,3 +1,4 @@
 node_modules/
 *.db
 .local/
+trader-app-linux-x64/
