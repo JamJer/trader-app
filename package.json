@@ -10,15 +10,20 @@
     "main": "main.js",
     "dependencies": {
         "binance-api-node": "^0.7.6",
+        "datatables.net": "^1.10.16",
+        "echarts": "^4.1.0",
         "electron": "~1.8.4",
         "electron-packager": "~9.1.0",
-        "electron-rebuild": "^1.7.3",
         "electron-tabs": "^0.7.3",
+        "jquery": "^3.3.1",
         "moment": "^2.22.1",
-        "remote": "^0.2.6",
         "randomstring": "^1.1.5",
+        "remote": "^0.2.6",
         "request": "^2.85.0",
         "request-promise": "^4.2.2",
         "sqlite3": "https://github.com/mapbox/node-sqlite3/tarball/master"
+    },
+    "devDependencies": {
+        "electron-rebuild": "^1.7.3"
     }
 }
