@@ -302,6 +302,7 @@ class trade_bot{
         this.tradeInfo.push(newBuyinfo);
 
         // ------------ TODO: execute the buy operation -------------
+        console.log(await trade_func.buy(newBuyinfo.symbol,newBuyinfo.quantity,newBuyinfo.price))
     }
 
     sell(){
@@ -330,6 +331,7 @@ class trade_bot{
         this.tradeInfo.push(newSellInfo);//儲存交易紀錄
     
         //------執行賣出------
+        console.log(await trade_func.sell(newSellInfo.symbol,newSellInfo.quantity,newSellInfo.price))
         
         
         //--------------------
