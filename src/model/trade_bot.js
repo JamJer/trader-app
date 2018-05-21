@@ -322,7 +322,7 @@ class trade_bot{
             ror: ( totalQty * this.price[this.price.length - 1] - totalCost ) / totalCost  //收益率
         };
         
-        this.buyInfo.push(newSellInfo);
+        // this.buyInfo.push(newSellInfo);
         /** FIXME: this part need to move to the place which after executing selling command */
         while (this.buyInfo.length > 0) {//清空買入資訊
             this.buyInfo.pop();

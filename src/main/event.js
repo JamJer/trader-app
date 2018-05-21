@@ -30,9 +30,9 @@ ipcMain.on('trade_op',(event,arg)=>{
     tbot.start_by_url(".local/trade_strategy.yaml")
     trader.botID_queue.push({id: tbot.get_id(), instance: tbot})
 
-    setInterval(()=>{
+    /*setInterval(()=>{
         trader.kill_all_bot();
-    },20000)
+    },20000)*/
 })
 
 // ================================================== User login channel ==================================================

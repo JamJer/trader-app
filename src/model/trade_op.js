@@ -6,19 +6,26 @@
  */
 const Binance = require('binance-api-node').default
 const config = require("../config/config.default")
-const client = Binance({
+const {db} = require("./db")
+
+const trade_model = {}
+// apikey/secret 
+trade_model.apiKey = config.trade.binance_apiKey
+trade_model.apiSecret = config.trade.binance_apiSecret
+
+var client = Binance({
     apiKey: config.trade.binance_apiKey,
     apiSecret: config.trade.binance_apiSecret
 })
-
-const trade_model = {}
-
 /**
  * Supported function 
  * 
  * @function ma
  * @function price 
  * @function va
+ * @function prepare (reload api key/secret) => WIP
+ * @function buy 
+ * @function sell
  * 
  */
 
@@ -166,6 +173,70 @@ trade_model.va = async(symbol) => {
         let result={};
         result.msg = err;
         console.log(err)
+        return result;
+    }
+}
+
+trade_model.prepare = async(username) => {
+    let self = this;
+    console.log("Prepare API Key/Secret ...")
+    db.get_binance_api_key(username, (err,data)=>{
+        if(err) throw data;
+        self.trade.binance_apiKey = data.binance_apikey;
+        self.trade.binance_apiSecret = data.binance_apisecret;
+        console.log("success get user api key from db");
+    })
+}
+
+trade_model.buy = async(symbol,quantity,price) => {
+    let result = {};
+    try {
+        let self=this;
+        const dateTime = Date.now();
+        const timestamp = Math.floor(dateTime);
+        let serverTime = await client.time();
+        let recvWindow = config.trade.binance_recvWindow;
+        if(timestamp < (serverTime+1000) && (serverTime - timestamp) <= recvWindow){
+            return await this.client.order({
+                symbol: symbol,
+                side: "BUY",
+                quantity: quantity,
+                price: price
+            })
+        }
+        else{
+            throw "伺服器延遲過高或電腦時間不準確"
+        }
+    } catch(err){
+        result.msg = err.message;
+        return result;
+    }
+
+}
+
+trade_model.sell = async(symbol,quantity,price)  => {
+    let result = {};
+    try {
+        let self=this;
+        
+        const dateTime = Date.now();
+        const timestamp = Math.floor(dateTime)
+        let serverTime = await client.time();
+        let recvWindow = config.trade.binance_recvWindow
+
+        if(timestamp < (serverTime + 1000) && (serverTime - timestamp) <= recvWindow){
+            return await client.order({
+                symbol: symbol,
+                side: "SELL",
+                quantity: quantity,
+                price: price
+            })
+        }else{
+            throw "伺服器延遲過高或電腦時間不準確"
+        }
+    }
+    catch(err){
+        result.msg = err.message;
         return result;
     }
 }
