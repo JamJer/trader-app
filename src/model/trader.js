@@ -28,6 +28,21 @@ class trader{
 		this.botID_queue = []
 	}
 
+	kill_all_bot(){
+		this.botID_queue.forEach(element => {
+			element.instance.stop();
+		});
+	}
+
+	kill_bot(id){
+		this.botID_queue.forEach(element => {
+			if(element.id == id){
+				element.instance.stop();
+				return;
+			}
+		})
+	}
+
 	create_bot(){
 		// create new instance
 		let newbot = new trade_bot();

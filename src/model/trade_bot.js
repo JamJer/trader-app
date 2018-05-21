@@ -39,8 +39,22 @@ class trade_bot{
         console.log("Bot instance created, ID: "+this.id)
     }
 
+    /**
+     * Operation supported by outsider (other caller)
+     * 
+     * @function get_id Get current instance id
+     * @function stop Stop the trading behavior of current instance
+     * @function start_by_url start the trading process by specifying (trading policy)file path
+     * @function start_by_obj same as above, use object instead of url
+     * 
+     */
     get_id(){
         return this.id;
+    }
+
+    stop(){
+        console.log("Bot id: "+ this.id + ", already to be terminated.");
+        clearInterval(this.systemInterval)
     }
 
     start_by_url(url){
@@ -49,6 +63,15 @@ class trade_bot{
         self.systemInterval = setInterval(function(){
             console.log(self.id);
             self.load_policy_by_url(url);
+        },10000)
+    }
+
+    start_by_obj(obj){
+        // start trading
+        let self=this;
+        self.systemInterval = setInterval(function(){
+            console.log(self.id);
+            self.load_policy_by_obj(obj);
         },10000)
     }
     /**
@@ -84,6 +107,26 @@ class trade_bot{
         // Notice!
         // this policy_obj has been parsing by YAMLjs
         this.tradingData = policy_obj
+
+        this.func.push(trade_func.price(this.tradingData.symbol));
+        this.func.push(trade_func.va(this.tradingData.symbol));
+        this.func.push(trade_func.ma(this.tradingData.ma,this.tradingData.symbol))
+
+        let self=this;
+        Promise.all(this.func).then((data)=>{
+            // current price
+            self.price.push(data[0]); 
+            // current price max store volume
+            if(self.price.length > 1000){
+                self.price.shift();
+            }
+            self.dataVA = data[1];
+            self.dataMA = data[2];
+            // and then start trading process
+            self.buy_and_sell();
+        }).catch((error)=>{
+            console.log(error)
+        })
     }
 
     /**
