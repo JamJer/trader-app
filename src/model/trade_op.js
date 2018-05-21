@@ -75,7 +75,7 @@ trade_model.ma = async(type,symbol) => {
         let data = await client.candles({ symbol: symbol, interval: interval})
         await data.map((day, index) => {
             let ary = {}
-            ary.timestamp = new Date(day, openTime).toString();
+            ary.timestamp = new Date(day.openTime).toString();
             if(index >= (pool-1)){
                 ary.ma = data.slice(index-(pool-1),index+1).reduce((sum,cur) => {
                     return parseFloat(cur.close)+sum;

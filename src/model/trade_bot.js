@@ -29,6 +29,7 @@ class trade_bot{
         this.dataMA = []
         // loading yamldata (trading policy)
         this.tradingData = null;
+        this.func = [];
         
         // this bot id
         this.id = rs.generate(6);
@@ -41,13 +42,33 @@ class trade_bot{
     }
 
     /**
-     * Loading trading policy - 
+     * Loading trading policy - and then start 
      * 
      * @function load_policy_by_url
      * @function load_policy_by_obj
      */
     load_policy_by_url(policy_path){
         this.tradingData = YAML.parse(fs.readFileSync(policy_path).toString())
+
+        this.func.push(trade_func.price(this.tradingData.symbol));
+        this.func.push(trade_func.va(this.tradingData.symbol));
+        this.func.push(trade_func.ma(this.tradingData.ma,this.tradingData.symbol))
+
+        let self=this;
+        Promise.all(this.func).then((data)=>{
+            // current price
+            self.price.push(data[0]); 
+            // current price max store volume
+            if(self.price.length > 1000){
+                self.price.shift();
+            }
+            self.dataVA = data[1];
+            self.dataMA = data[2];
+            // start trading
+            self.buy_and_sell();
+        }).catch((error)=>{
+            console.log(error)
+        })
     }
     load_policy_by_obj(policy_obj){
         // Notice!

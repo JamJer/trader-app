@@ -15,7 +15,7 @@ const config = require("../config/config.default");
 // operation 
 const {op} = require('./trade_op');
 // bot instance
-// const {trade_bot} = require('./trade_bot');
+const trade_bot = require('./trade_bot');
 // database 
 const {db} = require('./db');
 
@@ -27,6 +27,16 @@ class trader{
 		// Need to maintain all trader bot's instance
 		this.botID_queue = []
 	}
+
+	create_bot(){
+		// create new instance
+		let newbot = new trade_bot();
+		this.botID_queue.push({
+			id: newbot.get_id(),
+			instance: newbot
+		});
+	}
+
 	/**
 	 * Main Entry of trader, receive the trade operation command from ipcRenderer
 	 * - And then mapping to corresponding action
