@@ -12,21 +12,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="./lib/custom/main.css">
+    <!-- <link rel="stylesheet" href="./lib/custom/main.css"> -->
     <link rel="stylesheet" href="./lib/css/bootstrap.min.css">
     <title>Trader APP</title>
     </head>
-    <body>
+    <body class="bg-dark">
+        <!-- ================================================ Top Navbar ================================================ -->
+        <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top" id="navbar_top">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">
+                <i class="fa fa-copyright"></i>&nbsp;Trader APP</a>
+              <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbar2SupportedContent">
+                <span class="navbar-toggler-icon"></span><p> <font color="white">v0.0.1 </font></p>
+              </button>
+            </div>
+        </nav>
         <!-- ================================================ Landing Page ================================================ -->
         <div class="container-fluid">
             <h1 class="text-center"> <a href="./index.html"> Trader App </a></h1>
-            <div class="container">
-                <p class="text-center alert-success round"> v0.0.1 </p>
-            </div>
-            <!-- Basic Information -->
-            <h2 class="text-center"> Trading Bot control panel </h2>
-            
             <div class="container jumbotron">
+                <!-- Basic Information -->
+                <h2 class="text-center"> Trading Bot control panel </h2>
                 <!-- Command Panel -->
                 <form action="#" id="cmd_block">
                     <div class="input-group">
@@ -47,12 +53,12 @@
             </div>
         </div>
 
-        <!-- ================================================ Footer ================================================ -->
-        <div class="container-fluid">
-            <p style="text-align:left;">
-                Copyright © 2018 by Kevin Cyu. All rights reserved.
-            <span style="float:right;">EFACANI, Trader App Team</span>
-            </p>
+        <!-- ================================================ Bottom Navbar ================================================ -->
+        <div class="navbar fixed-bottom navbar-expand-md bg-dark navbar-dark text-nowrap">
+            <span class="hide-phone footer-link">
+                <a class="navbar-brand mx-auto px-5" href="#">Copyright © 2018 by Kevin Cyu. All rights reserved.</a>
+            </span>
+            <span style="float:right;"><font color="white">EFACANI, Trader App Team</font></span>
         </div>
     </body>
 
