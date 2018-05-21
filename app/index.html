@@ -6,33 +6,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="./lib/custom/main.css">
     <link rel="stylesheet" href="./lib/css/bootstrap.min.css">
-    <link rel="stylesheet" href="./lib/css/font-awesome/fontawesome.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
     <title>Trader APP</title>
     </head>
-    <body>
-        <!-- ================================================ Landing Page ================================================ -->
-        <div class="container-fluid">
-            <h1 class="text-center"><a href="./index.html"> Trader App </a></h1>
-            <div class="container">
-                <p class="text-center alert-success round"> v0.0.1 
-                    <span><a href="./about.html">, EFACANI - Trader App Team</a></span>
-                </p>
+    <body class="bg-dark">
+        <!-- ================================================ Top Navbar ================================================ -->
+        <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top" id="navbar_top">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">
+                <i class="fa fa-copyright"></i>&nbsp;Trader APP</a>
+              <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbar2SupportedContent">
+                <span class="navbar-toggler-icon"></span><p> <font color="white">v0.0.1 </font></p>
+              </button>
             </div>
+        </nav>
+        <!-- ============  ==================================== Landing Page ================================================ -->
+        <div class="container-fluid">
             <!-- LOGIN -->
             <div class="container jumbotron">
                 <!-- Basic Information -->
-                <h2 class="text-center">User Information</h2>
+                <h2 class="text-center">Trader App Login</h2>
                 <hr>
                 <form action="#" id="ulogin">
                     <!-- User input -->
                     <div class="form-group">
-                        <label for="username">Username: </label>
+                        <label for="username"><i class="fas fa-user-circle"></i>&nbsp;Username: </label>
                         <input type="text" class="form-control" id="username" placeholder="efacani">
                     </div>
                     <div class="form-group">
-                        <label for="passwd">Password: </label>
+                        <label for="passwd"><i class="fas fa-key"></i>&nbsp;Password: </label>
                         <input type="text" class="form-control" id="passwd" placeholder="efacani-code">
                     </div>
                     <hr>
@@ -52,12 +55,12 @@
             </div>
             <hr>
         </div>
-        <!-- ================================================ Footer ================================================ -->
-        <div class="container-fluid">
-            <p style="text-align:left;">
-                Copyright © 2018 by Kevin Cyu. All rights reserved.
-            <span style="float:right;">EFACANI, Trader App Team</span>
-            </p>
+         <!-- ================================================ Bottom Navbar ================================================ -->
+        <div class="navbar fixed-bottom navbar-expand-md bg-dark navbar-dark text-nowrap">
+            <span class="hide-phone footer-link">
+                <a class="navbar-brand mx-auto px-5" href="#">Copyright © 2018 by Kevin Cyu. All rights reserved.</a>
+            </span>
+            <span style="float:right;"><font color="white">EFACANI, Trader App Team</font></span>
         </div>
     </body>
 
