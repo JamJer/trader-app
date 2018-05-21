@@ -27,7 +27,7 @@ ipcMain.on('trade_op',(event,arg)=>{
 
     // debug, create bot instance, and then check out the message 
     let tbot = new trade_bot();
-    tbot.load_policy_by_url(".local/trade_strategy.yaml")
+    tbot.start_by_url(".local/trade_strategy.yaml")
     trader.botID_queue.push({id: tbot.get_id(), instance: tbot})
 })
 

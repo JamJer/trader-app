@@ -31,6 +31,8 @@ class trade_bot{
         this.tradingData = null;
         this.func = [];
         
+        // interval
+        this.systemInterval = null;
         // this bot id
         this.id = rs.generate(6);
 
@@ -41,6 +43,14 @@ class trade_bot{
         return this.id;
     }
 
+    start_by_url(url){
+        // start trading
+        let self=this;
+        self.systemInterval = setInterval(function(){
+            console.log(self.id);
+            self.load_policy_by_url(url);
+        },10000)
+    }
     /**
      * Loading trading policy - and then start 
      * 
@@ -64,7 +74,7 @@ class trade_bot{
             }
             self.dataVA = data[1];
             self.dataMA = data[2];
-            // start trading
+            // and then start trading process
             self.buy_and_sell();
         }).catch((error)=>{
             console.log(error)
@@ -82,11 +92,16 @@ class trade_bot{
      * @function buy_and_sell 
      */
     buy_and_sell(){
+        //console.log(this)
         switch(this.currentStatus){
             case 'wait':
+                console.log("Waiting...")
             case 'sell':
+                console.log("Selling...")
             case 'sell_10':
+                console.log("Selling 10...")
             case 'sell_volume':
+                console.log("Selling Volume...")
                 if(!this.isVolumeExIncrease()){ //如果交易量沒有爆增
                     if(this.isMAUp() && this.isPriceDropTouchMA()){ //如果MA上揚且現價下跌碰觸MA
                         this.buy();								//執行買入
@@ -95,6 +110,7 @@ class trade_bot{
                 }
                 break;
             case 'buy':
+                console.log("Buying...")
                 if(this.isVolumeExIncrease()){		//如果交易量爆增
                     this.currentStatus = 'sell_volume';
                     this.sell();						//執行賣出
@@ -110,6 +126,7 @@ class trade_bot{
                 }
                 break;
             case 'buy_35': 						//現價已下跌至3.5%等待賣出
+                console.log("Buying 35...")
                 if(this.isVolumeExIncrease()){		//如果交易量爆增
                     this.currentStatus = 'sell_volume';
                     this.sell();						//執行賣出
@@ -165,6 +182,7 @@ class trade_bot{
 
     // Detect if there has burst increasement
     isVolumeExIncrease(){
+
         if(this.dataVA.pastOneHourVolume >= this.dataVA.pastTenHoursVA * this.tradingData.sell.magnification){
             return true;
         }else{
