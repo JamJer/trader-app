@@ -28,8 +28,8 @@ class config{
          * trade_binance_recvWindow: 
          */
         this.trade = {
-            binance_apiKey: "TqpMzTdLBMBbDEHfuqK5PYNn4egl4dPqrtRsfTyYXyD3h0GvtYMg2EnhCYP5COEc",
-            binance_apiSecret: "",
+            binance_apiKey: "hKL4wY0lpybbrhGQDk0DoHRCWWR4dJdSFHxhBpgsmj69KcllUsCjseHIAqW4Fdhc",
+            binance_apiSecret: "UFj6uyJZhz3l2XyfD1p74eWe8WhRwAavr4XK17aGKnyT32cn74I3SbMZMwJ54Q3Z",
             binance_recvWindow: 5000
         }
 

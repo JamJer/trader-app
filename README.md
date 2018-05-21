@@ -43,6 +43,43 @@
 * 注意： 在 `trade-server-db` 內，裡頭的 database 需要先做註冊一組使用者！
     * 參考該專案內的說明！
 
+## YAML 格式 - 交易策略
+
+* 交易策略格式
+```yaml
+symbol:
+duration: 
+capital:
+ma:
+buy:
+    descrip:
+    range:
+    volume:
+    spread:
+    stoloss:
+sell:
+    descrip:
+    magnification:
+    volume:
+```
+
+分為兩個部份，買進（`buy`）與賣出（`sell`）:
+* `symbol`: 交易對 （ex: BTCUSDT）
+* `duration`: bot 持續時間（min, 預設 0: 永久）
+* `capital`: 本金
+* `ma`: 均線，買進、賣出點（ex: 25d, m:分 h:時 d:日 M:月）
+* buy:
+    * `descrip`: 交易敘述（optional）
+    * `range`: 買進點的範圍（ex: 2 表示 `+2% ~ -2%`）
+    * `volumn`: 一次交易的量 （ex: 10 表示 10%）
+    * `spread`: 買進點之間的價差 （ex: 10 表示比前次高 10%）
+    * `stoloss`: 止損點（ex: 10 表示價格跌破 10%）
+
+* sell:
+    * `descrip`: 交易敘述 (optional)
+    * `magnification`: 暴增均量的倍數 (ex: 5, 表示賣出點為均線的 5 倍)
+    * `volumn`: 一次交易的量 （ex: 10 表示 10%，保留，目前預設全賣出）
+
 ## sqlite3
 
 在配置當下需要重新編譯的動作，目前指令放置於 package.json 內的 `postinstall`. 將於 npm install 後執行

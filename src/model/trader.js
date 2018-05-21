@@ -1,12 +1,16 @@
 /**
  * Trader channel
+ * 
+ * Dealing with Database, Multiple different module
+ * Trade bot will use this module to store, load, communicate with other.
+ * 
  */
 const rs = require('randomstring');
 const moment = require('moment');
 const request = require('request');
 const rp = require('request-promise');
 const config = require("../config/config.default");
-const {op} = require('./operation');
+const {op} = require('./trade_op');
 const {db} = require('./db');
 
 class trader{
@@ -73,6 +77,12 @@ class trader{
 				break;
 		}
 	}
+
+
+	/**
+	 * 
+	 * Read instance 
+	 */
 
 	/*update_binance_cfg(event,arg){
 		console.log("Receive update binance config request");
