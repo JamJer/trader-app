@@ -177,14 +177,16 @@ trade_model.va = async(symbol) => {
     }
 }
 
-trade_model.prepare = async(username) => {
+trade_model.prepare = (username) => {
     let self = this;
     console.log("Prepare API Key/Secret ...")
     db.get_binance_api_key(username, (err,data)=>{
         if(err) throw data;
-        self.trade.binance_apiKey = data.binance_apikey;
-        self.trade.binance_apiSecret = data.binance_apisecret;
+        self.apiKey = data.binance_apikey;
+        self.apiSecret = data.binance_apisecret;
         console.log("success get user api key from db");
+        // reset Binance client
+        client = Binance({apiKey: self.apiKey, apiSecret: self.apiSecret})
     })
 }
 
