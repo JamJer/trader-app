@@ -36,7 +36,8 @@ class trade_bot{
         // this bot id
         this.id = rs.generate(6);
 
-        trade_func.prepare("kevin")
+        // debug -
+        // trade_func.prepare("kevin")
 
         console.log("Bot instance created, ID: "+this.id)
     }
@@ -334,8 +335,6 @@ class trade_bot{
     
         //------執行賣出------
         console.log(trade_func.sell(newSellInfo.symbol,newSellInfo.quantity,newSellInfo.price))
-        
-        
         //--------------------
     }
 }

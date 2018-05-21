@@ -28,6 +28,15 @@ class trader{
 		this.botID_queue = []
 	}
 
+	/**
+	 * 
+	 * Operations supported by trader channel (main handler)
+	 * 
+	 * @function kill_bot 		using id to terminate target instance
+	 * @function kill_all_bot	terminate all instances
+	 * @function create_bot 	create bot instance and run
+	 * 
+	 */
 	kill_all_bot(){
 		this.botID_queue.forEach(element => {
 			element.instance.stop();
@@ -43,9 +52,11 @@ class trader{
 		})
 	}
 
-	create_bot(){
+	create_bot(url){
 		// create new instance
 		let newbot = new trade_bot();
+		// run !
+		newbot.start_by_url(url);
 		this.botID_queue.push({
 			id: newbot.get_id(),
 			instance: newbot
@@ -112,63 +123,6 @@ class trader{
 				break;
 		}
 	}
-
-	/*update_binance_cfg(event,arg){
-		console.log("Receive update binance config request");
-		console.log(arg);
-			db.store_binance_api_key(arg.username, arg.apikey, arg.apisecret,
-				(err,msg)=>{
-				if(err)
-					console.log(err);
-				console.log(msg);
-				}
-		);
-	}
-
-	async buy(event,arg){
-		console.log("Receive trade bot buy request");
-		// Test data
-		let symbol = "BTCUSDT";
-		let quantity = 1;
-		let price = 100;
-		
-		let result = await op.buy(symbol, quantity, price);
-		console.log(result);
-		db.store_trade_log(arg.username, "BUY", symbol, quantity, price);
-	}
-
-	async sell(event,arg){
-		console.log("Receive trade bot sell request");
-		// Test data
-		let symbol = "BTCUSDT";
-		let quantity = 1;
-		let price = 100;
-		
-		let result = await op.sell(symbol, quantity, price);
-		console.log(result);
-		db.store_trade_log(arg.username, "SELL", symbol, quantity, price);
-	}
-
-	update_ma(event,arg){
-		var options = {
-			uri: config.server.url+":"+config.server.port+"/trade/ma/"+arg.maType,
-			json: true // Automatically parses the JSON string in the response
-		};
-	
-		rp(options)
-			.then(function (repos) {
-				if(repos.msg) {
-					console.log(repos.msg);
-				}else{
-					console.log('Response %d data', repos.length);
-				}
-				
-			})
-			.catch(function (err) {
-				// API call failed...
-				console.log(err);
-			});
-	}*/
 }
 
 const t = new trader();
