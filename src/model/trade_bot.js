@@ -7,6 +7,7 @@
  */
 // library
 const fs = require('fs')
+const rs = require('randomstring')
 const YAML = require('yamljs')
 
 // operation 
@@ -29,6 +30,14 @@ class trade_bot{
         // loading yamldata (trading policy)
         this.tradingData = null;
         
+        // this bot id
+        this.id = rs.generate(6);
+
+        console.log("Bot instance created, ID: "+this.id)
+    }
+
+    get_id(){
+        return this.id;
     }
 
     /**
@@ -245,6 +254,4 @@ class trade_bot{
     }
 }
 
-module.exports = {
-    trade_bot: new trade_bot()
-}
+module.exports = trade_bot

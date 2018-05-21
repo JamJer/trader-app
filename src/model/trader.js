@@ -9,14 +9,24 @@ const rs = require('randomstring');
 const moment = require('moment');
 const request = require('request');
 const rp = require('request-promise');
+
+// configuration
 const config = require("../config/config.default");
+// operation 
 const {op} = require('./trade_op');
+// bot instance
+// const {trade_bot} = require('./trade_bot');
+// database 
 const {db} = require('./db');
 
+/**
+ * Main trader channel instance
+ */
 class trader{
 	constructor(){
+		// Need to maintain all trader bot's instance
+		this.botID_queue = []
 	}
-
 	/**
 	 * Main Entry of trader, receive the trade operation command from ipcRenderer
 	 * - And then mapping to corresponding action
@@ -77,12 +87,6 @@ class trader{
 				break;
 		}
 	}
-
-
-	/**
-	 * 
-	 * Read instance 
-	 */
 
 	/*update_binance_cfg(event,arg){
 		console.log("Receive update binance config request");

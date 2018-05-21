@@ -10,6 +10,7 @@ const rp = require('request-promise');
 const {user} = require('../model/user');
 const {cmder} = require('../model/cmder');
 const trader = require('../model/trader');
+const trade_bot = require('../model/trade_bot');
 const config = require('../config/config.default');
 
 
@@ -23,6 +24,12 @@ ipcMain.on('tradebotSell', trader.sell);
 ipcMain.on('tradebotUpdateMA',trader.update_ma);*/
 ipcMain.on('trade_op',(event,arg)=>{
     trader.main_entry(event,arg);
+
+    // debug, create bot instance, and then check out the message 
+    let tbot = new trade_bot();
+    trader.botID_queue.push({id: tbot.get_id(), instance: tbot})
+    let tbot2 = new trade_bot();
+    trader.botID_queue.push({id: tbot2.get_id(), instance: tbot2})
 })
 
 // ================================================== User login channel ==================================================
