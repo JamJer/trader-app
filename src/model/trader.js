@@ -41,15 +41,19 @@ class trader{
 		this.botID_queue.forEach(element => {
 			element.instance.stop();
 		});
+		this.botID_queue = []
 	}
 
 	kill_bot(id){
-		this.botID_queue.forEach(element => {
-			if(element.id == id){
-				element.instance.stop();
+		for(let i in this.botID_queue){
+			if(this.botID_queue[i].id == id){
+				this.botID_queue[i].instance.stop();
+				// splice current element
+				this.botID_queue.splice(i,1)
 				return;
 			}
-		})
+		}
+
 	}
 
 	create_bot(url){

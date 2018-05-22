@@ -35,6 +35,59 @@ ipcMain.on('trade_op',(event,arg)=>{
     },20000)*/
 })
 
+ipcMain.on('update_bot_status',(event,arg)=>{
+    /**
+     * Only need id 
+     */
+    let id_queue = [];
+    trader.botID_queue.forEach((element)=>{
+        id_queue.push(element.id)
+    })
+
+    event.sender.send('receive_bot_status',{
+        id_queue: id_queue
+    });
+})
+
+ipcMain.on('create_bot',(event,arg)=>{
+    /**
+     * create bot instance, push into trader
+     */
+    let tbot = new trade_bot();
+    /** FIXME - using the arg.url instead */
+    tbot.start_by_url(".local/trade_strategy.yaml")
+    trader.botID_queue.push({id: tbot.get_id(), instance: tbot})
+
+    // resend - receive_bot_status
+    let id_queue = [];
+    trader.botID_queue.forEach((element)=>{
+        id_queue.push(element.id)
+    })
+
+    event.sender.send('receive_bot_status',{
+        id_queue: id_queue
+    });
+})
+
+ipcMain.on('kill_bot',(event,arg)=>{
+    /**
+     * terminate bot instance by id
+     * 
+     * @param arg.id
+     */
+    trader.kill_bot(arg.id)
+
+    // resend - receive_bot_status
+    let id_queue = [];
+    trader.botID_queue.forEach((element)=>{
+        id_queue.push(element.id)
+    })
+
+    event.sender.send('receive_bot_status',{
+        id_queue: id_queue
+    });
+})
+
 // ================================================== User login channel ==================================================
 /**
  * 

@@ -66,9 +66,11 @@ cmd_block.addEventListener("submit", function(event){
 
 // ================================= Receive messages from user command =================================
 ipcRenderer.on('status',(event,arg)=>{
-    console.log(arg);
-    
-    utils.create_block("Not found","Please using `help` to list all available commands.","danger","cmd_display");
+    // console.log(arg);
+    // page change to status.html
+    // Enter next page - status
+    window.location.href="status.html";
+    // utils.create_block("Not found","Please using `help` to list all available commands.","danger","cmd_display");
 })
 
 ipcRenderer.on('create',(event,arg)=>{
