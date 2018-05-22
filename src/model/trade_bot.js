@@ -24,7 +24,7 @@ class trade_bot{
         this.price = [];
         // buy info
         this.buyInfo = [];
-        // trade info 
+        // trade info (trading log here)
         this.tradeInfo = [];
         // data va 
         this.dataVA = null;
@@ -56,7 +56,37 @@ class trade_bot{
      * @function change_symbol
      * @function change_ma
      * @function change_policy_by_url
+     * 
+     * // For statistics collection
+     * @function get_log
      */
+
+    get_log(){
+        /**
+         * FIXME: Need to merge trading info into one data?
+         * 
+         * (buy format)
+         * - @param symbol
+         * - @param timestamp
+         * - @param type (buy)
+         * - @param quantity
+         * - @param price
+         * 
+         * (sell format)
+         * - @param symbol
+         * - @param timestamp
+         * - @param type (sell)
+         * - @param status //賣出類型(交易爆量導致的賣出、止損賣出、獲利賣出)
+         * - @param quantity
+         * - @param price
+         * - @param ror //收益率
+         */
+        return {
+            log: this.tradeInfo,
+            id: this.id
+        }
+    }
+
     change_symbol(new_symbol){
         this.tradingData.symbol = new_symbol;
         // reload
@@ -309,6 +339,7 @@ class trade_bot{
       * 
       * @function buy 
       * @function sell 
+      * 
       */
     buy(){
         let newBuyinfo = {
