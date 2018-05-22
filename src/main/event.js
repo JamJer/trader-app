@@ -10,6 +10,7 @@ const rp = require('request-promise');
 const {user} = require('../model/user');
 const {cmder} = require('../model/cmder');
 const trader = require('../model/trader');
+const trade_bot = require('../model/trade_bot');
 const config = require('../config/config.default');
 
 
@@ -23,6 +24,68 @@ ipcMain.on('tradebotSell', trader.sell);
 ipcMain.on('tradebotUpdateMA',trader.update_ma);*/
 ipcMain.on('trade_op',(event,arg)=>{
     trader.main_entry(event,arg);
+
+    // debug, create bot instance, and then check out the message 
+    let tbot = new trade_bot();
+    tbot.start_by_url(".local/trade_strategy.yaml")
+    trader.botID_queue.push({id: tbot.get_id(), instance: tbot})
+
+    /*setInterval(()=>{
+        trader.kill_all_bot();
+    },20000)*/
+})
+
+ipcMain.on('update_bot_status',(event,arg)=>{
+    /**
+     * Only need id 
+     */
+    let id_queue = [];
+    trader.botID_queue.forEach((element)=>{
+        id_queue.push(element.id)
+    })
+
+    event.sender.send('receive_bot_status',{
+        id_queue: id_queue
+    });
+})
+
+ipcMain.on('create_bot',(event,arg)=>{
+    /**
+     * create bot instance, push into trader
+     */
+    let tbot = new trade_bot();
+    /** FIXME - using the arg.url instead */
+    tbot.start_by_url(".local/trade_strategy.yaml")
+    trader.botID_queue.push({id: tbot.get_id(), instance: tbot})
+
+    // resend - receive_bot_status
+    let id_queue = [];
+    trader.botID_queue.forEach((element)=>{
+        id_queue.push(element.id)
+    })
+
+    event.sender.send('receive_bot_status',{
+        id_queue: id_queue
+    });
+})
+
+ipcMain.on('kill_bot',(event,arg)=>{
+    /**
+     * terminate bot instance by id
+     * 
+     * @param arg.id
+     */
+    trader.kill_bot(arg.id)
+
+    // resend - receive_bot_status
+    let id_queue = [];
+    trader.botID_queue.forEach((element)=>{
+        id_queue.push(element.id)
+    })
+
+    event.sender.send('receive_bot_status',{
+        id_queue: id_queue
+    });
 })
 
 // ================================================== User login channel ==================================================

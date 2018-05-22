@@ -17,7 +17,7 @@ let mainWindow = null;
 // detect ./local , if not exist, create one
 function init(path){
     fs.stat(path,function(err,stats){
-        console.log(stats)
+        //console.log(stats)
         if(stats==undefined){
             // not exists 
             fs.mkdir(path,()=>{
