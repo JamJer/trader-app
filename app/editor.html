@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>ACE in Action</title>
+<style type="text/css" media="screen">
+    #editor { 
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+    }
+</style>
+</head>
+<body>
+
+<div id="editor">---
+symbol: BTCUSDT
+duration: 0
+capital: 1000
+ma: 25d
+buy:
+    descrip: 
+    range: 2
+    volume: 10
+    spread: 10
+    stoloss: 10
+sell:
+    descrip:
+    magnification: 5
+    volume:
+...
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.3.3/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.setTheme("ace/theme/monokai");
+    editor.setFontSize(14);
+    editor.session.setMode("ace/mode/yaml");
+</script>
