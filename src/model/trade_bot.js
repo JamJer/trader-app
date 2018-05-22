@@ -79,10 +79,42 @@ class trade_bot{
          * - @param status //賣出類型(交易爆量導致的賣出、止損賣出、獲利賣出)
          * - @param quantity
          * - @param price
-         * - @param ror //收益率
+         * - @param ror //收益率 (為該 sell 事件發生時，與買入相比的獲益率)
          */
+
+        // Only filtering sell event 
+        // because only this contain ror 
+        // - set as one checkpoint 
+        // notice: buy price need to get average !
+        let checkpoints = [],buy_price=[]; 
+        for(let i in this.tradeInfo){
+            if(this.tradeInfo[i].type == "buy"){
+                buy_price.push(this.tradeInfo[i].price)
+            }
+            else if(this.tradeInfo[i].type == "sell"){
+                // get avg buy price 
+                let avg_buy_price=0;
+                buy_price.forEach((element)=>{
+                    avg_buy_price+=element;
+                })
+                avg_buy_price= avg_buy_price/buy_price.length;
+                // Create the storage format
+                checkpoints.push({
+                    trade_id: this.id,
+                    trade_date: this.tradeInfo[i].timeStamp,
+                    market: this.tradeInfo[i].symbol,
+                    quantity: this.tradeInfo[i].quantity,
+                    price_sell: this.tradeInfo[i].price,
+                    price_buyin: avg_buy_price,
+                    profit: this.tradeInfo[i].ror
+                })
+            }
+        }
+
+        // Return instance
         return {
-            log: this.tradeInfo,
+            history: this.tradeInfo,
+            trade_log: checkpoints,
             id: this.id
         }
     }
