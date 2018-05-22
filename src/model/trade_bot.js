@@ -13,6 +13,8 @@ const YAML = require('yamljs')
 // operation 
 const trade_func = require('./trade_op')
 
+// Duration
+const duration = 10000;
 
 class trade_bot{
     constructor(){
@@ -50,7 +52,33 @@ class trade_bot{
      * @function start_by_url start the trading process by specifying (trading policy)file path
      * @function start_by_obj same as above, use object instead of url
      * 
+     * // Adjust parameter of trading policy
+     * @function change_symbol
+     * @function change_ma
+     * @function change_policy_by_url
      */
+    change_symbol(new_symbol){
+        this.tradingData.symbol = new_symbol;
+        // reload
+        this.stop();
+        console.log("Bot id: "+ this.id + ", already to be restart...");
+        this.start_by_obj(this.tradingData)
+    }
+
+    change_ma(new_ma){
+        this.tradingData.ma = new_ma;
+        // reload
+        this.stop();
+        console.log("Bot id: "+ this.id + ", already to be restart...");
+        this.start_by_obj(this.tradingData)
+    }
+
+    change_policy_by_url(new_policy_url){
+        this.stop();
+        console.log("Bot id: "+ this.id + ", already to be restart...");
+        this.start_by_url(new_policy_url)
+    }
+
     get_id(){
         return this.id;
     }
@@ -66,7 +94,7 @@ class trade_bot{
         self.systemInterval = setInterval(function(){
             console.log(self.id);
             self.load_policy_by_url(url);
-        },10000)
+        },duration)
     }
 
     start_by_obj(obj){
@@ -75,17 +103,19 @@ class trade_bot{
         self.systemInterval = setInterval(function(){
             console.log(self.id);
             self.load_policy_by_obj(obj);
-        },10000)
+        },duration)
     }
     /**
      * Loading trading policy - and then start 
      * 
      * @function load_policy_by_url
      * @function load_policy_by_obj
+     * @function load
      */
-    load_policy_by_url(policy_path){
-        this.tradingData = YAML.parse(fs.readFileSync(policy_path).toString())
-
+    load(){
+        // reset func 
+        this.func = [];
+        // push 
         this.func.push(trade_func.price(this.tradingData.symbol));
         this.func.push(trade_func.va(this.tradingData.symbol));
         this.func.push(trade_func.ma(this.tradingData.ma,this.tradingData.symbol))
@@ -106,30 +136,18 @@ class trade_bot{
             console.log(error)
         })
     }
+
+    load_policy_by_url(policy_path){
+        this.tradingData = YAML.parse(fs.readFileSync(policy_path).toString())
+        // loading
+        this.load();
+    }
     load_policy_by_obj(policy_obj){
         // Notice!
         // this policy_obj has been parsing by YAMLjs
         this.tradingData = policy_obj
-
-        this.func.push(trade_func.price(this.tradingData.symbol));
-        this.func.push(trade_func.va(this.tradingData.symbol));
-        this.func.push(trade_func.ma(this.tradingData.ma,this.tradingData.symbol))
-
-        let self=this;
-        Promise.all(this.func).then((data)=>{
-            // current price
-            self.price.push(data[0]); 
-            // current price max store volume
-            if(self.price.length > 1000){
-                self.price.shift();
-            }
-            self.dataVA = data[1];
-            self.dataMA = data[2];
-            // and then start trading process
-            self.buy_and_sell();
-        }).catch((error)=>{
-            console.log(error)
-        })
+        // loading
+        this.load();
     }
 
     /**
