@@ -14,7 +14,8 @@
     <!-- Bootstrap CSS -->
     <!-- <link rel="stylesheet" href="./lib/custom/main.css"> -->
 	<link rel="stylesheet" href="./lib/css/bootstrap.min.css">
-	<link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.10.16/af-2.2.2/b-1.5.1/b-html5-1.5.1/b-print-1.5.1/fc-3.2.4/fh-3.1.3/r-2.2.1/sc-1.4.4/datatables.min.css"/>
+	<link rel="stylesheet" href="./lib/css/dataTable-custom.css">
 	<!-- <link rel="stylesheet" href="./lib/css/c3-0.5.4/c3.min.css"> -->
     <title>Trader APP</title>
     </head>
@@ -44,7 +45,7 @@
 				<div class="container">
 					<h3>Trading Log</h3>
 					<p>Record the trading log which store in database.</p>
-					<table id="trade_log_table" class="display" style="width:100%"></table>
+					<table id="trade_log_table" class="table table-striped table-bordered" style="width:100%"></table>
 				</div>
 				<!-- 
 					API Configuration
@@ -161,6 +162,5 @@
 <!-- In Electron, this is the correct way to include jQuery -->
 <script src="https://d3js.org/d3.v5.js"></script>
 <script src="./lib/js/c3-0.5.4/c3.min.js"></script>
-<script>window.$ = window.jQuery = require('./lib/js/jquery-3.3.1.min.js');</script>
 <script type="text/javascript" charset="utf-8">require('./event/trade_channel.js')</script>
 </html>
