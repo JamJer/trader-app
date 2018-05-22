@@ -49,7 +49,7 @@ class cmder{
         
         // FIXME - using the real func to create policy
         let trade_id = rs.generate();
-        db.add_new_policy(trade_id,`/tmp/${trade_id}.json`,(err,msg)=>{
+        /*db.add_new_policy(trade_id,`/tmp/${trade_id}.json`,(err,msg)=>{
             console.log(msg);
             // send message to frontend
             event.sender.send('create',{
@@ -57,7 +57,10 @@ class cmder{
                 msg: msg,
                 id: trade_id
             });
-        })
+        })*/
+        event.sender.send('create',{
+            id: trade_id
+        });
     }
     
     /**
