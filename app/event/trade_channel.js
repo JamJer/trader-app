@@ -16,9 +16,8 @@ var echarts = require('echarts');
 const dark = require('../lib/js/dark')
 // JQuery
 var $  = require( 'jquery' );
-// DataTable
+// DataTable (with Extensional plugs)
 var dt = require( 'datatables.net' )();
-
 
 // FIXME: using the real data from sqlite3
 let quantity=['quantity'],profit=['profit']
@@ -31,20 +30,44 @@ option = null;
 // DataTable initialization
 dataSet = [];
 var tradelogTable = $('#trade_log_table').DataTable( {
+        "createdRow": function ( row, data, index ) {
+            $('td', row).eq(2).addClass('market');
+            $('td', row).eq(3).addClass('normal');
+            $('td', row).eq(4).addClass('normal');
+            $('td', row).eq(5).addClass('normal');
+            $('td', row).eq(8).addClass('nothing');
+            if ( data[7] > 0 ) {
+                $('td', row).eq(7).addClass('gain');
+            }else if( data[7] < 0 ) {
+                $('td', row).eq(7).addClass('loss');
+            }else{
+                $('td', row).eq(7).addClass('nothing');
+            }
+        },
         "autoWidth": true,
+        columnDefs: [
+            { width: '10%', targets: 0 },
+            { width: '23%', targets: 1 },
+            { width: '5%', targets: 2 },
+            { width: '10%', targets: 3 },
+            { width: '5%', targets: 4 },
+            { width: '5%', targets: 5 }
+        ],
+        fixedColumns: true,
+        autoFill: true,
         data: dataSet,
         columns: [
             { title: "ID" },
             { title: "Date" },
             { title: "Market" },
             { title: "Quantity." },
-            { title: "賣出價格" },
-            { title: "買入價格" },
-            { title: "獲利" },
+            { title: "Sold Price" },
+            { title: "Bought Price" },
+            { title: "P%" },
+            { title: "Profit" },
             { title: "State" }
         ]
 } );
-
 /**
  * C3 chart - For displaying trading history
  * 
@@ -128,6 +151,7 @@ ipcRenderer.on('update_trading_chart',(event,arg)=>{
 			arg.rows[i].quantity,
 			arg.rows[i].price_sell,
 			arg.rows[i].price_buyin,
+            profitP(arg.rows[i].price_buyin,arg.rows[i].price_sell,arg.rows[i].profit),
 			arg.rows[i].profit,
 			arg.rows[i].state
 		]
@@ -219,6 +243,15 @@ window.onresize = function() {
   eChart.resize();
 }; 
 
+function profitP(buy,sell,profit){
+    if(profit > 0){
+        return '<span class="badge badge-success">'+(Math.round(Math.abs(sell/buy)*100)/100).toString()+'</span>';
+    }else if(profit < 0){
+        return '<span class="badge badge-danger">'+(Math.round(Math.abs(buy/sell)*100)/100).toString()+'</span>';
+    }else{
+        return '<span class="badge badge-primary">0.00</span>';
+    }
+}
 /*let config_binance = document.querySelector("#config_binance");
 // Submit and store the file
 config_binance.addEventListener("submit", function(event){
