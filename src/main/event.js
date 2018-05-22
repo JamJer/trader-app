@@ -54,8 +54,8 @@ ipcMain.on('create_bot',(event,arg)=>{
      * create bot instance, push into trader
      */
     let tbot = new trade_bot();
-    /** FIXME - using the arg.url instead */
-    tbot.start_by_url(".local/trade_strategy.yaml")
+    /** using the arg.url as file */
+    tbot.start_by_url(arg.url)
     trader.botID_queue.push({id: tbot.get_id(), instance: tbot})
 
     // resend - receive_bot_status

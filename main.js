@@ -57,11 +57,21 @@ function create_window(){
 }
 
 app.on('ready', function() {
+    // create .local
     init('.local/')
+    // create policy and self 
+    init('.local/policy')
+    init('.local/self')
+
+    // create window
     create_window()
 });
 
 // quit when all windows are closed 
 app.on('window-all-closed',function(){
     if(process.platform !== 'darwin') app.quit()
+
+    /**
+     * Reset state can goes here
+     */
 })
