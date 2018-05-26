@@ -62,10 +62,7 @@
                   <span>SAVE</span>
                   <input type="button" id="file-save" class="open"/>
                </div>
-               <div class="fileOpen btn btn-danger btncustom" >
-                  <span>DISCARD</span>
-                  <input type="button" id="file-discard" class="open"/>
-               </div>
+               <button type="button" class="btn btn-danger btncustom" id="file-discard">DISCARD</button>
             </div>
          </div>
       </div>
@@ -111,6 +108,9 @@ function displayContents(contents) {
 document.getElementById('file-input')
   .addEventListener('change', readSingleFile, false);
 
+$( "#file-discard" ).click(function() {
+  clearEditor();
+});
 
 function initAceEditor() {
     editor = ace.edit("aceEditor");
@@ -129,7 +129,7 @@ function initAceEditor() {
 }
 
 function clearEditor(){
-
+  editor.setValue("");
 }
 </script>
 </html>
