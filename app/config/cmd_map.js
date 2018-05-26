@@ -108,6 +108,16 @@ const cmd_map = {
         "flag": 1,
         "placeholder": "debug",
         "description": "Enter debug page."
+    },
+    /**
+     * 
+     * @function config
+     * @description configuration page of trader app
+     */
+    "config":{
+        "flag": 1,
+        "placeholder": "config",
+        "description": "Enter config page."
     }
 }
 
