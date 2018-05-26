@@ -3,38 +3,41 @@
  * This file is the configuration of Trader App 
  */
 
+const jsfs = require("jsonfile")
+const path = require("path")
+
 class config{
     constructor(){
-        /**
-         * ==================== Server ====================
-         * server_url: path to our remote server
-         * port: port of our remote server
-        */
-        this.server = {
-            url: "http://localhost",
-            port: 3000
-        }
-        /** 
-         * ==================== Client-side usage ====================
-         * json_path
-         */
-        this.local = {
-            json_path: ""
-        }
-        /**
-         * =================== trade bot ===================
-         * trade_binance_apiKey: Binance API Key
-         * trade_binance_apiSecret: Binance API Secret
-         * trade_binance_recvWindow: 
-         */
-        this.trade = {
-            binance_apiKey: "hKL4wY0lpybbrhGQDk0DoHRCWWR4dJdSFHxhBpgsmj69KcllUsCjseHIAqW4Fdhc",
-            binance_apiSecret: "UFj6uyJZhz3l2XyfD1p74eWe8WhRwAavr4XK17aGKnyT32cn74I3SbMZMwJ54Q3Z",
-            binance_recvWindow: 5000
-        }
+        this.reload();
+    }
 
-        // back up , set to default
-        this.default = this
+    store_user(user){
+        this.username = user;
+    }
+
+    reload(){
+        console.log(__dirname);
+        let obj = jsfs.readFileSync(path.join(__dirname,"settings.json"));
+        this.server = obj.server;
+        this.trade = obj.trade;
+        // reset default 
+        this.default = {
+            server: this.server,
+            trade: this.trade
+        }
+    }
+
+    set_server(server_obj){
+        this.server = server_obj;
+    }
+
+    set_trade(trade_obj){
+        this.trade = trade_obj;
+    }
+
+    reset(){
+        this.server = this.default.server;
+        this.trade = this.default.trade;
     }
 }
 

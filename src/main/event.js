@@ -9,6 +9,7 @@ const rp = require('request-promise');
 // const strategist = require('../model/strategist');
 const {user} = require('../model/user');
 const {cmder} = require('../model/cmder');
+const {reconf} = require('../model/config');
 const trader = require('../model/trader');
 const trade_bot = require('../model/trade_bot');
 const config = require('../config/config.default');
@@ -109,6 +110,12 @@ ipcMain.on('purchase',cmder.purchase);
 
 ipcMain.on('trade',cmder.trade);
 ipcMain.on('debug',cmder.debug);
+
+// ================================================== Config panel channel ==================================================
+ipcMain.on('get_config',reconf.get_config);
+ipcMain.on('set_config',reconf.set_config);
+ipcMain.on('reset_config',reconf.reset);
+
 
 // Async Example
 /*ipcMain.on('asynchronous-message', (event, arg) => {

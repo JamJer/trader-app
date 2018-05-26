@@ -25,6 +25,8 @@ class user{
                     let res = JSON.parse(body);
                     //
                     if(res.msg=="success"){
+                        // Store in session 
+                        config.store_user(arg.username)
                         // Store
                         db.store_product_key(arg.username,arg.passwd,res.key,
                             (err,msg)=>{

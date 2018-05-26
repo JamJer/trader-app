@@ -24,7 +24,7 @@
         "electron-tabs": "^0.7.3",
         "jquery": "^3.3.1",
         "jszip": "^3.1.5",
-        "node-ipc": "^9.1.1",
+        "jsonfile": "^4.0.0",
         "moment": "^2.22.1",
         "pdfmake": "^0.1.36",
         "randomstring": "^1.1.5",

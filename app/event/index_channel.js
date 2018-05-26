@@ -45,6 +45,15 @@ uskip.addEventListener("click",function(event){
     // Enter next page - control panel
     window.location.href="control_panel.html";
 });
+// Config event
+let uconfig = document.querySelector("#config");
+uconfig.addEventListener("click",function(event){
+    console.log(__dirname);
+    // go to command line mode
+    // Enter next page - config
+    window.location.href="config.html";
+});
+
 
 // Receive reply from remote server
 ipcRenderer.on('login-success', (event, arg) => {

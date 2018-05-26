@@ -1,0 +1,106 @@
+<!--
+    Config page.
+    Let user pick the 
+-->
+
+<!doctype html>
+<html lang="en">
+    <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="./lib/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+    <title>Trader APP</title>
+    </head>
+    <body class="bg-dark">
+        <!-- ================================================ Top Navbar ================================================ -->
+        <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top" id="navbar_top">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="index.html">
+                <i class="fa fa-copyright"></i>&nbsp;Trader APP</a>
+              <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbar2SupportedContent">
+                <span class="navbar-toggler-icon"></span><p> <font color="white">v0.0.1 </font></p>
+              </button>
+            </div>
+        </nav>
+
+        <!-- ================================================ Landing Page ================================================ -->
+        <div class="container-fluid">
+            <!-- Config Panel goes here -->
+            <div class="container jumbotron">
+                <!-- Server -->
+                <h2>Server:</h2>
+                <hr>
+                <form action="#" id="server">
+                    <!-- URL & Port -->
+                    <div class="form-group">
+                        <label for="url"><i class="fas fa-link"></i>&nbsp;URL:</label>
+                        <input type="text" class="form-control" id="url" placeholder="kevin.imslab.org">
+                    </div>
+                    <div class="form-group">
+                        <label for="port"><i class="fas fa-plug"></i>&nbsp;Port:</label>
+                        <input type="text" class="form-control" id="port" placeholder="3000">
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-info">Update Server Info</button>
+                    </div>
+                </form>
+                <hr>       
+
+                <!-- Trading information -->
+                <h2>Trading Information:</h2>
+                <hr>
+                <form action="#" id="trade">
+                        <!-- URL & Port -->
+                        <div class="form-group">
+                            <label for="apikey"><i class="fas fa-key"></i>&nbsp;API Key:</label>
+                            <input type="text" class="form-control" id="apikey" placeholder="binance apikey">
+                        </div>
+                        <div class="form-group">
+                            <label for="apiSecret"><i class="fas fa-user-secret"></i>&nbsp;API Secret:</label>
+                            <input type="text" class="form-control" id="apisecret" placeholder="binance apisecret">
+                        </div>
+                        <div class="form-group">
+                            <label for="recvWindow"><i class="fas fa-window-close"></i>&nbsp;RecvWindow:</label>
+                            <input type="text" class="form-control" id="recvwindow" placeholder="binance api recvWindow">
+                        </div>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-info">Update Trade Information</button>
+                        </div>
+                </form>
+
+                
+                
+                <!-- TODO: Add status - Loading/Success/Error ... etc -->
+                
+            </div>
+            
+        </div>
+        <div class="container-fluid">
+            <!-- Reset goes here -->
+            <div class="container jumbotron">
+                <form action="#" id="reset">
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-danger">Reset to default value</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+         <!-- ================================================ Bottom Navbar ================================================ -->
+        <div class="navbar fixed-bottom navbar-expand-md bg-dark navbar-dark text-nowrap">
+            <span class="hide-phone footer-link">
+                <a class="navbar-brand mx-auto px-5" href="#">Copyright © 2018 by Kevin Cyu. All rights reserved.</a>
+            </span>
+            <span style="float:right;"><font color="white">EFACANI, Trader App Team</font></span>
+        </div>
+    </body>
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<!-- In Electron, this is the correct way to include jQuery -->
+<script>window.$ = window.jQuery = require('./lib/js/jquery-3.3.1.min.js');</script>
+<script type="text/javascript" charset="utf-8">require('./event/config_channel.js')</script>
+</html>

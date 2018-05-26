@@ -113,12 +113,10 @@ const cmd_map = {
      * 
      * @function config
      * @description configuration page of trader app
+     * 
+     * 5/26 - Deprecated
+     * This command move to the first page - within index.html
      */
-    "config":{
-        "flag": 1,
-        "placeholder": "config",
-        "description": "Enter config page."
-    }
 }
 
 module.exports = cmd_map;
