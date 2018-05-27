@@ -5,7 +5,7 @@
         "postinstall": "electron-rebuild -f -w sqlite3",
         "all": "npm install && npm run start",
         "start": "electron .",
-        "release": "electron-packager ."
+        "release": "electron-packager --overwrite ."
     },
     "main": "main.js",
     "dependencies": {

@@ -10,6 +10,7 @@ const rp = require('request-promise');
 const {user} = require('../model/user');
 const {cmder} = require('../model/cmder');
 const {reconf} = require('../model/config');
+const {editor} = require('../model/editor');
 const trader = require('../model/trader');
 const trade_bot = require('../model/trade_bot');
 const config = require('../config/config.default');
@@ -110,6 +111,11 @@ ipcMain.on('purchase',cmder.purchase);
 
 ipcMain.on('trade',cmder.trade);
 ipcMain.on('debug',cmder.debug);
+
+// ================================================== Editor channel ==================================================
+ipcMain.on('policy_list',editor.policy_list);
+ipcMain.on('policy_save',editor.policy_save);
+ipcMain.on('policy_delete',editor.policy_delete);
 
 // ================================================== Config panel channel ==================================================
 ipcMain.on('get_config',reconf.get_config);

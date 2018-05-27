@@ -3,6 +3,9 @@
         "url": "http://localhost",
         "port": 3000
     },
+    "policy":{
+        "path": ".local/policy/"
+    },
     "trade":{
         "binance_apiKey": "hKL4wY0lpybbrhGQDk0DoHRCWWR4dJdSFHxhBpgsmj69KcllUsCjseHIAqW4Fdhc",
         "binance_apiSecret": "UFj6uyJZhz3l2XyfD1p74eWe8WhRwAavr4XK17aGKnyT32cn74I3SbMZMwJ54Q3Z",

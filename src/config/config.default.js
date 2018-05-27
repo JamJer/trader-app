@@ -20,6 +20,7 @@ class config{
         let obj = jsfs.readFileSync(path.join(__dirname,"settings.json"));
         this.server = obj.server;
         this.trade = obj.trade;
+        this.policy = obj.policy;
         // reset default 
         this.default = {
             server: this.server,
