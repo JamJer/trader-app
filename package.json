@@ -5,7 +5,8 @@
         "postinstall": "electron-rebuild -f -w sqlite3",
         "all": "npm install && npm run start",
         "start": "electron .",
-        "release": "electron-packager --overwrite ."
+        "release": "electron-packager --overwrite .",
+        "cloc": "cloc . --exclude-dir=node_modules,trader-app-linux-x64,trader-app-win32-x64,app/lib"
     },
     "main": "main.js",
     "dependencies": {

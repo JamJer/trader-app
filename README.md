@@ -1,5 +1,28 @@
 # Trader APP
 
+## 如何運行
+
+* 安裝相依性
+    ```
+    npm run install
+    ```
+* 啟動
+    ```
+    npm run start
+    ```
+* 安裝 + 啟動
+    ```
+    npm run all
+    ```
+* 輸出執行檔 (window,linux 上皆可用)
+    ```
+    npm run release
+    ```
+* 檢視程式碼質量 （linux 上適用）
+    ```
+    npm run cloc
+    ```
+
 ## 檔案配置
 
 > 存在於專案原始碼當中
