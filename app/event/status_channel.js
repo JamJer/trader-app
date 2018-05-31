@@ -43,6 +43,7 @@ botStatusTable = $('#bot_status_table').DataTable( {
  */
 let bot = document.querySelector('#bot')
 bot.addEventListener("submit",function(event){
+    event.preventDefault();
     // send event to ipcMain, create bot instance
     let trading_policy_id = document.getElementById("trading_policy_id").value;
     console.log("Specified the file id: " + trading_policy_id);
@@ -129,4 +130,23 @@ ipcRenderer.on('receive_bot_status',(event,arg)=>{
         });
     });
 
+    // Add edit page 
+    $('.dt-edit').each(function () {
+        $(this).on('click', function(evt){
+            $this = $(this);
+            var data = botStatusTable.row( $(this).parents('tr') ).data();
+            if(confirm("Are you sure to edit this bot?")){
+                // will enter bot instance status
+                ipcRenderer.send('edit_bot',{
+                    id: data[0]
+                })
+            }
+        });
+    });
+})
+
+
+ipcRenderer.on("bot_instance_start",(event,arg)=>{
+    // enter bot instance page
+    window.location.href="bot_instance.html";
 })

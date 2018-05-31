@@ -13,6 +13,7 @@ const {reconf} = require('../model/config');
 const {editor} = require('../model/editor');
 const trader = require('../model/trader');
 const trade_bot = require('../model/trade_bot');
+var current_bot_id = "";
 const config = require('../config/config.default');
 
 
@@ -88,6 +89,37 @@ ipcMain.on('kill_bot',(event,arg)=>{
     event.sender.send('receive_bot_status',{
         id_queue: id_queue
     });
+})
+
+ipcMain.on('edit_bot',(event,arg)=>{
+    // enter into bot_instance page
+    /**
+     * store bot id
+     * 
+     * @param arg.id
+     */
+    current_bot_id = arg.id;
+
+    // change page
+    event.sender.send("bot_instance_start",{});
+})
+
+ipcMain.on('get_bot',(event,arg)=>{
+    // send current_bot_id's status to "receive_bot" channel
+    trader.botID_queue.forEach((element)=>{
+        if(element.id == current_bot_id){
+            // send instance to frontend
+            console.log("Find current bot: "+current_bot_id)
+            // console.log("Find bot tradingData: ")
+            // console.dir(element.instance.tradingData)
+            // send current status 
+            event.sender.send("receive_bot",{
+                id: current_bot_id,
+                ma: element.instance.tradingData.ma,
+                symbol: element.instance.tradingData.symbol
+            })
+        }
+    })
 })
 
 // ================================================== User login channel ==================================================

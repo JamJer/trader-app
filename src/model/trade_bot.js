@@ -153,6 +153,8 @@ class trade_bot{
     start_by_url(url){
         // start trading
         let self=this;
+        // run 
+        self.load_policy_by_url(url);
         self.systemInterval = setInterval(function(){
             console.log(self.id);
             self.load_policy_by_url(url);
@@ -162,6 +164,8 @@ class trade_bot{
     start_by_obj(obj){
         // start trading
         let self=this;
+        // run 
+        self.load_policy_by_obj(obj);
         self.systemInterval = setInterval(function(){
             console.log(self.id);
             self.load_policy_by_obj(obj);
