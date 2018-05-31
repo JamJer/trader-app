@@ -135,6 +135,16 @@ class trade_bot{
         this.start_by_obj(this.tradingData)
     }
 
+    change_all(new_symbol,new_ma){
+        this.tradingData.ma = new_ma;
+        this.tradingData.symbol = new_symbol;
+        // stop 
+        this.stop();
+        console.log("Bot id: "+ this.id + ", already to be restart...");
+        // restart
+        this.start_by_obj(this.tradingData)
+    }
+
     change_policy_by_url(new_policy_url){
         this.stop();
         console.log("Bot id: "+ this.id + ", already to be restart...");

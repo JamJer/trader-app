@@ -122,6 +122,17 @@ ipcMain.on('get_bot',(event,arg)=>{
     })
 })
 
+ipcMain.on('set_bot',(event,arg)=>{
+    trader.botID_queue.forEach((element)=>{
+        if(element.id == current_bot_id){
+            // reload the config, and restart the bot
+            element.instance.change_all(arg.symbol,arg.ma)
+            // this function will restart the bot instance
+            return;
+        }
+    })
+})
+
 // ================================================== User login channel ==================================================
 /**
  * 
