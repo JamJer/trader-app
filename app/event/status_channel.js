@@ -135,12 +135,10 @@ ipcRenderer.on('receive_bot_status',(event,arg)=>{
         $(this).on('click', function(evt){
             $this = $(this);
             var data = botStatusTable.row( $(this).parents('tr') ).data();
-            if(confirm("Are you sure to edit this bot?")){
-                // will enter bot instance status
-                ipcRenderer.send('edit_bot',{
-                    id: data[0]
-                })
-            }
+            // will enter bot instance status
+            ipcRenderer.send('edit_bot',{
+                id: data[0]
+            })
         });
     });
 })
