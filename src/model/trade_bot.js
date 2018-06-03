@@ -6,9 +6,13 @@
  * 
  */
 // library
+const os = require('os')
 const fs = require('fs')
 const rs = require('randomstring')
 const YAML = require('yamljs')
+
+// logger 
+const {logger} = require('./logger')
 
 // operation 
 const trade_func = require('./trade_op')
@@ -41,7 +45,13 @@ class trade_bot{
         // debug -
         // trade_func.prepare("kevin")
 
-        console.log("Bot instance created, ID: "+this.id)
+        // console.log("Bot instance created, ID: "+this.id)
+        this.logger = logger.bot_log(this.id);
+        this.log("Bot instance created, ID: "+this.id)
+    }
+
+    log(msg){
+        this.logger.write(msg+os.EOL,'UTF8')
     }
 
     /**
@@ -123,7 +133,8 @@ class trade_bot{
         this.tradingData.symbol = new_symbol;
         // reload
         this.stop();
-        console.log("Bot id: "+ this.id + ", already to be restart...");
+        // console.log("Bot id: "+ this.id + ", already to be restart...");
+        this.log("Bot id: "+ this.id + ", already to be restart...")
         this.start_by_obj(this.tradingData)
     }
 
@@ -131,7 +142,8 @@ class trade_bot{
         this.tradingData.ma = new_ma;
         // reload
         this.stop();
-        console.log("Bot id: "+ this.id + ", already to be restart...");
+        // console.log("Bot id: "+ this.id + ", already to be restart...");
+        this.log("Bot id: "+ this.id + ", already to be restart...");
         this.start_by_obj(this.tradingData)
     }
 
@@ -140,14 +152,16 @@ class trade_bot{
         this.tradingData.symbol = new_symbol;
         // stop 
         this.stop();
-        console.log("Bot id: "+ this.id + ", already to be restart...");
+        // console.log("Bot id: "+ this.id + ", already to be restart...");
+        this.log("Bot id: "+ this.id + ", already to be restart...");
         // restart
         this.start_by_obj(this.tradingData)
     }
 
     change_policy_by_url(new_policy_url){
         this.stop();
-        console.log("Bot id: "+ this.id + ", already to be restart...");
+        // console.log("Bot id: "+ this.id + ", already to be restart...");
+        this.log("Bot id: "+ this.id + ", already to be restart...");
         this.start_by_url(new_policy_url)
     }
 
@@ -156,8 +170,12 @@ class trade_bot{
     }
 
     stop(){
-        console.log("Bot id: "+ this.id + ", already to be terminated.");
+        // console.log("Bot id: "+ this.id + ", already to be terminated.");
+        this.log("Bot id: "+ this.id + ", already to be terminated.");
         clearInterval(this.systemInterval)
+        // FIXME: 
+        // if there need to delete this temporary file, then uncomment it
+        // logger.bot_log_dismiss(this.id);
     }
 
     start_by_url(url){
@@ -166,7 +184,7 @@ class trade_bot{
         // run 
         self.load_policy_by_url(url);
         self.systemInterval = setInterval(function(){
-            console.log(self.id);
+            // console.log(self.id);
             self.load_policy_by_url(url);
         },duration)
     }
@@ -177,7 +195,7 @@ class trade_bot{
         // run 
         self.load_policy_by_obj(obj);
         self.systemInterval = setInterval(function(){
-            console.log(self.id);
+            // console.log(self.id);
             self.load_policy_by_obj(obj);
         },duration)
     }
@@ -209,7 +227,8 @@ class trade_bot{
             // and then start trading process
             self.buy_and_sell();
         }).catch((error)=>{
-            console.log(error)
+            // console.log(error)
+            self.log(error)
         })
     }
 
@@ -235,13 +254,17 @@ class trade_bot{
         //console.log(this)
         switch(this.currentStatus){
             case 'wait':
-                console.log("Waiting...")
+                // console.log("Waiting...")
+                this.log("Waiting...")
             case 'sell':
-                console.log("Selling...")
+                // console.log("Selling...")
+                this.log("Selling...")
             case 'sell_10':
-                console.log("Selling 10...")
+                // console.log("Selling 10...")
+                this.log("Selling 10...")
             case 'sell_volume':
-                console.log("Selling Volume...")
+                // console.log("Selling Volume...")
+                this.log("Selling Volume...")
                 if(!this.isVolumeExIncrease()){ //如果交易量沒有爆增
                     if(this.isMAUp() && this.isPriceDropTouchMA()){ //如果MA上揚且現價下跌碰觸MA
                         this.buy();								//執行買入
@@ -250,7 +273,8 @@ class trade_bot{
                 }
                 break;
             case 'buy':
-                console.log("Buying...")
+                // console.log("Buying...")
+                this.log("Buying...")
                 if(this.isVolumeExIncrease()){		//如果交易量爆增
                     this.currentStatus = 'sell_volume';
                     this.sell();						//執行賣出
@@ -266,7 +290,8 @@ class trade_bot{
                 }
                 break;
             case 'buy_35': 						//現價已下跌至3.5%等待賣出
-                console.log("Buying 35...")
+                // console.log("Buying 35...")
+                this.log("Buying 35...")
                 if(this.isVolumeExIncrease()){		//如果交易量爆增
                     this.currentStatus = 'sell_volume';
                     this.sell();						//執行賣出
@@ -284,7 +309,8 @@ class trade_bot{
                 // statements_def
                 break;
         }
-        console.log('currentStatus: ' + this.currentStatus); //顯示目前狀態，可刪除
+        // console.log('currentStatus: ' + this.currentStatus); //顯示目前狀態，可刪除
+        this.log("current status: " + this.currentStatus)
     }
 
     /**

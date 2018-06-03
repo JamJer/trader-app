@@ -36,7 +36,7 @@ var client = Binance({
  * @param {*} symbol 
  */
 trade_model.ma = async(type,symbol) => {
-    console.log("Request MA ...");
+    // console.log("Request MA ...");
     try {
         let interval = null;
         let mhdM = type[type.length - 1];
@@ -106,7 +106,7 @@ trade_model.ma = async(type,symbol) => {
  * @param {*} symbol 
  */
 trade_model.price = async(symbol) => {
-    console.log("Request Price ...")
+    // console.log("Request Price ...")
     try{
         let price = await client.prices();
         return price[symbol];
@@ -125,7 +125,7 @@ trade_model.price = async(symbol) => {
  * @param {*} symbol 
  */
 trade_model.va = async(symbol) => {
-    console.log("Request Volume ...")
+    // console.log("Request Volume ...")
     try{
         let interval = '1m'
         let tempVA=[]
