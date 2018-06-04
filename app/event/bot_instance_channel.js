@@ -59,7 +59,7 @@ ipcRenderer.on("receive_bot",(event,arg)=>{
         logger.on('error',function(err){
             console.log(`[Bot][Error] streaming error. error code: ${err}`)
         })
-    },2000)
+    },10000)
 
     // --------------BOT SETTING PANEL GOES HERE----------------
     // Show bot id
