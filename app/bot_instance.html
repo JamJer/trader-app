@@ -12,6 +12,8 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="./lib/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+    <link rel="stylesheet" href="./lib/custom/Bootstrap-4-Dropdown-Select-Plugin-jQuery/dist/css/bootstrap-select.css">
+    <link rel="stylesheet" href="./lib/custom/custom-bot-instance.css">
     <title>Trader APP</title>
     </head>
     <body class="bg-dark">
@@ -28,7 +30,45 @@
 
         <!-- ================================================ Landing Page ================================================ -->
         <div class="container-fluid">
-            
+            <div class="container jumbotron">
+                <div class="card text-white bg-dark mb-3" style="width: 100%;">
+                  <div class="card-body ">
+                    <h5 class="card-title text-warning">BOT PROFIT CURVE CHART</h5>
+                  </div>
+                </div>
+                <div class="card-deck">
+                    <div class="card text-white bg-dark mb-3">                       
+                        <div class="card-body">
+                          <h5 class="card-title text-warning">BOT PARAMETER SETTING</h5>
+                          <p class="card-text">BOT ID:&nbsp;<font id="bot-id" color="#00ffff"></font></p>
+                          <p class="card-text">BOT SYMBOL:&nbsp;
+                            <select id="bot-cointype-select" class="selectpicker show-tick form-control">
+                            <!-- Dynamic select will generate here -->
+                            </select>
+                          </p>
+                          <p class="card-text">BOT AVERAGE MOVING(MA):&nbsp;
+                            <input type="text" class="form-control" id="bot-ma-val">
+                          </p>
+                          <p class="card-text">BOT AVERAGE MOVING UNIT:&nbsp;
+                            <select id="bot-ma-unit-select" class="selectpicker show-tick form-control">
+                            <!-- Dynamic select will generate here -->
+                            </select>
+                          </p>
+                          <button id="bot-reflesh-btn" class='btn btn-warning'><i class="fas fa-sync"></i> Reflesh </button>
+                          <button id="bot-save-btn" class='btn btn-success' disabled="true"><i class="far fa-save"></i> Save changes</button>
+                          <p class="card-text"><small class="text-muted">Update time showing</small></p>
+                        </div>
+                      </div>
+                      <div class="card text-white bg-dark mb-3">
+                        <div class="card-body">
+                          <h5 class="card-title text-warning">BOT STATUS VIEW</h5>
+                          <textarea id="bot-status-view"></textarea>
+                          <p class="card-text"><small class="text-muted">Update time showing</small></p>
+                        </div>
+                      </div>
+                </div>
+                <button id="bot-back-btn" class='btn btn-info'><i class="fas fa-arrow-left"></i> Back to Status Panel</button>
+            </div>
         </div>
 
          <!-- ================================================ Bottom Navbar ================================================ -->
@@ -45,4 +85,7 @@
 <!-- In Electron, this is the correct way to include jQuery -->
 <script>window.$ = window.jQuery = require('./lib/js/jquery-3.3.1.min.js');</script>
 <script type="text/javascript" charset="utf-8">require('./event/bot_instance_channel.js')</script>
+<script type="text/javascript" src="./lib/custom/Bootstrap-4-Dropdown-Select-Plugin-jQuery/dist/js/bootstrap-select.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
 </html>
