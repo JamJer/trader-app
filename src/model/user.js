@@ -16,9 +16,11 @@ class user{
     login(event,arg){
         // Send message to remote server enroll 
         // console.log(arg);
-        rp.post(config.server.url+":"+config.server.port+"/user/login", {simple: false, resolveWithFullResponse: true,form: arg})
+        rp.post(config.server.url+"/user/login", {simple: false, resolveWithFullResponse: true,form: arg})
         .then((res,body)=>{
             // redirect to new link
+            console.log(res.statusCode)
+            console.log(res.headers['location'])
             rp.post(res.headers['location'],{form: arg})
                 .then((body)=>{
                     // Body will be the result
