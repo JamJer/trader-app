@@ -11,6 +11,7 @@
       <!-- Bootstrap CSS -->
       <link rel="stylesheet" href="./lib/custom/main.css">
       <link rel="stylesheet" href="./lib/css/bootstrap.min.css">
+      <link rel="stylesheet" href="./lib/custom/Bootstrap-4-Dropdown-Select-Plugin-jQuery/dist/css/bootstrap-select.css">
       <title>Trader APP</title>
    </head>
    <body>
@@ -33,11 +34,9 @@
             <div class="row">
               <div class="col-md-3">
                 <h5>Policy List</h5>
-                <div id="policy-list-bg">
-                  <ul id="policy-list" class="list-group">
-                    <!-- Responsive policy list goes here -->
-                  </ul>
-                </div>
+                <select id="policy-list" class="selectpicker show-tick form-control">
+                <!-- Dynamic select will generate here -->
+                </select>
               </div>
               <div class="col-md-9">
                 <h5>Editor Panel</h5>
@@ -81,4 +80,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.3.3/ace.js" type="text/javascript" charset="utf-8"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mootools/1.6.0/mootools-core.min.js"></script>
 <script type="text/javascript" charset="utf-8" async>require('./event/create_channel.js')</script>
+<script type="text/javascript" src="./lib/custom/Bootstrap-4-Dropdown-Select-Plugin-jQuery/dist/js/bootstrap-select.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
 </html>

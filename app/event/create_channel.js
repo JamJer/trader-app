@@ -57,9 +57,45 @@ ipcRenderer.on("response_policy_list",(event,arg)=>{
     alert(arg.msg)
     if(arg.data.length != undefined){
         arg.data.forEach(file=>{
-            $('<li class="list-group-item list-group-item-action" id="'+file+'">' + file + '</li>').appendTo(policyList);
+            policyList.append($('<option>', { 
+                text : file 
+            }));
         })
     }
+
+     // bot select box initialization
+    policyList.selectpicker({
+        styleBase: 'btn',
+        style: 'btn-default',
+        dropupAuto: true,
+        size: 'fit'
+    });
+
+    policyList.selectpicker('setStyle', 'btn-sm', 'add');
+    policyList.selectpicker('refresh');
+    policyList.selectpicker('render');
+
+    policyList.on('changed.bs.select', function (e) {
+        // alert(e.target.value);
+        if(!editor.session.getUndoManager().isClean()){
+            if (confirm("Save this Policy before open another Policy?")){
+                var title = document.getElementById('file-name').innerText;
+                saveFiles(title,editor.getValue());
+                editor.session.getUndoManager().reset();
+                setPolicyToEditor(e.target.value);
+                document.getElementById('file-name').innerText = e.target.value;
+                isSaved = true;
+            }else{
+                setPolicyToEditor(e.target.value);
+                document.getElementById('file-name').innerText = e.target.value;
+                isSaved = true;
+            }
+        }else{
+            setPolicyToEditor(e.target.value);
+            document.getElementById('file-name').innerText = e.target.value;
+            isSaved = true;
+        }
+    });
 })
 
 
@@ -69,13 +105,6 @@ function refleshPolicyList(){
 }
 
 function readSingleFile(e) {
-    if(!isSaved){
-        if (confirm("Save this Policy before upload another Policy?")){
-            var title = document.getElementById('file-name').innerText;
-            saveFiles(title,editor.getValue());
-        }
-    }
-    
     var file = e.target.files[0];
     if (!file) {
         return;
@@ -172,22 +201,14 @@ window.addEvent("domready",function(){
 });
 
 //Event goes here
-document.getElementById("policy-list").addEventListener("click",function(e) {
-if(!editor.session.getUndoManager().isClean()){
-    if (confirm("Save this Policy before open another Policy?")){
-        var title = document.getElementById('file-name').innerText;
-        saveFiles(title,editor.getValue());
-        editor.session.getUndoManager().reset();
-        }
-    }
-    if(e.target && e.target.nodeName == "LI") {
-        setPolicyToEditor(e.target.id);
-        document.getElementById('file-name').innerText = e.target.id;
-        isSaved = false;
-    }
-});
 
 $(document).on('change','#file-input',function(e){ 
+    if(!editor.session.getUndoManager().isClean()){
+        if (confirm("Save this Policy before upload another Policy?")){
+            var title = document.getElementById('file-name').innerText;
+            saveFiles(title,editor.getValue());
+        }
+    }
     readSingleFile(e); 
 });
 
