@@ -120,7 +120,6 @@ class trade_bot{
                 })
             }
         }
-
         // Return instance
         return {
             history: this.tradeInfo,

@@ -10,17 +10,26 @@ const fs = require('fs');
 const path = require('path');
 const url = require('url');
 const file_ext = ".ect";
+// EChart initialization
+var echarts = require('echarts');
+// EChart dark theme
+const dark = require('../lib/js/dark')
 // Global var
 var logger = null;
 const $ = require('jquery');
 const bot_coin_type = ['BTCUSDT','ETHUSDT'];
-var bot_ma_unit_type = ['d','t'];
+var bot_ma_unit_type = ['m','d','h','m'];
 var bot_symbol_select = $('#bot-cointype-select');
 var bot_ma_unit_select = $('#bot-ma-unit-select');
 var bot_status_view = $('#bot-status-view');
+const data_reflesh_interval = 3000;
 
 // send signal to fetch current bot status
 ipcRenderer.send("get_bot",{});
+
+setInterval(function(){
+    ipcRenderer.send("get_bot",{});  
+},data_reflesh_interval)
 
 // receive current bot status
 ipcRenderer.on("receive_bot",(event,arg)=>{
@@ -34,32 +43,98 @@ ipcRenderer.on("receive_bot",(event,arg)=>{
     // Using these 3 element to render the bot_instance.html
     // Also set the edit panel, let user can edit the parameter of these parameter
 
+    // --------------BOT PROFIT CHART PANEL GOES HERE----------------
     // TODO: (Long-term goal)
     // 獲利曲線 UI（該 bot 的獲利曲線，呈獻其運行到目前的收益情況）
     // 詳細可以參考後端程式碼： src/model/trade_bot.js 的實作
 
-    // FIXME: 
-    // Get the streaming log from bot instance
-    // Warning, current tick need to sync with the update rate in bot_instnace.js
-    let isreadable = true
-    setInterval(function(){
-        logger = fs.createReadStream(path.join(os.tmpdir(),arg.id+file_ext),'UTF8')
-        logger.on('readable',function(){
-            if(isreadable){
-                bot_status_view.val('');
-                bot_status_view.val(logger.read());
-                isreadable = false
-                if(bot_status_view.length){
-                    bot_status_view.scrollTop(bot_status_view[0].scrollHeight - bot_status_view.height());
-                }
-            }else{
-                isreadable = true
+    // EChart initialization
+    let chart_dom = document.querySelector('#profit_chart')
+    let eChart = echarts.init(chart_dom,'dark');
+    let option = null;
+    let fake_profit = [];
+    let xAxisArr = [];
+    // Generate fake profit data
+    for (var i = 0; i < 30; i++) {
+        fake_profit.push((Math.floor(Math.random() * 20.1) - 10.0).toFixed(3));
+    }
+    // Generate fake x-Axis data
+    for (var i = 0; i < 30; i++) {
+        xAxisArr.push(i+1);
+    }
+    // Setting option variable for eChart
+    option = {
+        tooltip: {
+            trigger: 'axis'
+        },
+        legend: {
+            data:['Profit'],
+            show: false
+        },
+        toolbox: {
+            orient: 'vertical',
+            show: true,
+            feature: {
+                dataZoom: {
+                    yAxisIndex: 'none'
+                },
+                dataView: {readOnly: false},
+                magicType: {type: ['line', 'bar']},
+                restore: {},
+                saveAsImage: {}
             }
-        })
-        logger.on('error',function(err){
-            console.log(`[Bot][Error] streaming error. error code: ${err}`)
-        })
-    },10000)
+        },
+        visualMap: {
+            pieces: [{
+                gt: 0,
+                lte: 99,
+                color: '#00cc66'
+            },{
+                gt: -99,
+                lte: 0,
+                color: '#ff5050'
+            }],
+            outOfRange: {
+                color: '#999'
+            },
+            textStyle: {
+            color: '#fff'
+        }
+        },
+        xAxis:  {
+            type: 'category',
+            boundaryGap: false,
+            data: xAxisArr
+        },
+        yAxis: {
+            type: 'value',
+            axisLabel: {
+                formatter: '{value}'
+            }
+        },
+        series: [
+            {
+                name:'Profit',
+                type:'line',
+                data: fake_profit,
+                markPoint: {
+                    data: [
+                        {type: 'max', name: '最大值', itemStyle: { color: '#00994d'}},
+                        {type: 'min', name: '最小值'}
+                    ]
+                },
+                markLine: {
+                    silent: true,
+                    data: [
+                        {type: 'average', name: '平均值'}
+                    ]
+                }
+            }
+        ]
+    };
+    // reload the eChart
+    eChart.setOption(option, true);
+    // --------------BOT PROFIT CHART PANEL END HERE----------------
 
     // --------------BOT SETTING PANEL GOES HERE----------------
     // Show bot id
@@ -158,8 +233,30 @@ ipcRenderer.on("receive_bot",(event,arg)=>{
         window.location = 'status.html'
     });
     // --------------BOT SETTING PANEL GOES END---------------------
+
     // --------------BOT STATUS VIEW PANEL GOES HERE----------------
-    
+    // FIXME: 
+    // Get the streaming log from bot instance
+    // Warning, current tick need to sync with the update rate in bot_instnace.js
+    let isreadable = true
+    setInterval(function(){
+        logger = fs.createReadStream(path.join(os.tmpdir(),arg.id+file_ext),'UTF8')
+        logger.on('readable',function(){
+            if(isreadable){
+                bot_status_view.val('');
+                bot_status_view.val(logger.read());
+                isreadable = false
+                if(bot_status_view.length){
+                    bot_status_view.scrollTop(bot_status_view[0].scrollHeight - bot_status_view.height());
+                }
+            }else{
+                isreadable = true
+            }
+        })
+        logger.on('error',function(err){
+            console.log(`[Bot][Error] streaming error. error code: ${err}`)
+        })
+    },10000)
     // --------------BOT STATUS VIEW PANEL GOES END-----------------
 })
 

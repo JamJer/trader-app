@@ -116,7 +116,8 @@ ipcMain.on('get_bot',(event,arg)=>{
             event.sender.send("receive_bot",{
                 id: current_bot_id,
                 ma: element.instance.tradingData.ma,
-                symbol: element.instance.tradingData.symbol
+                symbol: element.instance.tradingData.symbol,
+                trade_data: element.instance.get_log()
             })
         }
     })
