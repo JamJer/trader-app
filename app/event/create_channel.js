@@ -222,3 +222,7 @@ $( "#file-discard" ).click(function() {
     var title = document.getElementById('file-name').innerText;
     deleteFiles(title);
 });
+
+$("#bot-back-btn").bind("click",function(){
+    window.location = 'control_panel.html'
+});

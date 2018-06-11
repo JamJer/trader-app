@@ -47,7 +47,7 @@ bot.addEventListener("submit",function(event){
     // send event to ipcMain, create bot instance
     let trading_policy_id = document.getElementById("trading_policy_id").value;
     console.log("Specified the file id: " + trading_policy_id);
-
+    
     ipcRenderer.send('create_bot',{
         /** TODO: create bot with specified:
          * @param url
@@ -140,6 +140,10 @@ ipcRenderer.on('receive_bot_status',(event,arg)=>{
                 id: data[0]
             })
         });
+    });
+
+    $("#bot-back-btn").bind("click",function(){
+        window.location = 'control_panel.html'
     });
 })
 

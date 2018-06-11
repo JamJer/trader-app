@@ -166,76 +166,80 @@ ipcRenderer.on('update_trading_chart',(event,arg)=>{
     
 	// Setting option variable for eChart
     option = {
-    title: {
-        text: 'Trading Chart',
-        subtext: ''
-    },
-    tooltip: {
-        trigger: 'axis'
-    },
-    legend: {
-        data:['Profit','Quantity']
-    },
-    toolbox: {
-        show: true,
-        feature: {
-            dataZoom: {
-                yAxisIndex: 'none'
-            },
-            dataView: {readOnly: false},
-            magicType: {type: ['line', 'bar']},
-            restore: {},
-            saveAsImage: {}
-        }
-    },
-    xAxis:  {
-        type: 'category',
-        boundaryGap: false,
-        data: xAxisArr
-    },
-    yAxis: {
-        type: 'value',
-        axisLabel: {
-            formatter: '{value}'
-        }
-    },
-    series: [
-        {
-            name:'Profit',
-            type:'line',
-            data: profit,
-            markPoint: {
-                data: [
-                    {type: 'max', name: '最大值'},
-                    {type: 'min', name: '最小值'}
-                ]
-            },
-            markLine: {
-                data: [
-                    {type: 'average', name: '平均值'}
-                ]
+        title: {
+            text: 'Trading Chart',
+            subtext: ''
+        },
+        tooltip: {
+            trigger: 'axis'
+        },
+        legend: {
+            data:['Profit','Quantity']
+        },
+        toolbox: {
+            show: true,
+            feature: {
+                dataZoom: {
+                    yAxisIndex: 'none'
+                },
+                dataView: {readOnly: false},
+                magicType: {type: ['line', 'bar']},
+                restore: {},
+                saveAsImage: {}
             }
         },
-        {
-            name:'Quantity',
-            type:'line',
-            data: quantity,
-            markPoint: {
-                data: [
-                    {type: 'max', name: '最大值'},
-                    {type: 'min', name: '最小值'}
-                ]
-            },
-            markLine: {
-                data: [
-                    {type: 'average', name: '平均值'}
-                ]
+        xAxis:  {
+            type: 'category',
+            boundaryGap: false,
+            data: xAxisArr
+        },
+        yAxis: {
+            type: 'value',
+            axisLabel: {
+                formatter: '{value}'
             }
-        }
-    ]
-};
+        },
+        series: [
+            {
+                name:'Profit',
+                type:'line',
+                data: profit,
+                markPoint: {
+                    data: [
+                        {type: 'max', name: '最大值'},
+                        {type: 'min', name: '最小值'}
+                    ]
+                },
+                markLine: {
+                    data: [
+                        {type: 'average', name: '平均值'}
+                    ]
+                }
+            },
+            {
+                name:'Quantity',
+                type:'line',
+                data: quantity,
+                markPoint: {
+                    data: [
+                        {type: 'max', name: '最大值'},
+                        {type: 'min', name: '最小值'}
+                    ]
+                },
+                markLine: {
+                    data: [
+                        {type: 'average', name: '平均值'}
+                    ]
+                }
+            }
+        ]
+    };
 	// reload the eChart
 	eChart.setOption(option, true);
+
+    $("#bot-back-btn").bind("click",function(){
+        window.location = 'control_panel.html'
+    });
 })
 
 // Window resizing for eChart
