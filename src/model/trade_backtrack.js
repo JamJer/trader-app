@@ -8,7 +8,7 @@ const YAML = require("yamljs");
 const trade_backtracking = {};
 
 // url definition
-const backtrack_url = "https://trader-bot-backtesting-jamesshieh0510.c9users.io/"
+const backtrack_url = "https://ectrader-backtesting.herokuapp.com/"
 
 /**
  * 
