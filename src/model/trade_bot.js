@@ -16,6 +16,7 @@ const {logger} = require('./logger')
 
 // operation 
 const trade_func = require('./trade_op')
+const trade_bt = require('./trade_backtrack')
 
 // Duration
 const duration = 10000;

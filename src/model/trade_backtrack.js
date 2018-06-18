@@ -32,30 +32,6 @@ trade_backtracking.backtrack = function(yaml_string,start,end){
                 console.log(body)
             }
         })
-
-    /* Old code.
-    request({
-        url: backtrack_url,
-        method: "POST",
-        timeout: timeout,
-        json: true,
-        headers: {
-            "content-type": "application/x-www-form-urlencoded"
-        },
-        body: {
-            yaml_string: yaml_string,
-            start: start,
-            end: end
-        }
-    },function(error,response,body){
-        if(!error && response.statusCode == 200){
-            console.log(body)
-        }
-        else{
-            console.log(error);
-            console.log(body)
-        }
-    })*/
 }
 
 module.exports = trade_backtracking;

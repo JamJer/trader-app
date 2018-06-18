@@ -10,4 +10,4 @@ const trade_bt = require("../trade_backtrack")
 const yamlstr = fs.readFileSync("../../../.local/policy/test_001.yaml",{encoding: "UTF-8"})
 
 // read from a normal yaml file, then assign the date for it
-trade_bt.backtrack(yamlstr,"2018-05-01 00:00:00","2018-06-01 00:00:00");
+trade_bt.backtrack(yamlstr,"2018-06-01 05:10:00","2018-06-05 05:15:00");
