@@ -100,6 +100,17 @@ const cmd_map = {
     },
     /**
      * 
+     * @function trade 
+     * @description Manually control trading behavior 
+     * 
+     */
+    "backtrack":{
+        "flag": 1,
+        "placeholder": "backtrack",
+        "description": "Enter backtrack testing mode."
+    },
+    /**
+     * 
      * @function debug 
      * @description new feature, testing branch goes here
      * 

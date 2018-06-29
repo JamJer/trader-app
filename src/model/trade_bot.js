@@ -16,6 +16,7 @@ const {logger} = require('./logger')
 
 // operation 
 const trade_func = require('./trade_op')
+const trade_bt = require('./trade_backtrack')
 
 // Duration
 const duration = 10000;
@@ -456,6 +457,11 @@ class trade_bot{
         //------執行賣出------
         console.log(trade_func.sell(newSellInfo.symbol,newSellInfo.quantity,newSellInfo.price))
         //--------------------
+    }
+
+    // Trade policy test func goes here 
+    backTrackTest(yaml_string, start_time, end_time){
+        return trade_bt.backtrack(yaml_string, start_time, end_time)
     }
 }
 
