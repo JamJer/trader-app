@@ -132,6 +132,13 @@ ipcRenderer.on('trade',(event,arg)=>{
     window.location.href="trade.html";
 })
 
+// Handle page change 
+ipcRenderer.on('backtrack',(event,arg)=>{
+    // page change to backtrack.html
+    // Enter next page - backtrack
+    window.location.href="backtrack.html";
+})
+
 // Handle debug page 
 ipcRenderer.on('debug',(event,arg)=>{
     // Enter debug page

@@ -138,6 +138,16 @@ class cmder{
         // page change
         event.sender.send('debug',{name: 'debug'});
     }
+
+    /**
+     * Enter backtrack mode 
+     * @param {*} event 
+     * @param {*} arg 
+     */
+    backtrack(event,arg){
+        // page change
+        event.sender.send('backtrack',{name: 'backtrack'});
+    }
 }
 
 module.exports = {

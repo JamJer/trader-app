@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+    <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="./lib/custom/main.css">
+    <link rel="stylesheet" href="./lib/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0/css/tempusdominus-bootstrap-4.min.css" />
+    <link rel="stylesheet" href="./lib/custom/custom-backtrack.css">
+    <link rel="stylesheet" href="./lib/custom/Loading-Mask-Plugin-jQuery-Busy-Load/dist/app.css">
+    <title>Trader APP</title>
+    </head>
+    <body class="bg-dark">
+        <!-- ================================================ Top Navbar ================================================ -->
+        <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top" id="navbar_top">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">
+                <i class="fa fa-copyright"></i>&nbsp;Trader APP</a>
+              <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbar2SupportedContent">
+                <span class="navbar-toggler-icon"></span><p> <font color="white">v0.0.1 </font></p>
+              </button>
+            </div>
+        </nav>
+
+        <!-- ================================================ Landing Page ================================================ -->
+        <div class="container-fluid">
+          <div class="jumbotron">
+                <div class="card-deck">
+                    <div class="card text-white bg-dark mb-3">                       
+                        <div class="card-body">
+                          <h5 class="card-title text-warning">BACKTRACKING SETTING</h5>
+                          <p class="card-text">TRADE POLICY:&nbsp;
+                            <select id="policy-list" class="form-control" data-live-search="true" data-btn-class="btn-secondary" data-live-search-placeholder="Search">
+                            <!-- Dynamic select will generate here -->
+                            </select>
+                          </p>
+                          <p class="card-text">START TIME:&nbsp;
+                            <input type="text" class="form-control datetimepicker-input" id="bt_start_time" data-toggle="datetimepicker" data-target="#bt_start_time"/>
+                          </p>
+                          <p class="card-text">END TIME:&nbsp;
+                            <input type="text" class="form-control datetimepicker-input" id="bt_end_time" data-toggle="datetimepicker" data-target="#bt_end_time"/>
+                          </p>
+                          <button id="bot-backtrack-btn" class='btn btn-success' disabled='true'><i class="fab fa-android"></i> Start Backtracking </button>
+                        </div>
+                      </div>
+                      <div class="card text-white bg-dark mb-3">
+                        <div class="card-body">
+                          <h5 class="card-title text-warning">POLICY PREVIEW</h5>
+                          <textarea id="policy-view" readonly></textarea>
+                          <p class="card-text"><small class="text-muted">Update time showing</small></p>
+                        </div>
+                      </div>
+                </div>
+                <div class="card text-white bg-dark mb-3" style="width: 100%;">
+                  <div class="card-body ">
+                    <h5 class="card-title text-warning">BACKTRACKING RESULT</h5>
+                    <div class="container">
+                      <div class="row">
+                        <div class="col">
+                          <p class="card-text">BALANCE:&nbsp;<span id="bt_rs_balance"></span></p>
+                          <p class="card-text">CAPITAL:&nbsp;<span id="bt_rs_capital" ></span></p>
+                          <p class="card-text">CURRENT MA:&nbsp;<span id="bt_rs_curMA"></span></p>
+                          <p class="card-text">CURRENT PRICE:&nbsp;<span id="bt_rs_curPrice"></span></p>
+                          <p class="card-text">CURRENT STATUS:&nbsp;<span id="bt_rs_curStatus"></span></p>
+                        </div>
+                        <div class="col">
+                          <p class="card-text">CURRENT VOLUME MUL:&nbsp;<span id="bt_rs_volMUL"></span></p>
+                          <p class="card-text">START TIME:&nbsp;<span id="bt_rs_start"></span></p>
+                          <p class="card-text">END TIME:&nbsp;<span id="bt_rs_end"></span></p>
+                          <p class="card-text">TOTAL BUY:&nbsp;<span id="bt_rs_ttBuy"></span></p>
+                          <p class="card-text">TOTAL SELL:&nbsp;<span id="bt_rs_ttSell"></span></p>
+                          <p class="card-text">TOTAL ROR:&nbsp;<span id="bt_rs_ttRor"></span></p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <button id="bot-back-btn" class='btn btn-info'><i class="fas fa-arrow-left"></i> Back to Control Panel</button>
+          </div>
+        </div>
+
+         <!-- ================================================ Bottom Navbar ================================================ -->
+        <div class="navbar fixed-bottom navbar-expand-md bg-dark navbar-dark text-nowrap">
+            <span class="hide-phone footer-link">
+                <a class="navbar-brand mx-auto px-5" href="#">Copyright © 2018 by Kevin Cyu. All rights reserved.</a>
+            </span>
+            <span style="float:right;"><font color="white">EFACANI, Trader App Team</font></span>
+        </div>
+    </body>
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<!-- In Electron, this is the correct way to include jQuery -->
+<script>window.$ = window.jQuery = require('./lib/js/jquery-3.3.1.min.js');</script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mootools/1.6.0/mootools-core.min.js"></script>
+<script src="./lib/custom/Loading-Mask-Plugin-jQuery-Busy-Load/dist/app.min.js"></script>
+<script type="text/javascript" charset="utf-8">require('./event/backtrack_channel.js')</script>
+</html>
