@@ -68,7 +68,7 @@ ipcRenderer.on('login-success', (event, arg) => {
 	let username = document.getElementById('username').value;
 	localStorage.setItem('username', username);
     // Enter next page - control panel
-    window.location.href="control_panel.html";
+    window.location.href="status.html";
 })
 ipcRenderer.on('login-error', (event, arg) => {
     console.log(arg) 

@@ -141,10 +141,6 @@ ipcRenderer.on('receive_bot_status',(event,arg)=>{
             })
         });
     });
-
-    $("#bot-back-btn").bind("click",function(){
-        window.location = 'control_panel.html'
-    });
 })
 
 

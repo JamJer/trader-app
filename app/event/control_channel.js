@@ -64,6 +64,10 @@ $(document).ready(function () {
         pageControl('purchase')
         // Working on
     });
+    $('#sb_setting').on('click', function () {
+        window.location.href="config.html"
+        // Working on
+    });
     $('#sb_help').on('click', function () {
         pageControl('help')
         // Working on

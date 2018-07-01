@@ -55,10 +55,6 @@ $("#bot-backtrack-btn").bind("click",function(){
     goBackTrack(policy_view.val(),$("#bt_start_time").val(),$("#bt_end_time").val())
 });
 
-$("#bot-back-btn").bind("click",function(){
-    window.location = 'control_panel.html'
-});
-
 function setPolicyToView(policy_name){
     var csvRequest = new Request({
         url:"../.local/policy/"+policy_name,
