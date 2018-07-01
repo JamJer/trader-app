@@ -3,6 +3,8 @@
  * 
  * - 用以判斷買賣、以獲得最大獲利
  */
+
+const request = require('request');
 const rp = require('request-promise')
 const YAML = require("yamljs");
 const trade_backtracking = {};
@@ -44,6 +46,32 @@ trade_backtracking.backtrack = function(yaml_string, start_time, end_time){
             reject(err)
         });
     });
+}
+
+trade_backtracking.backtrackPromise = function(yaml_string, start_time, end_time){
+    let data = {
+        yaml_string: yaml_string,
+        start: start_time,
+        end: end_time
+    }
+
+    let options = {
+        method: 'POST',
+        url: backtrack_url,
+        form: data,
+        timeout: timeout,
+        json: true
+    }
+
+    return new Promise((resolve, reject) => {
+        rp(options)
+        .then(function(parsedBody){
+            resolve(parsedBody)
+        })
+        .catch(function(err){
+            reject(err)
+        })
+    })
 }
 
 module.exports = trade_backtracking;
