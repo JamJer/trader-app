@@ -209,22 +209,26 @@ class trade_bot{
     load(){
         // reset func 
         this.func = [];
-        // push 
+        // 獲取 現價
         this.func.push(trade_func.price(this.tradingData.symbol));
+        // 獲取 平均交易量
         this.func.push(trade_func.va(this.tradingData.symbol));
+        // 獲取 MA
         this.func.push(trade_func.ma(this.tradingData.ma,this.tradingData.symbol))
 
         let self=this;
         Promise.all(this.func).then((data)=>{
-            // current price
+            // 填入現價
             self.price.push(data[0]); 
-            // current price max store volume
+            // 現價最大存放數量
             if(self.price.length > 1000){
                 self.price.shift();
             }
+            // 填入交易量
             self.dataVA = data[1];
+            // 填入 MA
             self.dataMA = data[2];
-            // and then start trading process
+            // 開始買賣偵測
             self.buy_and_sell();
         }).catch((error)=>{
             // console.log(error)
@@ -259,12 +263,16 @@ class trade_bot{
             case 'sell':
                 // console.log("Selling...")
                 this.log("Selling...")
-            case 'sell_10':
+            case 'sell_stoloss':
                 // console.log("Selling 10...")
-                this.log("Selling 10...")
+                this.log("Selling stoloss...")
             case 'sell_volume':
+                this.log("Selling volume ...")
+            case 'sell_mafall':
                 // console.log("Selling Volume...")
-                this.log("Selling Volume...")
+                this.log("Selling when detecting MA fall...")
+            case 'sell_belowma':
+                this.log("Selling when current price below MA ...")
                 if(!this.isVolumeExIncrease()){ //如果交易量沒有爆增
                     if(this.isMAUp() && this.isPriceDropTouchMA()){ //如果MA上揚且現價下跌碰觸MA
                         this.buy();								//執行買入
@@ -277,26 +285,44 @@ class trade_bot{
                 this.log("Buying...")
                 if(this.isVolumeExIncrease()){		//如果交易量爆增
                     this.currentStatus = 'sell_volume';
+                    this.sell();						//執行賣出   
+                }
+                else if(this.isPriceBelowMAXTime()){ 
+                    // 如果現價連續數次都低於 MA 就賣出
+                    this.currentStatus = 'sell_belowma';
+                    // 執行賣出
+                    this.sell();
+                }
+                else if(this.isPriceDropStop()){	//如果現價下跌至止損點
+                    this.currentStatus = 'sell_stoloss';
                     this.sell();						//執行賣出
-                }else if(this.isPriceDropStop()){	//如果現價下跌至止損點
-                    this.currentStatus = 'sell_10';
-                    this.sell();						//執行賣出
-                }else if(this.isPriceDropMA35()){	//如果現價下跌至MA3.5%以下
-                    this.currentStatus = 'buy_35';	//不加碼，等待賣出
+                }else if(this.isPriceDropMARally()){	//如果現價下跌至 MA 的反彈點以下
+                    this.currentStatus = 'buy_rally';	//不加碼，等待賣出
                 }else{
-                    if(this.isMAUp() && this.isPriceDropTouchMA() && this.isFirstOrUpXPerThanLast()){//如果MA上揚且現價下跌碰觸MA且現價比上次買入價高10%
+                    if(this.isMAUp() && this.isPriceDropTouchMA() && this.isFirstOrUpXPerThanLast()){
+                        //如果MA上揚且現價下跌碰觸MA且現價比上次買入價高10%
                         this.buy();					//執行加碼
                     }
                 }
                 break;
-            case 'buy_35': 						//現價已下跌至3.5%等待賣出
-                // console.log("Buying 35...")
-                this.log("Buying 35...")
+            case 'buy_rally': 						//現價已下跌至 MA 的反彈點、等待賣出
+                this.log("Buying Rally...")
                 if(this.isVolumeExIncrease()){		//如果交易量爆增
                     this.currentStatus = 'sell_volume';
                     this.sell();						//執行賣出
-                }else if(this.isPriceDropStop()){	//如果現價下跌至止損點
-                    this.currentStatus = 'sell_10';
+                }
+                else if(this.isPriceBelowMAXTime()){
+                    // 如果現價連續數次都低於 MA 就賣出
+                    this.currentStatus = 'sell_belowma';
+                    this.sell();
+                }
+                else if(this.isMAFallThreeTime()){
+                    // 如果最近 5 次 MA，累積三次呈現下跌
+                    this.currentStatus = 'sell_mafall';
+                    this.sell();
+                }
+                else if(this.isPriceDropStop()){	//如果現價下跌至止損點
+                    this.currentStatus = 'sell_stoloss';
                     this.sell();						//執行賣出
                 }else{
                     if(this.isPriceUpTouchMA()){		//如果現價上漲碰觸MA
@@ -309,14 +335,33 @@ class trade_bot{
                 // statements_def
                 break;
         }
-        // console.log('currentStatus: ' + this.currentStatus); //顯示目前狀態，可刪除
+
+        // Display Log
         this.log("current status: " + this.currentStatus)
+        this.log("=====================================")
+        this.log("目前時間: " + new Date().toLocaleString())
+        this.log("目前現價: " + this.price[this.price.length - 1])
+        this.log("目前 MA: " + this.dataMA[this.dataMA.length - 1].ma + ' ' + new Date(oneReqVar.dataMA[oneReqVar.dataMA.length - 1].timestamp).toLocaleString())
+        this.log('目前交易量倍數: ' + this.dataVA.pastOneHourVolume / this.dataVA.pastTenHoursVA);
+        this.log('買入資訊: ');
+        this.log(this.buyInfo);
+        this.log('總交易資訊: ');
+        this.log(this.tradeInfo);
+        this.log("=====================================")
     }
 
     /**
      * Determined function
      * 
+     * (deprecated)
      * @function isPriceDropMA35
+     * 
+     * (New)
+     * @function isPriceBelowMAXTime
+     * @function isMAFallThreeTime 
+     * @function isPriceDropMARally 
+     * 
+     * (Maintain)
      * @function isPriceDropStop
      * @function isVolumeExIncrease
      * @function isMAUp
@@ -327,6 +372,54 @@ class trade_bot{
      */
     isPriceDropMA35(){
         if(this.price[this.price.length - 1] < this.dataMA[this.dataMA.length - 1].ma * 0.965){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    isPriceBelowMAXTime(){
+        let mhdM = this.tradingData.ma[this.tradingData.ma.length - 1];
+        let d = (mhdM == 'h')? 12 : ((mhdM == 'd') ? 288 : ((mhdM == 'm' ? 1 : 8640)));
+        let count = 0;
+
+        for(let i = this.tradingData.sell.belowma; i > 0; i--){
+            let x = this.dataMA.length - i;
+            if(x < 0){
+                return false;
+            }
+            let y = this.price.length - 1 - (d * (this.tradingData.sell.belowma - i));
+            if(this.dataMA[x].ma > this.price[(y < 0 ? 0 : y)]){
+                count += 1;
+            }
+        }
+
+        if(count == this.tradingData.sell.belowma){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    isMAFallThreeTime(){
+        let count=0;
+        for(let i=5;i>0;i--){
+            let maLast = this.dataMA[((this.dataMA.length - 1 - i) < 0 ? 0 : (this.dataMA.length - 1 - i))].ma;
+            let maNext = this.dataMA[((this.dataMA.length - i) < 0 ? 0 : (this.dataMA.length - i))].ma;
+            if(maNext < maLast){
+                count += 1;
+            }
+        }
+
+        if(count >= 3){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    isPriceDropMARally(){
+        if(this.price[this.price.length - 1] < this.dataMA[this.dataMA.length - 1].ma * (1 - this.tradingData.buy.rally * 0.01)){
             return true;
         }else{
             return false;
@@ -348,7 +441,7 @@ class trade_bot{
 
     // Detect if there has burst increasement
     isVolumeExIncrease(){
-
+        // 一小時內 是否交易量暴增
         if(this.dataVA.pastOneHourVolume >= this.dataVA.pastTenHoursVA * this.tradingData.sell.magnification){
             return true;
         }else{
@@ -358,7 +451,10 @@ class trade_bot{
 
     // Detect whether if MA is increased 
     isMAUp(){
-        if(this.dataMA[this.dataMA.length - 1].ma > this.dataMA[this.dataMA.length - 2].ma){
+        // 偵測 MA 是否上揚
+        if(this.dataMA.length < 2){ // 針對新版做出修改（tradebot 5~7）
+            return false;
+        }else if(this.dataMA[this.dataMA.length - 1].ma > this.dataMA[this.dataMA.length - 2].ma){
             return true;
         }else{
             return false;
@@ -366,6 +462,7 @@ class trade_bot{
     }
 
     // decreasing point detection
+    // 現價是否下跌碰撞 MA
     isPriceDropTouchMA(){
         if(this.price.length > 1){
             let maBuyRange = this.dataMA[this.dataMA.length - 1].ma * (1 + this.tradingData.buy.range * 0.01); //MA買進點容許範圍
@@ -380,10 +477,12 @@ class trade_bot{
     }
 
     // increasing point detection
+    // 現價是否上漲碰觸 MA 
     isPriceUpTouchMA(){
         if(this.price.length > 1){
-            let maSellPoint = this.dataMA[this.dataMA.length - 1].ma;
-            if(this.price[this.price.length - 2] < maSellPoint && this.price[this.price.length - 1] >= maSellPoint){  //目前現價與上一個現價碰觸MA
+            let maSellPoint = this.dataMA[this.dataMA.length - 1].ma * (1 - this.tradingData.sell.range * 0.01);
+            //目前現價與上一個現價碰觸MA
+            if(this.price[this.price.length - 2] < maSellPoint && this.price[this.price.length - 1] >= maSellPoint){  
                 return true;
             }else{
                 return false;
@@ -414,18 +513,24 @@ class trade_bot{
       * 
       */
     buy(){
+        // 針對新版做出修改（tradebot 5~7）-> 買入時間
+        let timeStamp = this.isHistory ? this.currentHistoryTime.toLocaleString():(new Date().toLocaleString());
+        // Create buy info (new version)
         let newBuyinfo = {
             symbol: this.tradingData.symbol, 
-            timeStamp: new Date().getTime(),
+            timeStamp: timeStamp,
             type: 'buy',
-            quantity: this.tradingData.capital * this.tradingData.buy.volume / this.price[this.price.length - 1], //買入數量
-            price: this.price[this.price.length - 1] // 買入價格
+            quantity: this.tradingData.capital * (this.tradingData.buy.volume/100) / this.price[this.price.length - 1], //買入數量
+            price: this.price[this.price.length - 1], // 買入價格,
+            buy: (this.tradingData.capital * (this.tradingData.buy.volume/100) / this.price[oneReqVar.price.length - 1]) * this.price[this.price.length - 1]
         };
 
+        // 儲存買入資訊
         this.buyInfo.push(newBuyinfo);
+        // 儲存交易紀錄
         this.tradeInfo.push(newBuyinfo);
 
-        // ------------ TODO: execute the buy operation -------------
+        // ------------ execute the buy operation -------------
         console.log(trade_func.buy(newBuyinfo.symbol,newBuyinfo.quantity,newBuyinfo.price))
     }
 
@@ -437,13 +542,28 @@ class trade_bot{
             totalCost += this.buyInfo[i].quantity * this.buyInfo[i].price;
         }
     
+        // create timestamp
+        let timeStamp = this.isHistory ? this.currentHistoryTime.toLocaleString():(new Date().toLocaleString());
+
+        // create new selling information
+        /**
+         * symbol       //賣出交易對符號
+         * timeStamp    //賣出時間
+         * type         //
+         * status       //賣出類型(交易爆量導致的賣出、止損賣出、獲利賣出)
+         * quantity     //賣出數量
+         * price        //賣出價格
+         * sell         //
+         * ror          //收益率
+         */
         let newSellInfo = {
             symbol: this.tradingData.symbol,	//賣出交易對符號
-            timeStamp: new Date().getTime(),	//賣出時間
+            timeStamp: timeStamp,	//賣出時間
             type: 'sell',
             status: this.currentStatus,		//賣出類型(交易爆量導致的賣出、止損賣出、獲利賣出)
             quantity: totalQty, //賣出數量
             price: this.price[this.price.length - 1],	//賣出價格
+            sell: totalQty * this.price[this.price.length - 1],
             ror: ( totalQty * this.price[this.price.length - 1] - totalCost ) / totalCost  //收益率
         };
         
