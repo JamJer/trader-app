@@ -458,6 +458,11 @@ class trade_bot{
         console.log(trade_func.sell(newSellInfo.symbol,newSellInfo.quantity,newSellInfo.price))
         //--------------------
     }
+
+    // Trade policy test func goes here 
+    backTrackTest(yaml_string, start_time, end_time){
+        return trade_bt.backtrack(yaml_string, start_time, end_time)
+    }
 }
 
 module.exports = trade_bot

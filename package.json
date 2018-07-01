@@ -11,6 +11,7 @@
     "main": "main.js",
     "dependencies": {
         "binance-api-node": "^0.7.6",
+        "bootstrap-select": "^1.13.1",
         "datatables.net": "^1.10.16",
         "datatables.net-autofill-bs4": "^2.2.2",
         "datatables.net-bs4": "^1.10.16",
@@ -24,16 +25,17 @@
         "electron-packager": "~9.1.0",
         "electron-tabs": "^0.7.3",
         "jquery": "^3.3.1",
-        "jszip": "^3.1.5",
         "jsonfile": "^4.0.0",
+        "jszip": "^3.1.5",
         "moment": "^2.22.1",
         "pdfmake": "^0.1.36",
         "randomstring": "^1.1.5",
         "remote": "^0.2.6",
         "request": "^2.85.0",
         "request-promise": "^4.2.2",
-        "yamljs": "^0.3.0",
-        "sqlite3": "https://github.com/mapbox/node-sqlite3/tarball/master"
+        "sqlite3": "https://github.com/mapbox/node-sqlite3/tarball/master",
+        "tempusdominus-bootstrap-4": "^5.0.0",
+        "yamljs": "^0.3.0"
     },
     "devDependencies": {
         "electron-rebuild": "^1.7.3"

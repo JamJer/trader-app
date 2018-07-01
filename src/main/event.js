@@ -134,6 +134,22 @@ ipcMain.on('set_bot',(event,arg)=>{
     })
 })
 
+ipcMain.on('backtrack_bot',(event,arg)=>{
+    console.log("Starting Backtracking....")
+    let tbot = new trade_bot();
+    tbot.backTrackTest(arg.yaml_string,arg.start_time,arg.end_time).then((data) => {
+        console.log("---Backtracking End---")
+        event.sender.send("receive_backtrack_bot",{
+            res: data
+        })
+    }).catch(err => {
+        event.sender.send("receive_backtrack_bot",{
+            res: err
+        })
+    });
+})
+
+
 // ================================================== User login channel ==================================================
 /**
  * 
@@ -154,6 +170,7 @@ ipcMain.on('push',cmder.push);
 ipcMain.on('purchase',cmder.purchase);
 
 ipcMain.on('trade',cmder.trade);
+ipcMain.on('backtrack',cmder.backtrack);
 ipcMain.on('debug',cmder.debug);
 
 // ================================================== Editor channel ==================================================
