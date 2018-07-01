@@ -43,7 +43,7 @@ uskip.addEventListener("click",function(event){
     console.log(__dirname);
     // go to command line mode
     // Enter next page - control panel
-    window.location.href="control_panel.html";
+    window.location.href="status.html";
 });
 // Config event
 let uconfig = document.querySelector("#config");

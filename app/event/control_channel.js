@@ -4,28 +4,77 @@
  */
 const { remote, ipcRenderer } = require('electron');
 const currentWindow = remote.getCurrentWindow();
+var $ = require('jquery');
+require('malihu-custom-scrollbar-plugin')($);
 const path = require('path');
 const url = require('url');
 const cmd_map = require('../config/cmd_map');
-// utils
-const utils = require('../utils/ui');
 
+// Sider bar event....
+$(document).ready(function () {
+    $("#sidebar").mCustomScrollbar({
+         theme:"dark"
+    });
 
-// Create first 
-utils.create_block("Welcome!","Please using `help` to list all available commands.","info","cmd_display");
+    $('.overlay').on('click', function () {
+        $('#sidebar').removeClass('active');
+        $('.overlay').removeClass('active');
+    });
 
-// fetch block -> cmd_block
-let cmd_block = document.querySelector("#cmd_block");
-// Submit and store the file
-cmd_block.addEventListener("submit", function(event){
-    // stop the form from submitting
-    event.preventDefault();
-    // get the user input
-    let user_cmd = document.getElementById('cmd').value;
-    // clear cmd & cmd_display
-    document.getElementById('cmd').value="";
-    let display_entries = document.getElementById("cmd_display");
-    while (display_entries.firstChild) {display_entries.removeChild(display_entries.firstChild);}
+    $('#sidebarCollapse').on('click', function () {
+        // open or close navbar
+        $('#sidebar').toggleClass('active');
+        $('.overlay').toggleClass('active');
+        // close dropdowns
+        $('.collapse.in').toggleClass('in');
+        // and also adjust aria-expanded attributes we use for the open/closed arrows
+        // in our CSS
+        $('a[aria-expanded=true]').attr('aria-expanded', 'false');
+    });
+
+    $('#sb_dashboard').on('click', function () {
+        alert("This page is still working on....")
+        // Working on
+    });
+    $('#sb_status').on('click', function () {
+        pageControl('status')
+        // Working on
+    });
+    $('#sb_trade').on('click', function () {
+        pageControl('trade')
+        // Working on
+    });
+    $('#sb_backtrack').on('click', function () {
+        pageControl('backtrack')
+        // Working on
+    });
+    $('#sb_list_policy').on('click', function () {
+        pageControl('list')
+        // Working on
+    });
+    $('#sb_create_policy').on('click', function () {
+        pageControl('create')
+        // Working on
+    });
+    $('#sb_edit_policy').on('click', function () {
+        pageControl('edit')
+        // Working on
+    });
+    $('#sb_purchase_policy').on('click', function () {
+        pageControl('purchase')
+        // Working on
+    });
+    $('#sb_help').on('click', function () {
+        pageControl('help')
+        // Working on
+    });
+    $('#sb_about').on('click', function () {
+        alert("This page is still working on....")
+        // Working on
+    });
+});
+
+function pageControl(user_cmd){
     // split command
     let cmd_id=user_cmd.split(" ")[0];
     let cmd_body=user_cmd.split(" ")[1];
@@ -34,7 +83,7 @@ cmd_block.addEventListener("submit", function(event){
     if(cmd_map[cmd_id] == undefined){
         // Not found, display error 
         console.log("Display error");
-        utils.create_block("Not found","Please using `help` to list all available commands.","danger","cmd_display");
+        alert("Page Not found 404");
         return;
     }
     else{
@@ -56,13 +105,11 @@ cmd_block.addEventListener("submit", function(event){
                 // Display message on it
                 // Using bootstrap list group to illustrate the information
                 // Link: https://v4-alpha.getbootstrap.com/components/list-group/#custom-content
-                utils.create_block(cmd_map[k].placeholder,cmd_map[k].description,"success","cmd_display");
+                // utils.create_block(cmd_map[k].placeholder,cmd_map[k].description,"success","cmd_display");
             }
         }
     }
-    
-});
-
+}
 
 // ================================= Receive messages from user command =================================
 ipcRenderer.on('status',(event,arg)=>{
@@ -96,33 +143,33 @@ ipcRenderer.on('list',(event,arg)=>{
             // Display message on it
             // Using bootstrap list group to illustrate the information
             // Link: https://v4-alpha.getbootstrap.com/components/list-group/#custom-content
-            utils.create_block(arg[k].trade_policy_id,arg[k].trade_policy_loc,"warning","cmd_display");
+            // utils.create_block(arg[k].trade_policy_id,arg[k].trade_policy_loc,"warning","cmd_display");
+            console.log(arg[k].trade_policy_id+" "+arg[k].trade_policy_loc)
         }
     else{
-        utils.create_block("Not found","Please using `help` to list all available commands.","danger","cmd_display");
+        console.log("Not found")
+        // utils.create_block("Not found","Please using `help` to list all available commands.","danger","cmd_display");
     }
 })
 
 ipcRenderer.on('use',(event,arg)=>{
     console.log(arg);
-    utils.create_block("Not found","Please using `help` to list all available commands.","danger","cmd_display");
+    // utils.create_block("Not found","Please using `help` to list all available commands.","danger","cmd_display");
 })
 
 ipcRenderer.on('pull',(event,arg)=>{
     console.log(arg);
-    utils.create_block("Not found","Please using `help` to list all available commands.","danger","cmd_display");
+    // utils.create_block("Not found","Please using `help` to list all available commands.","danger","cmd_display");
 })
 
 ipcRenderer.on('push',(event,arg)=>{
     console.log(arg);
-
-    utils.create_block("Not found","Please using `help` to list all available commands.","danger","cmd_display");
+    // utils.create_block("Not found","Please using `help` to list all available commands.","danger","cmd_display");
 })
 
 ipcRenderer.on('purchase',(event,arg)=>{
     console.log(arg);
-
-    utils.create_block("Not found","Please using `help` to list all available commands.","danger","cmd_display");
+    // utils.create_block("Not found","Please using `help` to list all available commands.","danger","cmd_display");
 })
 
 // Handle page change 
