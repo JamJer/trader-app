@@ -341,7 +341,7 @@ class trade_bot{
         this.log("=====================================")
         this.log("目前時間: " + new Date().toLocaleString())
         this.log("目前現價: " + this.price[this.price.length - 1])
-        this.log("目前 MA: " + this.dataMA[this.dataMA.length - 1].ma + ' ' + new Date(oneReqVar.dataMA[oneReqVar.dataMA.length - 1].timestamp).toLocaleString())
+        this.log("目前 MA: " + this.dataMA[this.dataMA.length - 1].ma + ' ' + new Date(this.dataMA[this.dataMA.length - 1].timestamp).toLocaleString())
         this.log('目前交易量倍數: ' + this.dataVA.pastOneHourVolume / this.dataVA.pastTenHoursVA);
         this.log('買入資訊: ');
         this.log(this.buyInfo);
@@ -522,7 +522,7 @@ class trade_bot{
             type: 'buy',
             quantity: this.tradingData.capital * (this.tradingData.buy.volume/100) / this.price[this.price.length - 1], //買入數量
             price: this.price[this.price.length - 1], // 買入價格,
-            buy: (this.tradingData.capital * (this.tradingData.buy.volume/100) / this.price[oneReqVar.price.length - 1]) * this.price[this.price.length - 1]
+            buy: (this.tradingData.capital * (this.tradingData.buy.volume/100) / this.price[this.price.length - 1]) * this.price[this.price.length - 1]
         };
 
         // 儲存買入資訊
