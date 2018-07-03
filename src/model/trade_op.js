@@ -9,14 +9,17 @@ const config = require("../config/config.default")
 const {db} = require("./db")
 
 const trade_model = {}
+trade_model.binance_apiKey = null
+trade_model.binance_apiSecret = null
 // apikey/secret 
-trade_model.apiKey = config.trade.binance_apiKey
+/*trade_model.apiKey = config.trade.binance_apiKey
 trade_model.apiSecret = config.trade.binance_apiSecret
 
 var client = Binance({
     apiKey: config.trade.binance_apiKey,
     apiSecret: config.trade.binance_apiSecret
-})
+})*/
+
 /**
  * Supported function 
  * 
@@ -106,10 +109,10 @@ trade_model.ma = async(type,symbol) => {
  * @param {*} symbol 
  */
 trade_model.price = async(symbol) => {
-    // console.log("Request Price ...")
+    console.log("Request Price ...")
     try{
         let price = await client.prices();
-        return price[symbol];
+        return parseFloat(price[symbol]);
     }
     catch(err){
         let result = {};
@@ -127,7 +130,7 @@ trade_model.price = async(symbol) => {
 trade_model.va = async(symbol) => {
     // console.log("Request Volume ...")
     try{
-        let interval = '1m'
+        let interval = '5m'
         let tempVA=[]
         // fetch the data
         let data = await client.candles({symbol: symbol, interval:interval})
@@ -146,7 +149,7 @@ trade_model.va = async(symbol) => {
         let pastHoursVolume=[]
         for(let hours = 0; hours<=10; hours++){
             let oneHourVolume=0;
-            for(let i=tempVA.length-1-(hours*60); i > tempVA.length-61-(hours*60);i--){
+            for(let i=tempVA.length-1-(hours*12); i > tempVA.length-13-(hours*12);i--){
                 oneHourVolume += tempVA[i].va;
             }
             pastHoursVolume.push(oneHourVolume);
@@ -194,6 +197,14 @@ trade_model.buy = async(symbol,quantity,price) => {
     let result = {};
     try {
         let self=this;
+        // need to make sure user have setting apikey and apiSecret
+        if(self.binance_apiKey==null) {
+            throw "mising binance api key";
+        }
+        const client = Binance({
+            apiKey: self.binance_apiKey,
+            apiSecret: self.binance_apiSecret,
+        });
         const dateTime = Date.now();
         const timestamp = Math.floor(dateTime);
         let serverTime = await client.time();
@@ -220,7 +231,13 @@ trade_model.sell = async(symbol,quantity,price)  => {
     let result = {};
     try {
         let self=this;
-        
+        if(self.binance_apiKey==null) {
+            throw "mising binance api key";
+        }
+        const client = Binance({
+            apiKey: self.binance_apiKey,
+            apiSecret: self.binance_apiSecret,
+        });
         const dateTime = Date.now();
         const timestamp = Math.floor(dateTime)
         let serverTime = await client.time();

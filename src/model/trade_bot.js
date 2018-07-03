@@ -22,6 +22,70 @@ const trade_bt = require('./trade_backtrack')
 const duration = 10000;
 
 class trade_bot{
+    /**
+     * Trade bot 屬性：
+     * 
+     * currentStatus        現存機器人的交易狀態
+     *      - wait               開始執行，等待買入
+     *      - buy                已買入，等待加碼、等待現價跌至反彈點以下
+     *      - buy_rally          已買入，現價跌至 MA 反彈點以下，不加碼等待賣出
+     *      - sell               已賣出獲利，等待買入
+     *      - sell_stoloss       現價跌至上次買入、或加碼價格止損點以下，已賣出止損，等待買入
+     *      - sell_volume        成交量暴增，籌碼不穩，已執行賣出、等待買入
+     *      - sell_mafall        最近 5 次 MA，累積三次呈獻下跌，決定賣出
+     *      - sell_belowma       現價連續數次低於 MA，決定賣出
+     * 
+     * price                現價
+     * buyInfo              儲存未賣出前的買入資訊
+     * tradeInfo            儲存買入及賣出資訊 （e.g. 交易紀錄）
+     * dataVA               儲存交易量資訊
+     * dataMA               儲存 MA
+     *      - {
+     *          timestamp:          時間
+     *          pastTenHoursVA:     過去一小時到過去第 11 個小時的平均交易量
+     *          pastOneHourVolume:  過去一小時以內交易量
+     *        }
+     * tradingData          讀取的交易策略資料
+     * =====================================================================
+     * 
+     * 對外的 menber function:
+     * 
+     * log(msg)                                             做紀錄檔案格式寫入
+     * get_log()                                            收集測資（交易紀錄）
+     * get_id()                                             回傳該 trade bot 的 unique id
+     * stop()                                               關閉、停止這個交易機器人
+     * 
+     * change_symbol(new_symbol)                            動態更換 symbol
+     * change_ma(new_ma)                                    動態更新 MA
+     * change_all(new_symbol,new_ma)                        動態更新 symbol + ma
+     * change_policy_by_url(new_policy_url)                 動態更換讀取的 交易策略 (via 檔案路徑)
+     * 
+     * start_by_url(url)                                    透過指定交易策略的檔案路徑來啟動
+     * start_by_obj(obj）                                   透過指定交易策略的物件來啟動
+     * 
+     * load()                                               開始進行交易系統，對 trade bot class 內的每個屬性做初始化
+     * load_policy_by_url(policy_path)                      依據指定交易策略 "路徑" 來載入初始化
+     * load_policy_by_obj(policy_obj)                       依據指定交易策略 "物件" 來載入初始化
+     * 
+     * 對內的 member function (主要跟交易動作、狀態有關):
+     * 
+     * buy_and_sell()                                       等待前面初始化等動作都完成後，就可以開始進行買賣
+     * 
+     * isPriceBelowMAXTime                                      
+     * isMAFallThreeTime
+     * isPriceDropMARally
+     * 
+     * isPriceDropStop
+     * isVolumeExIncrease
+     * isMAUp
+     * isPriceDropTouchMA
+     * isPriceUpTouchMA
+     * isFirstOrUpXPerThanLast
+     * 
+     * buy()                                                 進行購買的動作
+     * sell()                                                進行賣出的動作
+     * 
+     */
     constructor(){
         // record status
         this.currentStatus = 'wait';
@@ -221,7 +285,7 @@ class trade_bot{
             // 填入現價
             self.price.push(data[0]); 
             // 現價最大存放數量
-            if(self.price.length > 1000){
+            if(self.price.length > 10000){
                 self.price.shift();
             }
             // 填入交易量
@@ -258,34 +322,34 @@ class trade_bot{
         //console.log(this)
         switch(this.currentStatus){
             case 'wait':
-                // console.log("Waiting...")
                 this.log("Waiting...")
             case 'sell':
-                // console.log("Selling...")
                 this.log("Selling...")
             case 'sell_stoloss':
-                // console.log("Selling 10...")
                 this.log("Selling stoloss...")
             case 'sell_volume':
                 this.log("Selling volume ...")
             case 'sell_mafall':
-                // console.log("Selling Volume...")
                 this.log("Selling when detecting MA fall...")
             case 'sell_belowma':
                 this.log("Selling when current price below MA ...")
-                if(!this.isVolumeExIncrease()){ //如果交易量沒有爆增
-                    if(this.isMAUp() && this.isPriceDropTouchMA()){ //如果MA上揚且現價下跌碰觸MA
-                        this.buy();								//執行買入
+                //如果交易量沒有爆增
+                if(!this.isVolumeExIncrease()){
+                    //如果MA上揚且現價下跌碰觸MA
+                    if(this.isMAUp() && this.isPriceDropTouchMA()){ 
+                        //執行買入
+                        this.buy();								
                         this.currentStatus = 'buy';
                     }
                 }
                 break;
             case 'buy':
-                // console.log("Buying...")
                 this.log("Buying...")
-                if(this.isVolumeExIncrease()){		//如果交易量爆增
+                //如果交易量爆增
+                if(this.isVolumeExIncrease()){		
                     this.currentStatus = 'sell_volume';
-                    this.sell();						//執行賣出   
+                    //執行賣出   
+                    this.sell();						
                 }
                 else if(this.isPriceBelowMAXTime()){ 
                     // 如果現價連續數次都低於 MA 就賣出
@@ -293,23 +357,29 @@ class trade_bot{
                     // 執行賣出
                     this.sell();
                 }
-                else if(this.isPriceDropStop()){	//如果現價下跌至止損點
+                else if(this.isPriceDropStop()){	
+                    //如果現價下跌至止損點
                     this.currentStatus = 'sell_stoloss';
-                    this.sell();						//執行賣出
-                }else if(this.isPriceDropMARally()){	//如果現價下跌至 MA 的反彈點以下
-                    this.currentStatus = 'buy_rally';	//不加碼，等待賣出
+                    this.sell();						
+                }else if(this.isPriceDropMARally()){	
+                    //如果現價下跌至 MA 的反彈點以下
+                    this.currentStatus = 'buy_rally';	
+                    //不加碼，等待賣出
                 }else{
                     if(this.isMAUp() && this.isPriceDropTouchMA() && this.isFirstOrUpXPerThanLast()){
                         //如果MA上揚且現價下跌碰觸MA且現價比上次買入價高10%
-                        this.buy();					//執行加碼
+                        //執行加碼
+                        this.buy();					
                     }
                 }
                 break;
-            case 'buy_rally': 						//現價已下跌至 MA 的反彈點、等待賣出
+            case 'buy_rally': 						
+                //現價已下跌至 MA 的反彈點、等待賣出
                 this.log("Buying Rally...")
-                if(this.isVolumeExIncrease()){		//如果交易量爆增
+                if(this.isVolumeExIncrease()){		
+                    //如果交易量爆增
                     this.currentStatus = 'sell_volume';
-                    this.sell();						//執行賣出
+                    this.sell();						
                 }
                 else if(this.isPriceBelowMAXTime()){
                     // 如果現價連續數次都低於 MA 就賣出
@@ -321,13 +391,15 @@ class trade_bot{
                     this.currentStatus = 'sell_mafall';
                     this.sell();
                 }
-                else if(this.isPriceDropStop()){	//如果現價下跌至止損點
+                else if(this.isPriceDropStop()){	
+                    //如果現價下跌至止損點
                     this.currentStatus = 'sell_stoloss';
-                    this.sell();						//執行賣出
+                    this.sell();						
                 }else{
-                    if(this.isPriceUpTouchMA()){		//如果現價上漲碰觸MA
+                    if(this.isPriceUpTouchMA()){		
+                        //如果現價上漲碰觸MA
                         this.currentStatus = 'sell';
-                        this.sell();					//執行賣出
+                        this.sell();
                     }
                 }
                 break;
@@ -353,9 +425,6 @@ class trade_bot{
     /**
      * Determined function
      * 
-     * (deprecated)
-     * @function isPriceDropMA35
-     * 
      * (New)
      * @function isPriceBelowMAXTime
      * @function isMAFallThreeTime 
@@ -370,13 +439,6 @@ class trade_bot{
      * @function isFirstOrUpXPerThanLast
      * 
      */
-    isPriceDropMA35(){
-        if(this.price[this.price.length - 1] < this.dataMA[this.dataMA.length - 1].ma * 0.965){
-            return true;
-        }else{
-            return false;
-        }
-    }
 
     isPriceBelowMAXTime(){
         let mhdM = this.tradingData.ma[this.tradingData.ma.length - 1];
