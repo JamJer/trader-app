@@ -22,6 +22,7 @@
         "datatables.net-scroller-bs4": "^1.4.4",
         "echarts": "^4.1.0",
         "electron": "~1.8.4",
+        "electron-json-storage": "^4.1.0",
         "electron-packager": "~9.1.0",
         "electron-tabs": "^0.7.3",
         "jquery": "^3.3.1",

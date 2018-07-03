@@ -18,6 +18,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
     <link rel="stylesheet" href="./lib/custom/Bootstrap-4-Dropdown-Select-Plugin-jQuery/dist/css/bootstrap-select.css">
     <link rel="stylesheet" href="./lib/custom/custom-bot-instance.css">
+    <!-- DataTable custom CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css"/>
+    <link rel="stylesheet" href="./lib/css/dataTable-custom.css">
     <title>Trader APP</title>
     </head>
     <body class="bg-dark">
@@ -118,10 +121,26 @@
                         </div>
                       </div>
                 </div>
+                <div class="card text-white bg-dark mb-3" style="width: 100%;">
+                  <div class="card-body">
+                    <h5 class="card-title text-warning">BOT TRADE HISTORY</h5>
+                    <div class="container">
+                      <h5 class="card-title text-info text-center">Buy infomation</h5>
+                      <table class="table table-striped table-bordered" id="bot_trade_buy_table" style="width:100%">
+                      <!-- Dynamic data go here -->
+                      </table>
+                    </div>
+                    <div class="container">
+                      <h5 class="card-title text-info text-center">Sell infomation</h5>
+                      <table class="table table-striped table-bordered" id="bot_trade_sell_table" style="width:100%">
+                      <!-- Dynamic data go here -->
+                      </table>
+                    </div>
+                  </div>
+                </div>
                 <button id="bot-back-btn" class='btn btn-info'><i class="fas fa-arrow-left"></i> Back to Status Panel</button>
             </div>
         </div>
-
          <!-- ================================================ Bottom Navbar ================================================ -->
         <div class="navbar fixed-bottom navbar-expand-md bg-dark navbar-dark text-nowrap">
             <span class="hide-phone footer-link">
@@ -135,11 +154,13 @@
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
 <!-- In Electron, this is the correct way to include jQuery -->
 <script>window.$ = window.jQuery = require('./lib/js/jquery-3.3.1.min.js');</script>
-<script type="text/javascript" charset="utf-8">require('./event/bot_instance_channel.js')</script>
-<script type="text/javascript" src="./lib/custom/Bootstrap-4-Dropdown-Select-Plugin-jQuery/dist/js/bootstrap-select.js"></script>
 <!-- Popper.JS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
 <!-- Bootstrap JS -->
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+<!-- Custom JS -->
+<script type="text/javascript" src="./lib/custom/Bootstrap-4-Dropdown-Select-Plugin-jQuery/dist/js/bootstrap-select.js"></script>
+<!-- Event JS -->
+<script type="text/javascript" charset="utf-8">require('./event/bot_instance_channel.js')</script>
 <script type="text/javascript" charset="utf-8">require('./event/control_channel.js')</script>
 </html>

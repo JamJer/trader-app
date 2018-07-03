@@ -14,6 +14,9 @@ const YAML = require('yamljs')
 // logger 
 const {logger} = require('./logger')
 
+// localStore
+const trade_record_func = require('./localStore/bot_trade_record.js')
+
 // operation 
 const trade_func = require('./trade_op')
 const trade_bt = require('./trade_backtrack')
@@ -35,6 +38,7 @@ class trade_bot{
         this.dataVA = null;
         this.dataMA = []
         // loading yamldata (trading policy)
+        this.tradePolicy = null;
         this.tradingData = null;
         this.func = [];
         
@@ -179,14 +183,30 @@ class trade_bot{
     }
 
     start_by_url(url){
+        // 新增交易策略名稱屬性
+        let policy_name_path = url.split('/')
+        let policy_name = policy_name_path[policy_name_path.length - 1].split('.')[0]
+        this.tradePolicy = policy_name
         // start trading
         let self=this;
         // run 
         self.load_policy_by_url(url);
-        self.systemInterval = setInterval(function(){
-            // console.log(self.id);
-            self.load_policy_by_url(url);
-        },duration)
+        // LocalStorafe 測試用
+        // self.systemInterval = setInterval(function(){
+        //     // console.log(self.id);
+        //     self.load_policy_by_url(url);
+        //     // For local store test
+        //     let testBuyinfo = {
+        //         tradePolicy: "trade_strategiy",
+        //         symbol: "BTCUSDT", 
+        //         timeStamp: new Date().toLocaleString(),
+        //         type: 'buy',
+        //         quantity: 10, //買入數量
+        //         price: 1000, // 買入價格,
+        //         buy: 10
+        //     };
+        //     trade_record_func.pushIntoTradeRecord(self.id,testBuyinfo)
+        // },duration)
     }
 
     start_by_obj(obj){
@@ -517,6 +537,7 @@ class trade_bot{
         let timeStamp = this.isHistory ? this.currentHistoryTime.toLocaleString():(new Date().toLocaleString());
         // Create buy info (new version)
         let newBuyinfo = {
+            tradePolicy: this.tradePolicy,
             symbol: this.tradingData.symbol, 
             timeStamp: timeStamp,
             type: 'buy',
@@ -529,7 +550,8 @@ class trade_bot{
         this.buyInfo.push(newBuyinfo);
         // 儲存交易紀錄
         this.tradeInfo.push(newBuyinfo);
-
+        // 儲存交易記錄到local端
+        trade_record_func.pushIntoTradeRecord(this.id,newBuyinfo)
         // ------------ execute the buy operation -------------
         console.log(trade_func.buy(newBuyinfo.symbol,newBuyinfo.quantity,newBuyinfo.price))
     }
@@ -557,6 +579,7 @@ class trade_bot{
          * ror          //收益率
          */
         let newSellInfo = {
+            tradePolicy: this.tradePolicy,
             symbol: this.tradingData.symbol,	//賣出交易對符號
             timeStamp: timeStamp,	//賣出時間
             type: 'sell',
@@ -573,7 +596,8 @@ class trade_bot{
             this.buyInfo.pop();
         }
         this.tradeInfo.push(newSellInfo);//儲存交易紀錄
-    
+        // 儲存交易記錄到local端
+        trade_record_func.pushIntoTradeRecord(this.id,newSellInfo)
         //------執行賣出------
         console.log(trade_func.sell(newSellInfo.symbol,newSellInfo.quantity,newSellInfo.price))
         //--------------------

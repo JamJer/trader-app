@@ -16,6 +16,8 @@ const trade_bot = require('../model/trade_bot');
 var current_bot_id = "";
 const config = require('../config/config.default');
 
+// localStore
+const trade_record_func = require('../model/localStore/bot_trade_record.js')
 
 // ================================================== Trader bot channel ==================================================
 /**
@@ -28,10 +30,12 @@ ipcMain.on('tradebotUpdateMA',trader.update_ma);*/
 ipcMain.on('trade_op',(event,arg)=>{
     trader.main_entry(event,arg);
 
-    // debug, create bot instance, and then check out the message 
-    let tbot = new trade_bot();
-    tbot.start_by_url(".local/trade_strategy.yaml")
-    trader.botID_queue.push({id: tbot.get_id(), instance: tbot})
+    // 如果是交易的動作才新增機器人
+    if(arg.cmd == "trade") {
+        let tbot = new trade_bot();
+        tbot.start_by_url(".local/trade_strategy.yaml")
+        trader.botID_queue.push({id: tbot.get_id(), instance: tbot})
+    }
 
     /*setInterval(()=>{
         trader.kill_all_bot();
@@ -61,6 +65,9 @@ ipcMain.on('create_bot',(event,arg)=>{
     tbot.start_by_url(arg.url)
     trader.botID_queue.push({id: tbot.get_id(), instance: tbot})
 
+    // Create local storage of thsi bot 
+    trade_record_func.initailizeLocalBotRecord(tbot.get_id())
+
     // resend - receive_bot_status
     let id_queue = [];
     trader.botID_queue.forEach((element)=>{
@@ -79,6 +86,9 @@ ipcMain.on('kill_bot',(event,arg)=>{
      * @param arg.id
      */
     trader.kill_bot(arg.id)
+
+    // Delete local storage of this bot 
+    trade_record_func.deleteBotRecordFromLocal(arg.id)
 
     // resend - receive_bot_status
     let id_queue = [];

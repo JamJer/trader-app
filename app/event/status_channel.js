@@ -5,6 +5,7 @@
  */
 const { remote, ipcRenderer } = require('electron');
 const currentWindow = remote.getCurrentWindow();
+const storage = require('electron-json-storage');
 const path = require('path');
 const url = require('url');
 const $  = require( 'jquery' );
@@ -12,11 +13,18 @@ const dt = require( 'datatables.net' )();
 
 const utils = require('../utils/ui')
 
-// send message to update table
 ipcRenderer.send('update_bot_status',{})
+
+setInterval(function(){
+    // send message to update table
+    ipcRenderer.send('update_bot_status',{})
+},30000)
 
 // DataTable variable
 var botStatusTable
+var botsTradeBuyRecordsTable
+var botsTradeSellRecordsTable
+
 // DataTable initialization
 botStatusTable = $('#bot_status_table').DataTable( {
     "createdRow": function ( row, data, index ) {
@@ -38,6 +46,59 @@ botStatusTable = $('#bot_status_table').DataTable( {
             { title: "MANAGEMENT" }
         ]
 } );
+
+botsTradeBuyRecordsTable = $('#bots_buy_records_table').DataTable( {
+    "createdRow": function ( row, data, index ) {
+                $('td', row).eq(0).addClass('normal');
+                $('td', row).eq(1).addClass('market');
+            },
+        "autoWidth": true,
+        "paging": true,
+        columnDefs: [{ 
+            "orderable": false, 
+            "targets": 2 
+        }],
+        fixedColumns: true,
+        autoFill: true,
+        data: [],
+        columns: [
+            { title: "BOT ID" },
+            { title: "TIMESTAMP" },
+            { title: "POLICY USED" },
+            { title: "SYMBOL" },
+            { title: "QUANTITY" },
+            { title: "PRICE" },
+            { title: "BUY" }
+        ]
+} );
+
+botsTradeSellRecordsTable = $('#bots_sell_records_table').DataTable( {
+    "createdRow": function ( row, data, index ) {
+                $('td', row).eq(0).addClass('normal');
+                $('td', row).eq(1).addClass('market');
+            },
+        "autoWidth": true,
+        "paging": true,
+        columnDefs: [{ 
+            "orderable": false, 
+            "targets": 2 
+        }],
+        fixedColumns: true,
+        autoFill: true,
+        data: [],
+        columns: [
+            { title: "BOT ID" },
+            { title: "TIMESTAMP" },
+            { title: "POLICY USED" },
+            { title: "SYMBOL" },
+            { title: "QUANTITY" },
+            { title: "PRICE" },
+            { title: "SELL" },
+            { title: "ROR" },
+            { title: "STATUS" }
+        ]
+} );
+
 /**
  * Create bot instance event
  */
@@ -77,6 +138,8 @@ ipcRenderer.on('receive_bot_status',(event,arg)=>{
  //    }
     // Clean Bot Table before every update
     botStatusTable.clear()
+    botsTradeBuyRecordsTable.clear()
+    botsTradeSellRecordsTable.clear()
 
     for(let i in arg.id_queue){
         // let tr = document.createElement("TR");
@@ -114,6 +177,29 @@ ipcRenderer.on('receive_bot_status',(event,arg)=>{
         // document.getElementById("bot_status_table").appendChild(tr)
         botStatusTable.row.add(dt_arr).draw();
     }
+
+    storage.keys(function(error, keys) {
+      if (error) throw error;
+      for (let k in keys) {
+        console.log("BB: "+keys[k])
+        storage.get(keys[k], function(error, data) {
+            if (error) throw error;
+            console.log("GG: "+keys[k])
+            // console.log("Bot "+arg['id']+"local trade record: "+data)
+            for(let i in data){
+                if(data[i].type == "buy"){
+                    let insert_row = [keys[k],data[i].timeStamp,data[i].tradePolicy,data[i].symbol,data[i].quantity,data[i].price,data[i].buy];
+                    botsTradeBuyRecordsTable.row.add(insert_row).draw();
+                }
+                else if(data[i].type == "sell"){
+                    let insert_row = [keys[k],data[i].timeStamp,data[i].tradePolicy,data[i].symbol,data[i].quantity,data[i].price,data[i].sell,data[i].ror,data[i].status];
+                    botsTradeSellRecordsTable.row.add(insert_row).draw();
+                }
+            }
+        });
+      }
+    });
+
     //Delete buttons event (Only works here....)
     $('.dt-delete').each(function () {
         $(this).on('click', function(evt){
@@ -139,6 +225,7 @@ ipcRenderer.on('receive_bot_status',(event,arg)=>{
             ipcRenderer.send('edit_bot',{
                 id: data[0]
             })
+            ipcRenderer.send('update_bot_status',{})
         });
     });
 })

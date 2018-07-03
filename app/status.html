@@ -81,24 +81,46 @@
         <div class="container-fluid">
             <div class="container-fluid">
                 <div class="container jumbotron">
-                    <!-- Basic Information -->
-                    <h2 class="text-center"> Status Page </h2>
-                    <hr>
-                    <!-- Display current bot - and create button -->
-                    <table class="table table-striped table-bordered" id="bot_status_table" style="width:100%">
-                    <!-- Dynamic data go here -->
-                    </table>
-                    <hr>
-                    <form action="#" id="bot">
-                        <!--Submit-->
-                        <div class="form-group">
-                            <label for="file_url"><i class="fas fa-key"></i>&nbsp;指定交易策略名稱: </label>
-                            <input type="text" class="form-control" id="trading_policy_id" placeholder="trading policy id" value=".local/trade_strategy.yaml">
+                    <div class="card text-white bg-dark mb-3" style="width: 100%;">
+                      <div class="card-body ">
+                        <h5 class="card-title text-warning">Status Page</h5>
+                        <div class="container">
+                            <!-- Display current bot - and create button -->
+                            <table class="table table-striped table-bordered" id="bot_status_table" style="width:100%">
+                            <!-- Dynamic data go here -->
+                            </table>
                         </div>
-                        <div class="text-center">
-                            <button type="submit" class="btn btn-info">Create New Instance</button>
+                        <form action="#" id="bot">
+                            <!--Submit-->
+                            <div class="form-group">
+                                <label for="file_url"><i class="fas fa-key"></i>&nbsp;指定交易策略名稱: </label>
+                                <input type="text" class="form-control" id="trading_policy_id" placeholder="trading policy id" value=".local/policy/trade_strategy.yaml">
+                            </div>
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-info">Create New Instance</button>
+                            </div>
+                        </form>
+                      </div>
+                    </div>
+                    <div class="card text-white bg-dark mb-3" style="width: 100%;">
+                      <div class="card-body ">
+                        <h5 class="card-title text-warning">Bots trading history</h5>
+                        <p class="card-text"><small class="text-muted">Update every 30 seconds</small></p>
+                        <div class="container">
+                            <h5 class="card-title text-info text-center">Buy infomation</h5>
+                            <!-- Display current bot - and create button -->
+                            <table class="table table-striped table-bordered" id="bots_buy_records_table" style="width:100%">
+                            <!-- Dynamic data go here -->
+                            </table>
+                            <h5 class="card-title text-info text-center">Sell infomation</h5>
+                            <!-- Display current bot - and create button -->
+                            <table class="table table-striped table-bordered" id="bots_sell_records_table" style="width:100%">
+                            <!-- Dynamic data go here -->
+                            </table>
                         </div>
-                    </form>
+                      </div>
+                    </div>
+                    <hr>
                 </div>
             </div>
         </div>
