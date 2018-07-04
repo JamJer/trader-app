@@ -25,12 +25,12 @@ user_op.store_product_key = function(self,uname,upass,key,cb){
 }
 
 
-user_op.store_api_ks = function(self,uname,upass,apikey,apisecret,cb){
+user_op.store_api_ks = function(self,uname,apikey,apisecret,cb){
     // 
     // console.log(apikey)
     // console.log(apisecret)
-    self.db.run("UPDATE user SET binance_apikey =? ,binance_apisecret = ? WHERE username = ? AND passwd = ?",
-        [ apikey, apisecret, uname, upass ],
+    self.db.run("UPDATE user SET binance_apikey =? ,binance_apisecret = ? WHERE username = ?",
+        [ apikey, apisecret, uname],
         function(err){
             console.log(err);
             if(err) 

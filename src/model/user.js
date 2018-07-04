@@ -53,17 +53,27 @@ class user{
     api_config(event,arg){
         /**
          * @param arg.uname         username
-         * @param arg.upass         passwd
          * @param arg.apikey        apikey (for current user)
          * @param arg.apisecret     apisecret (for current user)
          */
-        db.store_api_ks(arg.uname,arg.upass,arg.apikey,arg.apisecret,
+        db.store_api_ks(arg.uname,arg.apikey,arg.apisecret,
             (err,msg)=>{
                 if(err){
                     console.error("Error when api config...");
                     console.log(err);
                 }
                 else{
+                    // success !
+                    let origin = config.trade;
+                    // update
+                    config.set_trade({
+                        binance_apiKey: arg.apikey,
+                        binance_apiSecret: arg.apisecret,
+                        binance_recvWindow: origin.binance_recvWindow
+                    })
+                    // and then write back
+                    config.record_trade();
+                    // send success signal
                     event.sender.send("api_config_success",{})
                 }
             })

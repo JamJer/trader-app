@@ -28,6 +28,13 @@ class config{
         }
     }
 
+    record_trade(){
+        let obj = jsfs.readFileSync(path.join(__dirname, "settings.json"))
+        obj.trade = this.trade;
+        // write back this user's api config
+        jsfs.writeFileSync(path.join(__dirname,"settings.json"),obj);
+    }
+
     set_server(server_obj){
         this.server = server_obj;
     }
