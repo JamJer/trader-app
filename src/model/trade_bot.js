@@ -18,8 +18,10 @@ const {logger} = require('./logger')
 const trade_record_func = require('./localStore/bot_trade_record.js')
 
 // operation 
-const trade_func = require('./trade_op')
+const trade_op = require('./trade_op')
 const trade_bt = require('./trade_backtrack')
+
+var trade_func = new trade_op();
 
 // Duration
 const duration = 10000;
@@ -112,8 +114,8 @@ class trade_bot{
         this.id = rs.generate(6);
 
         // debug -
-        trade_func.prepare(username)
-
+        this.trade_func = trade_func;
+        this.trade_func.prepare(username)
         // console.log("Bot instance created, ID: "+this.id)
         this.logger = logger.bot_log(this.id);
         this.log("Bot instance created, ID: "+this.id)
@@ -298,11 +300,11 @@ class trade_bot{
         // reset func 
         this.func = [];
         // 獲取 現價
-        this.func.push(trade_func.price(this.tradingData.symbol));
+        this.func.push(this.trade_func.price(this.tradingData.symbol));
         // 獲取 平均交易量
-        this.func.push(trade_func.va(this.tradingData.symbol));
+        this.func.push(this.trade_func.va(this.tradingData.symbol));
         // 獲取 MA
-        this.func.push(trade_func.ma(this.tradingData.ma,this.tradingData.symbol))
+        this.func.push(this.trade_func.ma(this.tradingData.ma,this.tradingData.symbol))
 
         let self=this;
         Promise.all(this.func).then((data)=>{
@@ -621,7 +623,7 @@ class trade_bot{
         // 儲存交易記錄到local端
         trade_record_func.pushIntoTradeRecord(this.id,newBuyinfo)
         // ------------ execute the buy operation -------------
-        console.log(trade_func.buy(newBuyinfo.symbol,newBuyinfo.quantity,newBuyinfo.price))
+        console.log(this.trade_func.buy(newBuyinfo.symbol,newBuyinfo.quantity,newBuyinfo.price))
     }
 
     sell(){
@@ -667,7 +669,7 @@ class trade_bot{
         // 儲存交易記錄到local端
         trade_record_func.pushIntoTradeRecord(this.id,newSellInfo)
         //------執行賣出------
-        console.log(trade_func.sell(newSellInfo.symbol,newSellInfo.quantity,newSellInfo.price))
+        console.log(this.trade_func.sell(newSellInfo.symbol,newSellInfo.quantity,newSellInfo.price))
         //--------------------
     }
 
