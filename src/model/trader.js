@@ -58,7 +58,7 @@ class trader{
 
 	create_bot(url){
 		// create new instance
-		let newbot = new trade_bot();
+		let newbot = new trade_bot(config.username);
 		// run !
 		newbot.start_by_url(url);
 		this.botID_queue.push({
