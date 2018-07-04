@@ -11,14 +11,15 @@ const {db} = require("./db")
 const trade_model = {}
 trade_model.binance_apiKey = null
 trade_model.binance_apiSecret = null
+
 // apikey/secret 
 /*trade_model.apiKey = config.trade.binance_apiKey
 trade_model.apiSecret = config.trade.binance_apiSecret
-
+*/
 var client = Binance({
     apiKey: config.trade.binance_apiKey,
     apiSecret: config.trade.binance_apiSecret
-})*/
+})
 
 /**
  * Supported function 
@@ -31,7 +32,6 @@ var client = Binance({
  * @function sell
  * 
  */
-
 /**
  * ma
  * 
@@ -181,15 +181,17 @@ trade_model.va = async(symbol) => {
 }
 
 trade_model.prepare = (username) => {
-    let self = this;
+    // let self = this;
     console.log("Prepare API Key/Secret ...")
     db.get_binance_api_key(username, (err,data)=>{
         if(err) throw data;
-        self.apiKey = data.binance_apikey;
-        self.apiSecret = data.binance_apisecret;
+        trade_model.binance_apiKey = data.binance_apikey;
+        trade_model.binance_apiSecret = data.binance_apisecret;
         console.log("success get user api key from db");
+        console.log(`API Key: ${trade_model.binance_apiKey}`)
+        console.log(`API Secret: ${trade_model.binance_apiSecret}`)
         // reset Binance client
-        client = Binance({apiKey: self.apiKey, apiSecret: self.apiSecret})
+        client = Binance({apiKey: data.binance_apikey, apiSecret: data.binance_apisecret})
     })
 }
 
@@ -199,7 +201,7 @@ trade_model.buy = async(symbol,quantity,price) => {
         let self=this;
         // need to make sure user have setting apikey and apiSecret
         if(self.binance_apiKey==null) {
-            throw "mising binance api key";
+            throw "missing binance api key";
         }
         const client = Binance({
             apiKey: self.binance_apiKey,
@@ -232,7 +234,7 @@ trade_model.sell = async(symbol,quantity,price)  => {
     try {
         let self=this;
         if(self.binance_apiKey==null) {
-            throw "mising binance api key";
+            throw "missing binance api key";
         }
         const client = Binance({
             apiKey: self.binance_apiKey,

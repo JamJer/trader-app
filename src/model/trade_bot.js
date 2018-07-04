@@ -89,7 +89,7 @@ class trade_bot{
      * sell()                                                進行賣出的動作
      * 
      */
-    constructor(){
+    constructor(username){
         // record status
         this.currentStatus = 'wait';
         // price 
@@ -112,7 +112,7 @@ class trade_bot{
         this.id = rs.generate(6);
 
         // debug -
-        // trade_func.prepare("kevin")
+        trade_func.prepare(username)
 
         // console.log("Bot instance created, ID: "+this.id)
         this.logger = logger.bot_log(this.id);
@@ -248,13 +248,17 @@ class trade_bot{
 
     start_by_url(url){
         // 新增交易策略名稱屬性
-        let policy_name_path = url.split('/')
-        let policy_name = policy_name_path[policy_name_path.length - 1].split('.')[0]
-        this.tradePolicy = policy_name
+        //let policy_name_path = url.split('/')
+        //let policy_name = policy_name_path[policy_name_path.length - 1].split('.')[0]
+        //this.tradePolicy = policy_name
         // start trading
         let self=this;
         // run 
         self.load_policy_by_url(url);
+        self.systemInterval = setInterval(function(){
+            // console.log(self.id);
+            self.load_policy_by_url(url);
+        },duration)
         // LocalStorafe 測試用
         // self.systemInterval = setInterval(function(){
         //     // console.log(self.id);
@@ -303,6 +307,7 @@ class trade_bot{
         let self=this;
         Promise.all(this.func).then((data)=>{
             // 填入現價
+            console.log("Price: "+data[0])
             self.price.push(data[0]); 
             // 現價最大存放數量
             if(self.price.length > 10000){
@@ -322,6 +327,7 @@ class trade_bot{
 
     load_policy_by_url(policy_path){
         this.tradingData = YAML.parse(fs.readFileSync(policy_path).toString())
+        // setTimeout(()=>{ /*sleep*/ }, 1000)
         // loading
         this.load();
     }

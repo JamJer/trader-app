@@ -59,8 +59,12 @@ ipcMain.on('update_bot_status',(event,arg)=>{
 ipcMain.on('create_bot',(event,arg)=>{
     /**
      * create bot instance, push into trader
+     * 
+     * Need to pass current user name!
+     * After you login, your username will store in `config` object
+     * 
      */
-    let tbot = new trade_bot();
+    let tbot = new trade_bot(config.username);
     /** using the arg.url as file */
     tbot.start_by_url(arg.url)
     trader.botID_queue.push({id: tbot.get_id(), instance: tbot})
