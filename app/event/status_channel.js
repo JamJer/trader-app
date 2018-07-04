@@ -169,8 +169,8 @@ ipcRenderer.on('receive_bot_status',(event,arg)=>{
         let e_btn = '<button type="button" class="btn btn-primary btn-sm dt-edit"><i class="fas fa-sliders-h" style="font-size: 20px;"></i></button>'
         let mn_btn = e_btn+"&nbsp;"+d_btn
         let dt_arr = [
-            arg.id_queue[i],
-            "[WIP]",
+            arg.id_queue[i].id,
+            arg.id_queue[i].detail,
             mn_btn
         ]
         // append into target

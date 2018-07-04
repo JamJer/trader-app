@@ -37,9 +37,12 @@ ipcMain.on('update_bot_status',(event,arg)=>{
      */
     let id_queue = [];
     trader.botID_queue.forEach((element)=>{
-        id_queue.push(element.id)
+        id_queue.push({
+            id: element.id,
+            detail: element.instance.tradePolicy
+        })
     })
-
+    
     event.sender.send('receive_bot_status',{
         id_queue: id_queue
     });
@@ -64,7 +67,10 @@ ipcMain.on('create_bot',(event,arg)=>{
     // resend - receive_bot_status
     let id_queue = [];
     trader.botID_queue.forEach((element)=>{
-        id_queue.push(element.id)
+        id_queue.push({
+            id: element.id,
+            detail: element.instance.tradePolicy
+        })
     })
 
     event.sender.send('receive_bot_status',{
@@ -86,7 +92,10 @@ ipcMain.on('kill_bot',(event,arg)=>{
     // resend - receive_bot_status
     let id_queue = [];
     trader.botID_queue.forEach((element)=>{
-        id_queue.push(element.id)
+        id_queue.push({
+            id: element.id,
+            detail: element.instance.tradePolicy
+        })
     })
 
     event.sender.send('receive_bot_status',{

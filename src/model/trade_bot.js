@@ -250,9 +250,9 @@ class trade_bot{
 
     start_by_url(url){
         // 新增交易策略名稱屬性
-        //let policy_name_path = url.split('/')
-        //let policy_name = policy_name_path[policy_name_path.length - 1].split('.')[0]
-        //this.tradePolicy = policy_name
+        let policy_name_path = url.split('/')
+        let policy_name = policy_name_path[policy_name_path.length - 1].split('.')[0]
+        this.tradePolicy = policy_name
         // start trading
         let self=this;
         // run 
