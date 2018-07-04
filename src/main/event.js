@@ -29,17 +29,6 @@ ipcMain.on('tradebotSell', trader.sell);
 ipcMain.on('tradebotUpdateMA',trader.update_ma);*/
 ipcMain.on('trade_op',(event,arg)=>{
     trader.main_entry(event,arg);
-
-    // 如果是交易的動作才新增機器人
-    if(arg.cmd == "trade") {
-        let tbot = new trade_bot();
-        tbot.start_by_url(".local/trade_strategy.yaml")
-        trader.botID_queue.push({id: tbot.get_id(), instance: tbot})
-    }
-
-    /*setInterval(()=>{
-        trader.kill_all_bot();
-    },20000)*/
 })
 
 ipcMain.on('update_bot_status',(event,arg)=>{
@@ -48,9 +37,12 @@ ipcMain.on('update_bot_status',(event,arg)=>{
      */
     let id_queue = [];
     trader.botID_queue.forEach((element)=>{
-        id_queue.push(element.id)
+        id_queue.push({
+            id: element.id,
+            detail: element.instance.tradePolicy
+        })
     })
-
+    
     event.sender.send('receive_bot_status',{
         id_queue: id_queue
     });
@@ -75,7 +67,10 @@ ipcMain.on('create_bot',(event,arg)=>{
     // resend - receive_bot_status
     let id_queue = [];
     trader.botID_queue.forEach((element)=>{
-        id_queue.push(element.id)
+        id_queue.push({
+            id: element.id,
+            detail: element.instance.tradePolicy
+        })
     })
 
     event.sender.send('receive_bot_status',{
@@ -97,7 +92,10 @@ ipcMain.on('kill_bot',(event,arg)=>{
     // resend - receive_bot_status
     let id_queue = [];
     trader.botID_queue.forEach((element)=>{
-        id_queue.push(element.id)
+        id_queue.push({
+            id: element.id,
+            detail: element.instance.tradePolicy
+        })
     })
 
     event.sender.send('receive_bot_status',{
@@ -150,7 +148,7 @@ ipcMain.on('set_bot',(event,arg)=>{
 
 ipcMain.on('backtrack_bot',(event,arg)=>{
     console.log("Starting Backtracking....")
-    let tbot = new trade_bot();
+    let tbot = new trade_bot(config.username);
     tbot.backTrackTest(arg.yaml_string,arg.start_time,arg.end_time).then((data) => {
         console.log("---Backtracking End---")
         event.sender.send("receive_backtrack_bot",{
