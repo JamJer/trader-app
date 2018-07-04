@@ -9,6 +9,7 @@ const os = require('os');
 const fs = require('fs');
 const path = require('path');
 const url = require('url');
+const storage = require('electron-json-storage');
 const file_ext = ".ect";
 // EChart initialization
 var echarts = require('echarts');
@@ -17,17 +18,74 @@ const dark = require('../lib/js/dark')
 // Global var
 var logger = null;
 const $ = require('jquery');
-const bot_coin_type = ['BTCUSDT','ETHUSDT'];
-var bot_ma_unit_type = ['m','d','h','m'];
+const dt = require( 'datatables.net' )();
+const bot_coin_type = ['BTCUSDT','IOTABTC'];
+var bot_ma_unit_type = ['m','h','d','M'];
 var bot_symbol_select = $('#bot-cointype-select');
 var bot_ma_unit_select = $('#bot-ma-unit-select');
 var bot_status_view = $('#bot-status-view');
-const data_reflesh_interval = 3000;
+const data_reflesh_interval = 10000;
+
+// DataTable variable
+var botTradeBuyTable
+var botTradeSellTable
+
+// DataTable initialization
+botTradeBuyTable = $('#bot_trade_buy_table').DataTable( {
+    "createdRow": function ( row, data, index ) {
+                $('td', row).eq(0).addClass('normal');
+                $('td', row).eq(1).addClass('market');
+            },
+        "autoWidth": true,
+        "paging": true,
+        columnDefs: [{ 
+            "orderable": false, 
+            "targets": 2 
+        }],
+        fixedColumns: true,
+        autoFill: true,
+        data: [],
+        columns: [
+            { title: "TIMESTAMP" },
+            { title: "SYMBOL" },
+            { title: "QUANTITY" },
+            { title: "PRICE" },
+            { title: "BUY" }
+        ]
+} );
+
+// DataTable initialization
+botTradeSellTable = $('#bot_trade_sell_table').DataTable( {
+    "createdRow": function ( row, data, index ) {
+                $('td', row).eq(0).addClass('normal');
+                $('td', row).eq(1).addClass('market');
+            },
+        "autoWidth": true,
+        "paging": true,
+        columnDefs: [{ 
+            "orderable": false, 
+            "targets": 2 
+        }],
+        fixedColumns: true,
+        autoFill: true,
+        data: [],
+        columns: [
+            { title: "TIMESTAMP" },
+            { title: "SYMBOL" },
+            { title: "QUANTITY" },
+            { title: "PRICE" },
+            { title: "SELL" },
+            { title: "ROR" },
+            { title: "STATUS" }
+        ]
+} );
 
 // send signal to fetch current bot status
 ipcRenderer.send("get_bot",{});
 
 setInterval(function(){
+    $("#bot-reflesh-btn").unbind( "click" );
+    $("#bot-save-btn").unbind("click");
     ipcRenderer.send("get_bot",{});  
 },data_reflesh_interval)
 
@@ -258,6 +316,26 @@ ipcRenderer.on("receive_bot",(event,arg)=>{
         })
     },10000)
     // --------------BOT STATUS VIEW PANEL GOES END-----------------
+
+    // --------------BOT TRADE HISTORY GOES HERE----------------
+    botTradeBuyTable.clear()
+    botTradeSellTable.clear()
+
+    storage.get(arg['id'], function(error, data) {
+        if (error) throw error;
+        // console.log("Bot "+arg['id']+"local trade record: "+data)
+        for(let i in data){
+            if(data[i].type == "buy"){
+                let insert_row = [data[i].timeStamp,data[i].symbol,data[i].quantity,data[i].price,data[i].buy];
+                botTradeBuyTable.row.add(insert_row).draw();
+            }
+            else if(data[i].type == "sell"){
+                let insert_row = [data[i].timeStamp,data[i].symbol,data[i].quantity,data[i].price,data[i].sell,data[i].ror,data[i].status];
+                botTradeSellTable.row.add(insert_row).draw();
+            }
+        }
+    });
+    // --------------BOT TRADE HISTORY GOES END----------------
 })
 
 /**

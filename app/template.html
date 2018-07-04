@@ -10,23 +10,69 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="./lib/custom/main.css">
     <link rel="stylesheet" href="./lib/css/bootstrap.min.css">
+    <!-- Fontawsome CSS -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
-    <title>Trader APP</title>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="./lib/custom/custom-pageSideBar.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
     </head>
     <body class="bg-dark">
         <!-- ================================================ Top Navbar ================================================ -->
-        <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top" id="navbar_top">
+        <div class="navbar navbar-expand-md navbar-dark bg-dark navbar-fixed-top" id="navbar_top">
             <div class="navbar-header">
                 <a class="navbar-brand" href="#">
                 <i class="fa fa-copyright"></i>&nbsp;Trader APP</a>
-              <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbar2SupportedContent">
-                <span class="navbar-toggler-icon"></span><p> <font color="white">v0.0.1 </font></p>
-              </button>
             </div>
-        </nav>
-
+            <div class="collapse navbar-collapse justify-content-end" id="navbarCollapse">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a id="sidebarCollapse" class="nav-link"><i class="fas fa-bars fa-2x"></i></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- ================================================ Side bar ================================================ -->
+        <div class="wrapper">
+            <nav id="sidebar">
+                <ul class="list-unstyled components">
+                    <div class="brand"><i class="fa fa-copyright"></i>&nbsp;Trader App v 0.0.1</div>
+                    <li id="sb_dashboard">
+                      <a><i class="fas fa-chart-bar"></i>&nbsp;Dashboard</a>
+                    </li>
+                    <li id="sb_status">
+                      <a><i class="fas fa-robot"></i>&nbsp;Status&nbsp;<span class="badge badge-primary">0</span></a>
+                    </li>
+                    <li id="sb_trade">
+                      <a><i class="far fa-hand-paper"></i>&nbsp;Manual Trade</a>
+                    </li>
+                    <li id="sb_backtrack">
+                      <a><i class="fas fa-flag-checkered"></i>&nbsp;Backtracking</a>
+                    </li>
+                    <li  data-toggle="collapse" data-target="#policy_list" class="collapsed">
+                      <a href="#"><i class="far fa-file-code"></i>&nbsp;Policy <i class="fas fa-caret-down"></i>&nbsp;<span class="badge badge-primary">0</span></a>
+                    </li>
+                    <ul class="sub-menu collapse" id="policy_list">
+                        <li id="sb_list_policy"><a><i class="fas fa-list-ul"></i>List policy(Pull/Push)</a></li>
+                        <li id="sb_create_policy"><a><i class="fas fa-plus"></i>Create policy</a></li>
+                        <li id="sb_edit_policy"><a><i class="far fa-edit"></i>Edit policy</a></li>
+                    </ul>
+                    <li id="sb_purchase_policy">
+                      <a><i class="fas fa-shopping-cart"></i>&nbsp;Purchase policy&nbsp;<span class="badge badge-warning">New!</span></a>
+                    </li>
+                    <li id="sb_setting">
+                      <a><i class="fas fa-cog"></i>&nbsp;Setting</a>
+                    </li>
+                    <li id="sb_help">
+                      <a><i class="fas fa-question"></i>&nbsp;Help</a>
+                    </li>
+                    <li id="sb_about">
+                      <a><i class="fas fa-users"></i>&nbsp;About us</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        <div class="overlay"></div>
         <!-- ================================================ Landing Page ================================================ -->
         <div class="container-fluid">
             
@@ -45,4 +91,10 @@
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
 <!-- In Electron, this is the correct way to include jQuery -->
 <script>window.$ = window.jQuery = require('./lib/js/jquery-3.3.1.min.js');</script>
+<!-- Popper.JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<!-- Bootstrap JS -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+<!-- Event channel -->
+<script type="text/javascript" charset="utf-8">require('./event/control_channel.js')</script>
 </html>

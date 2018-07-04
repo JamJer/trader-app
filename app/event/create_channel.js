@@ -54,14 +54,6 @@ ipcRenderer.on("response_policy_list",(event,arg)=>{
      * @param arg.msg
      * @param arg.data
      */
-    alert(arg.msg)
-    if(arg.data.length != undefined){
-        arg.data.forEach(file=>{
-            policyList.append($('<option>', { 
-                text : file 
-            }));
-        })
-    }
 
      // bot select box initialization
     policyList.selectpicker({
@@ -71,9 +63,22 @@ ipcRenderer.on("response_policy_list",(event,arg)=>{
         size: 'fit'
     });
 
+    policyList.append($('<option disabled selected>', { 
+        text : "Choose a policy to edit" 
+    }))
+
+    if(arg.data.length != undefined){
+        arg.data.forEach(file=>{
+            policyList.append($('<option>', { 
+                text : file 
+            }));
+        })
+    }
+
     policyList.selectpicker('setStyle', 'btn-sm', 'add');
     policyList.selectpicker('refresh');
     policyList.selectpicker('render');
+
 
     policyList.on('changed.bs.select', function (e) {
         // alert(e.target.value);
@@ -100,7 +105,7 @@ ipcRenderer.on("response_policy_list",(event,arg)=>{
 
 
 function refleshPolicyList(){
-    $('ul').empty();
+    policyList.find('option').remove().end()
     initPolicyList();
 }
 
@@ -162,7 +167,7 @@ ipcRenderer.on("response_policy_save",(event,arg)=>{
      * @param arg.msg
      * @param arg.data
      */
-    alert(arg.msg)
+    alert("File saved!")
     refleshPolicyList();
     // marked as clean
     editor.session.getUndoManager().markClean();
@@ -221,8 +226,4 @@ $( "#file-save" ).click(function() {
 $( "#file-discard" ).click(function() {
     var title = document.getElementById('file-name').innerText;
     deleteFiles(title);
-});
-
-$("#bot-back-btn").bind("click",function(){
-    window.location = 'control_panel.html'
 });

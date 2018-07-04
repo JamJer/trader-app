@@ -32,8 +32,8 @@ function init(path){
 // Create Window
 function create_window(){
     mainWindow = new BrowserWindow({
-        height: 800,
-        width: 800,
+        minHeight: 800,
+        minWidth: 1250,
         icon: path.join(__dirname,'app','img','logo_big-1-300x300.png') /* ICON */
     })
 

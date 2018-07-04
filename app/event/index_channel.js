@@ -4,6 +4,7 @@
  * cooperate with index.html only
  */
 const { remote, ipcRenderer } = require('electron');
+const shell = require('electron').shell;
 const currentWindow = remote.getCurrentWindow();
 const path = require('path');
 const url = require('url');
@@ -43,8 +44,9 @@ uskip.addEventListener("click",function(event){
     console.log(__dirname);
     // go to command line mode
     // Enter next page - control panel
-    window.location.href="control_panel.html";
+    window.location.href="status.html";
 });
+
 // Config event
 let uconfig = document.querySelector("#config");
 uconfig.addEventListener("click",function(event){
@@ -52,6 +54,13 @@ uconfig.addEventListener("click",function(event){
     // go to command line mode
     // Enter next page - config
     window.location.href="config.html";
+});
+
+// Sign up event
+let uSignUp = document.querySelector("#uSignUp");
+uSignUp.addEventListener("click",function(event){
+    event.preventDefault();
+    shell.openExternal("https://ectrader-home.herokuapp.com/Register");
 });
 
 
@@ -68,7 +77,7 @@ ipcRenderer.on('login-success', (event, arg) => {
 	let username = document.getElementById('username').value;
 	localStorage.setItem('username', username);
     // Enter next page - control panel
-    window.location.href="control_panel.html";
+    window.location.href="status.html";
 })
 ipcRenderer.on('login-error', (event, arg) => {
     console.log(arg) 

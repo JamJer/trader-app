@@ -8,8 +8,6 @@ const currentWindow = remote.getCurrentWindow();
 const path = require('path');
 const url = require('url');
 
-const utils = require('../utils/ui')
-
 // EChart initialization
 var echarts = require('echarts');
 // EChart dark theme
@@ -55,6 +53,7 @@ var tradelogTable = $('#trade_log_table').DataTable( {
         ],
         fixedColumns: true,
         autoFill: true,
+        paging: true,
         data: dataSet,
         columns: [
             { title: "ID" },
@@ -68,28 +67,6 @@ var tradelogTable = $('#trade_log_table').DataTable( {
             { title: "State" }
         ]
 } );
-/**
- * C3 chart - For displaying trading history
- * 
- */
-// var chart = c3.generate({
-//     bindto: '#chart',
-//     data: {
-// 	  columns: [ quantity,profit ],
-// 	  axes: {
-// 		  quantity: 'y',
-// 		  profit: 'y2'
-// 	  }
-// 	},
-// 	regions: [
-//         {axis: 'y', end: 0, class: 'negative'}, /** distinguish negative value from positive */
-// 	],
-// 	axis: {
-// 		y2: {
-// 			show: true
-// 		}
-// 	}
-// });
 
 // send the message to update chart
 ipcRenderer.send('trade_op',{
@@ -131,11 +108,6 @@ ipcRenderer.on('update_trading_chart',(event,arg)=>{
 
 	let quantity=['quantity'],profit = ['profit'];
     let xAxisArr=[]; // For chart xAxis data
-	// drop
-	// let list = document.getElementById("trade_log_table")
-	// while (list.firstChild) {
-	// 	list.removeChild(list.firstChild);
-	// }
 	
     // Clear DataTable
     tradelogTable.clear();
@@ -236,10 +208,6 @@ ipcRenderer.on('update_trading_chart',(event,arg)=>{
     };
 	// reload the eChart
 	eChart.setOption(option, true);
-
-    $("#bot-back-btn").bind("click",function(){
-        window.location = 'control_panel.html'
-    });
 })
 
 // Window resizing for eChart
