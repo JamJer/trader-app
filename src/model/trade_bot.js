@@ -107,9 +107,11 @@ class trade_bot{
         this.tradePolicy = null;
         this.tradingData = null;
         this.func = [];
-        
+
         // interval
         this.systemInterval = null;
+        // duration of interval
+        this.duration = duration;
         // this bot id
         this.id = rs.generate(6);
 
@@ -137,6 +139,7 @@ class trade_bot{
      * @function change_symbol
      * @function change_ma
      * @function change_policy_by_url
+     * @function change_inv_duration // interval duration, not the same one in policy
      * 
      * // For statistics collection
      * @function get_log
@@ -204,7 +207,7 @@ class trade_bot{
         // reload
         this.stop();
         // console.log("Bot id: "+ this.id + ", already to be restart...");
-        this.log("Bot id: "+ this.id + ", already to be restart...")
+        this.log("[Change symbol]Bot id: "+ this.id + ", already to be restart...")
         this.start_by_obj(this.tradingData)
     }
 
@@ -213,7 +216,7 @@ class trade_bot{
         // reload
         this.stop();
         // console.log("Bot id: "+ this.id + ", already to be restart...");
-        this.log("Bot id: "+ this.id + ", already to be restart...");
+        this.log("[Change ma]Bot id: "+ this.id + ", already to be restart...");
         this.start_by_obj(this.tradingData)
     }
 
@@ -223,7 +226,16 @@ class trade_bot{
         // stop 
         this.stop();
         // console.log("Bot id: "+ this.id + ", already to be restart...");
-        this.log("Bot id: "+ this.id + ", already to be restart...");
+        this.log("[Change symbol + ma]Bot id: "+ this.id + ", already to be restart...");
+        // restart
+        this.start_by_obj(this.tradingData)
+    }
+
+    change_inv_duration(new_duration){
+        this.duration = new_duration;
+        // stop
+        this.stop();
+        this.log("[Change Duration]Bot id: "+ this.id + ", already to be restart...");
         // restart
         this.start_by_obj(this.tradingData)
     }
@@ -231,7 +243,7 @@ class trade_bot{
     change_policy_by_url(new_policy_url){
         this.stop();
         // console.log("Bot id: "+ this.id + ", already to be restart...");
-        this.log("Bot id: "+ this.id + ", already to be restart...");
+        this.log("[Change URL]Bot id: "+ this.id + ", already to be restart...");
         this.start_by_url(new_policy_url)
     }
 
@@ -260,7 +272,7 @@ class trade_bot{
         self.systemInterval = setInterval(function(){
             // console.log(self.id);
             self.load_policy_by_url(url);
-        },duration)
+        },self.duration)
         // LocalStorafe 測試用
         // self.systemInterval = setInterval(function(){
         //     // console.log(self.id);
@@ -287,7 +299,7 @@ class trade_bot{
         self.systemInterval = setInterval(function(){
             // console.log(self.id);
             self.load_policy_by_obj(obj);
-        },duration)
+        },self.duration)
     }
     /**
      * Loading trading policy - and then start 
