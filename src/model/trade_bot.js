@@ -24,7 +24,8 @@ const trade_bt = require('./trade_backtrack')
 var trade_func = new trade_op();
 
 // Duration
-const duration = 10000;
+// - default setting is 5 min (18000 sec = 18000,000 ms => For setInterval usage)
+const duration = 18000000; 
 
 class trade_bot{
     /**
