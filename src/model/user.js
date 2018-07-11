@@ -15,8 +15,8 @@ class user{
 
     login(event,arg){
         // Send message to remote server enroll 
-        // console.log(arg);
-        rp.post(config.server.url+"/user/login", {simple: false, resolveWithFullResponse: true,form: arg})
+        // Using new api call
+        rp.post(config.server.url+config.api.user.login, {simple: false, resolveWithFullResponse: true,form: arg})
         .then((res,body)=>{
             // redirect to new link
             console.log(res.statusCode)
