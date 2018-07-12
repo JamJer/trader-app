@@ -18,9 +18,12 @@ class config{
     reload(){
         console.log(__dirname);
         let obj = jsfs.readFileSync(path.join(__dirname,"settings.json"));
+        let api = jsfs.readFileSync(path.join(__dirname,"api.json"))
         this.server = obj.server;
         this.trade = obj.trade;
         this.policy = obj.policy;
+        // assign api
+        this.api = api
         // reset default 
         this.default = {
             server: this.server,
