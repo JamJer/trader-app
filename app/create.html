@@ -19,9 +19,9 @@
       <link rel="stylesheet" href="./lib/custom/Bootstrap-4-Dropdown-Select-Plugin-jQuery/dist/css/bootstrap-select.css">
       <title>Trader APP</title>
    </head>
-   <body>
+   <body class="bg-dark">
       <!-- ================================================ Top Navbar ================================================ -->
-        <div class="navbar navbar-expand-md navbar-dark bg-dark navbar-fixed-top" id="navbar_top">
+        <div class="navbar navbar-expand-md navbar-dark bg-dark fixed-top border-bottom border-warning" id="navbar_top">
             <div class="navbar-header">
                 <a class="navbar-brand" href="#">
                 <i class="fa fa-copyright"></i>&nbsp;Trader APP</a>
@@ -40,36 +40,37 @@
                 <ul class="list-unstyled components">
                     <div class="brand"><i class="fa fa-copyright"></i>&nbsp;Trader App v 0.0.1</div>
                     <li id="sb_dashboard">
-                      <a><i class="fas fa-chart-bar"></i>&nbsp;Dashboard</a>
+                      <a><i class="fas fa-chart-bar"></i>&nbsp;主頁面</a>
                     </li>
                     <li id="sb_status">
-                      <a><i class="fas fa-robot"></i>&nbsp;Status&nbsp;<span class="badge badge-primary">0</span></a>
+                      <a><i class="fas fa-robot"></i>&nbsp;交易機器人管理&nbsp;<span class="badge badge-primary">0</span></a>
                     </li>
                     <li id="sb_trade">
-                      <a><i class="far fa-hand-paper"></i>&nbsp;Manual Trade</a>
-                    </li>
-                    <li id="sb_backtrack">
-                      <a><i class="fas fa-flag-checkered"></i>&nbsp;Backtracking</a>
+                      <a><i class="far fa-hand-paper"></i>&nbsp;手動交易</a>
                     </li>
                     <li  data-toggle="collapse" data-target="#policy_list" class="collapsed">
-                      <a href="#"><i class="far fa-file-code"></i>&nbsp;Policy <i class="fas fa-caret-down"></i>&nbsp;<span class="badge badge-primary">0</span></a>
+                      <a href="#"><i class="far fa-file-code"></i>&nbsp;交易策略 <i class="fas fa-caret-down"></i>&nbsp;<span class="badge badge-primary">0</span></a>
                     </li>
                     <ul class="sub-menu collapse" id="policy_list">
-                        <li id="sb_list_policy"><a><i class="fas fa-list-ul"></i>List policy(Pull/Push)</a></li>
-                        <li id="sb_create_policy"><a><i class="fas fa-plus"></i>Create policy</a></li>
-                        <li id="sb_edit_policy"><a><i class="far fa-edit"></i>Edit policy</a></li>
+                        <li id="sb_create_policy"><a><i class="fas fa-plus"></i>上傳/編輯交易策略</a></li>
+                        <li id="sb_backtrack">
+                          <a><i class="fas fa-flag-checkered"></i>&nbsp;交易策略回測</a>
+                        </li>
                     </ul>
                     <li id="sb_purchase_policy">
-                      <a><i class="fas fa-shopping-cart"></i>&nbsp;Purchase policy&nbsp;<span class="badge badge-warning">New!</span></a>
+                      <a><i class="fas fa-shopping-cart"></i>&nbsp;購買交易策略&nbsp;<span class="badge badge-warning">New!</span></a>
                     </li>
                     <li id="sb_setting">
-                      <a><i class="fas fa-cog"></i>&nbsp;Setting</a>
+                      <a><i class="fas fa-cog"></i>&nbsp;交易所API設定</a>
                     </li>
                     <li id="sb_help">
-                      <a><i class="fas fa-question"></i>&nbsp;Help</a>
+                      <a><i class="fas fa-question"></i>&nbsp;幫助</a>
                     </li>
                     <li id="sb_about">
-                      <a><i class="fas fa-users"></i>&nbsp;About us</a>
+                      <a><i class="fas fa-users"></i>&nbsp;關於我們</a>
+                    </li>
+                    <li id="sb_logout">
+                      <a><i class="fas fa-sign-out-alt"></i>&nbsp;登出</a>
                     </li>
                 </ul>
             </nav>
@@ -78,44 +79,48 @@
       <!-- ================================================ Landing Page ================================================ -->
       <div class="container-fluid">
          <div class="container jumbotron">
-            <h1 align="center">Trader App Editor</h1>
-            <br>
-            <div class="row">
-              <div class="col-md-3">
-                <h5>Policy List</h5>
-                <select id="policy-list" class="selectpicker show-tick form-control">
-                <!-- Dynamic select will generate here -->
-                </select>
-              </div>
-              <div class="col-md-9">
-                <h5>Editor Panel</h5>
-                <span class="badge badge-secondary">
-                  <h7>File Name : </h7>
-                </span>
-                <span id="file-name"></span>
-                <span class="badge badge-secondary">
-                  <h7>Owner : </h7>
-                </span>
-                <span id="file-owner"></span>
-                <!-- for resize for editor to fit parent div -->
-                <div id="editorContainer">
-                   <!-- editor panel -->
-                   <div id="aceEditor">
-                      Do something here...  
-                   </div>
-                   <!-- editor goes here -->
+          <div class="card text-white bg-dark mb-3" style="max-width: 100%;">
+            <div class="card-body">
+              <h1 align="center">交易策略編輯器</h1>
+              <br>
+              <div class="row">
+                <div class="col-md-3">
+                  <h5>交易策略選單</h5>
+                  <select id="policy-list" class="selectpicker show-tick form-control" data-live-search="true">
+                  <!-- Dynamic select will generate here -->
+                  </select>
                 </div>
-                <div class="fileOpen btn btn-primary btncustom">
-                  <span>OPEN</span>
-                  <input type="file" id="file-input" class="open" multiple>
-                </div>
-                <button type="button" class="btn btn-success btncustom" id="file-save">SAVE</button>&nbsp;&nbsp;
-                <button type="button" class="btn btn-danger btncustom" id="file-discard">DISCARD</button>
-                </div>
-         </div>
+                <div class="col-md-9">
+                  <h5>編輯面板</h5>
+                  <span class="badge badge-secondary">
+                    <h7>檔案名稱 : </h7>
+                  </span>
+                  <span id="file-name"></span>
+                  <span class="badge badge-secondary">
+                    <h7>擁有者 : </h7>
+                  </span>
+                  <span id="file-owner"></span>
+                  <!-- for resize for editor to fit parent div -->
+                  <div id="editorContainer">
+                     <!-- editor panel -->
+                     <div id="aceEditor">
+                        Do something here...  
+                     </div>
+                     <!-- editor goes here -->
+                  </div>
+                  <div class="fileOpen btn btn-primary btncustom">
+                    <span>上傳策略</span>
+                    <input type="file" id="file-input" class="open" multiple>
+                  </div>
+                  <button type="button" class="btn btn-success btncustom" id="file-save">儲存策略</button>&nbsp;&nbsp;
+                  <button type="button" class="btn btn-danger btncustom" id="file-discard">捨棄策略</button>
+                  </div>
+            </div>
+          </div>
+        </div>
       </div>
       <!-- ================================================ Bottom Navbar ================================================ -->
-      <div class="navbar fixed-bottom navbar-expand-md bg-dark navbar-dark text-nowrap">
+      <div class="navbar fixed-bottom navbar-expand-md bg-dark navbar-dark text-nowrap border-top border-warning">
          <span class="hide-phone footer-link">
          <a class="navbar-brand mx-auto px-5" href="#">Copyright © 2018 by Kevin Cyu. All rights reserved.</a>
          </span>

@@ -24,8 +24,8 @@ const trade_bt = require('./trade_backtrack')
 var trade_func = new trade_op();
 
 // Duration
-// - default setting is 5 min (18000 sec = 18000,000 ms => For setInterval usage)
-const duration = 18000000; 
+// - default setting is 5 min (300 sec = 300,000 ms => For setInterval usage)
+const duration = 300000; 
 
 class trade_bot{
     /**
@@ -292,7 +292,9 @@ class trade_bot{
         // },duration)
     }
 
-    start_by_obj(obj){
+    start_by_obj(obj,policy_name){
+        // 新增交易策略名稱屬性
+        this.tradePolicy = policy_name
         // start trading
         let self=this;
         // run 
@@ -364,14 +366,19 @@ class trade_bot{
         switch(this.currentStatus){
             case 'wait':
                 this.log("Waiting...")
+                break;
             case 'sell':
                 this.log("Selling...")
+                break;
             case 'sell_stoloss':
                 this.log("Selling stoloss...")
+                break;
             case 'sell_volume':
                 this.log("Selling volume ...")
+                break;
             case 'sell_mafall':
                 this.log("Selling when detecting MA fall...")
+                break;
             case 'sell_belowma':
                 this.log("Selling when current price below MA ...")
                 //如果交易量沒有爆增
@@ -450,16 +457,16 @@ class trade_bot{
         }
 
         // Display Log
-        this.log("current status: " + this.currentStatus)
+        this.log("目前交易動作: " + this.currentStatus)
         this.log("=====================================")
         this.log("目前時間: " + new Date().toLocaleString())
         this.log("目前現價: " + this.price[this.price.length - 1])
         this.log("目前 MA: " + this.dataMA[this.dataMA.length - 1].ma + ' ' + new Date(this.dataMA[this.dataMA.length - 1].timestamp).toLocaleString())
         this.log('目前交易量倍數: ' + this.dataVA.pastOneHourVolume / this.dataVA.pastTenHoursVA);
-        this.log('買入資訊: ');
-        this.log(this.buyInfo);
-        this.log('總交易資訊: ');
-        this.log(this.tradeInfo);
+        // this.log('買入資訊: ');
+        // this.log(this.buyInfo);
+        // this.log('總交易資訊: ');
+        // this.log(this.tradeInfo);
         this.log("=====================================")
     }
 

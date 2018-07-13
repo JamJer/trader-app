@@ -6,6 +6,8 @@ const {ipcMain} = require('electron');
 // FIXME: need to use https when this program release
 const request = require('request');
 const rp = require('request-promise');
+const YAML = require('yamljs')
+const fs = require('fs')
 // const strategist = require('../model/strategist');
 const {user} = require('../model/user');
 const {cmder} = require('../model/cmder');
@@ -39,7 +41,9 @@ ipcMain.on('update_bot_status',(event,arg)=>{
     trader.botID_queue.forEach((element)=>{
         id_queue.push({
             id: element.id,
-            detail: element.instance.tradePolicy
+            detail: element.instance.tradePolicy,
+            symbol: element.instance.tradingData.symbol,
+            tradeStatus: element.instance.currentStatus
         })
     })
     
@@ -56,9 +60,17 @@ ipcMain.on('create_bot',(event,arg)=>{
      * After you login, your username will store in `config` object
      * 
      */
+
+    // New Symbol 
+    let new_symbol = arg.symbol
+    // Policy path
+    let policy_path = config.policy['path']+arg.policy_file
+    let policy_obj = YAML.parse(fs.readFileSync(policy_path).toString())   
+    policy_obj.symbol = new_symbol
+
     let tbot = new trade_bot(config.username);
-    /** using the arg.url as file */
-    tbot.start_by_url(arg.url)
+    /** using the policy object to start robot */
+    tbot.start_by_obj(policy_obj,arg.policy_file.split('.')[0])
     trader.botID_queue.push({id: tbot.get_id(), instance: tbot})
 
     // Create local storage of thsi bot 
@@ -69,7 +81,9 @@ ipcMain.on('create_bot',(event,arg)=>{
     trader.botID_queue.forEach((element)=>{
         id_queue.push({
             id: element.id,
-            detail: element.instance.tradePolicy
+            detail: element.instance.tradePolicy,
+            symbol: element.instance.tradingData.symbol,
+            tradeStatus: element.instance.currentStatus
         })
     })
 
@@ -87,20 +101,30 @@ ipcMain.on('kill_bot',(event,arg)=>{
     trader.kill_bot(arg.id)
 
     // Delete local storage of this bot 
-    trade_record_func.deleteBotRecordFromLocal(arg.id)
+    // trade_record_func.deleteBotRecordFromLocal(arg.id)
 
     // resend - receive_bot_status
     let id_queue = [];
     trader.botID_queue.forEach((element)=>{
         id_queue.push({
             id: element.id,
-            detail: element.instance.tradePolicy
+            detail: element.instance.tradePolicy,
+            symbol: element.instance.tradingData.symbol,
+            tradeStatus: element.instance.currentStatus
         })
     })
 
     event.sender.send('receive_bot_status',{
         id_queue: id_queue
     });
+})
+
+ipcMain.on('kill_all_bot',(event,arg)=>{
+    /**
+     * terminate all bots
+     */
+    trader.kill_all_bot();
+    event.sender.send("ready_for_log_out",{});
 })
 
 ipcMain.on('edit_bot',(event,arg)=>{

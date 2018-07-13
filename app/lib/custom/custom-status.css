@@ -1,0 +1,35 @@
+td.gain {
+  color: green;
+}
+td.loss {
+  color: red;
+}
+td.nothing {
+  color: blue;
+}
+td.market {
+  color: #ff6600;
+}
+td.normal {
+  color: #006666;
+}
+
+td.working {
+  color: #4dff4d;
+}
+
+td.botid {
+  color: #33ffff;	
+}
+
+td.strategy {
+  color: #ff9933;	
+}
+
+td.symbol {
+  color: yellow;
+}
+
+td.default {
+	color:#4ddbff;
+}

@@ -25,7 +25,7 @@
     </head>
     <body class="bg-dark">
         <!-- ================================================ Top Navbar ================================================ -->
-        <div class="navbar navbar-expand-md navbar-dark bg-dark navbar-fixed-top" id="navbar_top">
+        <div class="navbar navbar-expand-md navbar-dark bg-dark fixed-top border-bottom border-warning" id="navbar_top">
             <div class="navbar-header">
                 <a class="navbar-brand" href="#">
                 <i class="fa fa-copyright"></i>&nbsp;Trader APP</a>
@@ -44,36 +44,37 @@
                 <ul class="list-unstyled components">
                     <div class="brand"><i class="fa fa-copyright"></i>&nbsp;Trader App v 0.0.1</div>
                     <li id="sb_dashboard">
-                      <a><i class="fas fa-chart-bar"></i>&nbsp;Dashboard</a>
+                      <a><i class="fas fa-chart-bar"></i>&nbsp;主頁面</a>
                     </li>
                     <li id="sb_status">
-                      <a><i class="fas fa-robot"></i>&nbsp;Status&nbsp;<span class="badge badge-primary">0</span></a>
+                      <a><i class="fas fa-robot"></i>&nbsp;交易機器人管理&nbsp;<span class="badge badge-primary">0</span></a>
                     </li>
                     <li id="sb_trade">
-                      <a><i class="far fa-hand-paper"></i>&nbsp;Manual Trade</a>
-                    </li>
-                    <li id="sb_backtrack">
-                      <a><i class="fas fa-flag-checkered"></i>&nbsp;Backtracking</a>
+                      <a><i class="far fa-hand-paper"></i>&nbsp;手動交易</a>
                     </li>
                     <li  data-toggle="collapse" data-target="#policy_list" class="collapsed">
-                      <a href="#"><i class="far fa-file-code"></i>&nbsp;Policy <i class="fas fa-caret-down"></i>&nbsp;<span class="badge badge-primary">0</span></a>
+                      <a href="#"><i class="far fa-file-code"></i>&nbsp;交易策略 <i class="fas fa-caret-down"></i>&nbsp;<span class="badge badge-primary">0</span></a>
                     </li>
                     <ul class="sub-menu collapse" id="policy_list">
-                        <li id="sb_list_policy"><a><i class="fas fa-list-ul"></i>List policy(Pull/Push)</a></li>
-                        <li id="sb_create_policy"><a><i class="fas fa-plus"></i>Create policy</a></li>
-                        <li id="sb_edit_policy"><a><i class="far fa-edit"></i>Edit policy</a></li>
+                        <li id="sb_create_policy"><a><i class="fas fa-plus"></i>上傳/編輯交易策略</a></li>
+                        <li id="sb_backtrack">
+                          <a><i class="fas fa-flag-checkered"></i>&nbsp;交易策略回測</a>
+                        </li>
                     </ul>
                     <li id="sb_purchase_policy">
-                      <a><i class="fas fa-shopping-cart"></i>&nbsp;Purchase policy&nbsp;<span class="badge badge-warning">New!</span></a>
+                      <a><i class="fas fa-shopping-cart"></i>&nbsp;購買交易策略&nbsp;<span class="badge badge-warning">New!</span></a>
                     </li>
                     <li id="sb_setting">
-                      <a><i class="fas fa-cog"></i>&nbsp;Setting</a>
+                      <a><i class="fas fa-cog"></i>&nbsp;交易所API設定</a>
                     </li>
                     <li id="sb_help">
-                      <a><i class="fas fa-question"></i>&nbsp;Help</a>
+                      <a><i class="fas fa-question"></i>&nbsp;幫助</a>
                     </li>
                     <li id="sb_about">
-                      <a><i class="fas fa-users"></i>&nbsp;About us</a>
+                      <a><i class="fas fa-users"></i>&nbsp;關於我們</a>
+                    </li>
+                    <li id="sb_logout">
+                      <a><i class="fas fa-sign-out-alt"></i>&nbsp;登出</a>
                     </li>
                 </ul>
             </nav>
@@ -84,7 +85,7 @@
             <div class="container jumbotron">
                 <div class="card text-white bg-dark mb-3" style="width: 100%;">
                   <div class="card-body ">
-                    <h5 class="card-title text-warning">BOT PROFIT CURVE CHART</h5>
+                    <h5 class="card-title text-warning">機器人獲利曲線</h5>
                     <div class="container">
                       <div id="profit_chart" style="width: 100%;height:250px;"></div>
                     </div>
@@ -93,10 +94,10 @@
                 <div class="card-deck">
                     <div class="card text-white bg-dark mb-3">                       
                         <div class="card-body">
-                          <h5 class="card-title text-warning">BOT PARAMETER SETTING</h5>
-                          <p class="card-text">BOT ID:&nbsp;<font id="bot-id" color="#00ffff"></font></p>
-                          <p class="card-text">BOT SYMBOL:&nbsp;
-                            <select id="bot-cointype-select" class="selectpicker show-tick form-control">
+                          <h5 class="card-title text-warning">設定此機器人參數</h5>
+                          <p class="card-text">機器人編號:&nbsp;<font id="bot-id" color="#00ffff"></font></p>
+                          <p class="card-text">更改市場:&nbsp;
+                            <select id="bot-cointype-select" class="selectpicker show-tick form-control" data-live-search="true" data-btn-class="btn-secondary" data-live-search-placeholder="Search">
                             <!-- Dynamic select will generate here -->
                             </select>
                           </p>
@@ -108,9 +109,9 @@
                             <!-- Dynamic select will generate here -->
                             </select>
                           </p>
-                          <button id="bot-reflesh-btn" class='btn btn-warning'><i class="fas fa-sync"></i> Reflesh </button>
-                          <button id="bot-save-btn" class='btn btn-success' disabled="true"><i class="far fa-save"></i> Save changes</button>
-                          <p class="card-text"><small class="text-muted">Update time showing</small></p>
+                          <button id="bot-reflesh-btn" class='btn btn-warning'><i class="fas fa-sync"></i> 刷新 </button>
+                          <button id="bot-save-btn" class='btn btn-success' disabled="true"><i class="far fa-save"></i> 儲存變更</button>
+                          <p class="card-text"><small class="text-warning">更改完記得按下儲存變更按鈕!</small></p>
                         </div>
                       </div>
                       <div class="card text-white bg-dark mb-3">
@@ -123,26 +124,27 @@
                 </div>
                 <div class="card text-white bg-dark mb-3" style="width: 100%;">
                   <div class="card-body">
-                    <h5 class="card-title text-warning">BOT TRADE HISTORY</h5>
+                    <h5 class="card-title text-warning">此機器人交易歷史紀錄</h5>
+                    <button id="bot-trade-history-delete" class='btn btn-danger'><i class="fas fa-trash"></i>&nbsp;清空此機器人交易紀錄</button>
                     <div class="container">
-                      <h5 class="card-title text-info text-center">Buy infomation</h5>
+                      <h5 class="card-title text-info text-center">買入訊息</h5>
                       <table class="table table-striped table-bordered" id="bot_trade_buy_table" style="width:100%">
                       <!-- Dynamic data go here -->
                       </table>
                     </div>
                     <div class="container">
-                      <h5 class="card-title text-info text-center">Sell infomation</h5>
+                      <h5 class="card-title text-info text-center">賣出訊息</h5>
                       <table class="table table-striped table-bordered" id="bot_trade_sell_table" style="width:100%">
                       <!-- Dynamic data go here -->
                       </table>
                     </div>
                   </div>
                 </div>
-                <button id="bot-back-btn" class='btn btn-info'><i class="fas fa-arrow-left"></i> Back to Status Panel</button>
+                <button id="bot-back-btn" class='btn btn-info'><i class="fas fa-arrow-left"></i> 回到機器人管理頁面</button>
             </div>
         </div>
          <!-- ================================================ Bottom Navbar ================================================ -->
-        <div class="navbar fixed-bottom navbar-expand-md bg-dark navbar-dark text-nowrap">
+        <div class="navbar fixed-bottom navbar-expand-md bg-dark navbar-dark text-nowrap border-top border-warning">
             <span class="hide-phone footer-link">
                 <a class="navbar-brand mx-auto px-5" href="#">Copyright © 2018 by Kevin Cyu. All rights reserved.</a>
             </span>

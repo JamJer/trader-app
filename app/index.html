@@ -12,11 +12,12 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="./lib/custom/custom-pageSideBar.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
+    <link rel="stylesheet" href="./lib/custom/Loading-Mask-Plugin-jQuery-Busy-Load/dist/app.css">
     <title>Trader APP</title>
     </head>
     <body class="bg-dark">
         <!-- ================================================ Top Navbar ================================================ -->
-        <div class="navbar navbar-expand-md navbar-dark bg-dark navbar-fixed-top" id="navbar_top">
+        <div class="navbar navbar-expand-md navbar-dark bg-dark fixed-top border-bottom border-warning" id="navbar_top">
             <div class="navbar-header">
                 <a class="navbar-brand" href="#">
                 <i class="fa fa-copyright"></i>&nbsp;Trader APP</a>
@@ -34,14 +35,11 @@
             <nav id="sidebar">
                 <ul class="list-unstyled components">
                     <div class="brand"><i class="fa fa-copyright"></i>&nbsp;Trader App v 0.0.1</div>
-                    <li id="sb_setting">
-                      <a><i class="fas fa-cog"></i>&nbsp;Setting</a>
-                    </li>
                     <li id="sb_help">
-                      <a><i class="fas fa-question"></i>&nbsp;Help</a>
+                      <a><i class="fas fa-question"></i>&nbsp;幫助</a>
                     </li>
                     <li id="sb_about">
-                      <a><i class="fas fa-users"></i>&nbsp;About us</a>
+                      <a><i class="fas fa-users"></i>&nbsp;關於我們</a>
                     </li>
                 </ul>
             </nav>
@@ -52,39 +50,33 @@
             <!-- LOGIN -->
             <div class="container jumbotron">
                 <!-- Basic Information -->
-                <h2 class="text-center">Trader App Login</h2>
+                <h2 class="text-center">Trader App 登入</h2>
                 <hr>
                 <form action="#" id="ulogin">
                     <!-- User input -->
                     <div class="form-group">
-                        <label for="username"><i class="fas fa-user-circle"></i>&nbsp;Username: </label>
+                        <label for="username"><i class="fas fa-user-circle"></i>&nbsp;使用者名稱: </label>
                         <input type="text" class="form-control" id="username" placeholder="efacani">
                     </div>
                     <div class="form-group">
-                        <label for="passwd"><i class="fas fa-key"></i>&nbsp;Password: </label>
-                        <input type="text" class="form-control" id="passwd" placeholder="efacani-code">
+                        <label for="passwd"><i class="fas fa-key"></i>&nbsp;使用者密碼: </label>
+                        <input type="password" class="form-control" id="passwd" placeholder="efacani-code">
                     </div>
                     <hr>
                     <div class="text-center">
-                        <div id="ulogin-loader" style="display:none">
-                            <i class="fa fa-spinner fa-spin" style="font-size:24px"></i> Loading
-                        </div>
-                    </div>
-                    <div class="text-center">
-                        <button type="submit" class="btn btn-info">LOGIN</button>
-                        <button id="uSignUp" class="btn btn-success">SIGN UP</button>
-                        <button id="ulogin-reset" type="button" class="btn btn-danger">RESET</button>
-                        <button id="config" type="button" class="btn btn-primary">CONFIG</button>
-                        <button id="skip" type="button" class="btn btn-warning">SKIP</button>
+                        <button type="submit" class="btn btn-info">登入Trader APP</button>
+                        <button id="uSignUp" class="btn btn-success">註冊帳密</button>
+                        <button id="ulogin-reset" type="button" class="btn btn-danger">清除輸入</button>
+                        <button id="config" type="button" class="btn btn-primary">設定交易所API</button>
+                        <button id="skip" type="button" class="btn btn-warning">略過(DEBUG)</button>
                     </div>
                     <hr>
                 </form>
-                
             </div>
             <hr>
         </div>
         <!-- ================================================ Bottom Navbar ================================================ -->
-        <div class="navbar fixed-bottom navbar-expand-md bg-dark navbar-dark text-nowrap">
+        <div class="navbar fixed-bottom navbar-expand-md bg-dark navbar-dark text-nowrap border-bottom border-warning">
             <span class="hide-phone footer-link">
                 <a class="navbar-brand mx-auto px-5" href="#">Copyright © 2018 by Kevin Cyu. All rights reserved.</a>
             </span>
@@ -101,6 +93,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
 <!-- Bootstrap JS -->
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+<!-- Custom CSS -->
+<script src="./lib/custom/Loading-Mask-Plugin-jQuery-Busy-Load/dist/app.min.js"></script>
 <!-- Event channel -->
 <script type="text/javascript" charset="utf-8">require('./event/index_channel.js')</script>
 <script type="text/javascript" charset="utf-8">require('./event/control_channel.js')</script>
