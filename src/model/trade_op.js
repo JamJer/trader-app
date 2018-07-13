@@ -205,8 +205,8 @@ class trade_op {
                 throw "missing binance api key";
             }
             this.client = Binance({
-                apiKey: self.binance_apiKey,
-                apiSecret: self.binance_apiSecret,
+                apiKey: this.binance_apiKey,
+                apiSecret: this.binance_apiSecret,
             });
             const dateTime = Date.now();
             const timestamp = Math.floor(dateTime);
@@ -225,7 +225,7 @@ class trade_op {
             }
         } catch(err){
             result.msg = err.message;
-            return result;
+            return result.msg;
         }
     
     }

@@ -10,6 +10,7 @@ const fs = require('fs');
 const path = require('path');
 const url = require('url');
 const storage = require('electron-json-storage');
+const Binance = require('binance-api-node').default;
 const file_ext = ".ect";
 // EChart initialization
 var echarts = require('echarts');
@@ -19,12 +20,11 @@ const dark = require('../lib/js/dark')
 var logger = null;
 const $ = require('jquery');
 const dt = require( 'datatables.net' )();
-const bot_coin_type = ['BTCUSDT','IOTABTC','BTCIOTA','IOTAETH','ETHIOTA','ETHBTC','BTCETH','LTCBTC','LTCBTC'];
 var bot_ma_unit_type = ['m','h','d','M'];
 var bot_symbol_select = $('#bot-cointype-select');
 var bot_ma_unit_select = $('#bot-ma-unit-select');
 var bot_status_view = $('#bot-status-view');
-const data_reflesh_interval = 10000;
+const data_reflesh_interval = 30000;
 
 // DataTable variable
 var botTradeBuyTable
@@ -46,11 +46,12 @@ botTradeBuyTable = $('#bot_trade_buy_table').DataTable( {
         autoFill: true,
         data: [],
         columns: [
-            { title: "TIMESTAMP" },
-            { title: "SYMBOL" },
-            { title: "QUANTITY" },
-            { title: "PRICE" },
-            { title: "BUY" }
+            { title: "時間日期" },
+            { title: "交易策略" },
+            { title: "市場" },
+            { title: "買入數量" },
+            { title: "買入價格" },
+            { title: "買入" }
         ]
 } );
 
@@ -70,13 +71,14 @@ botTradeSellTable = $('#bot_trade_sell_table').DataTable( {
         autoFill: true,
         data: [],
         columns: [
-            { title: "TIMESTAMP" },
-            { title: "SYMBOL" },
-            { title: "QUANTITY" },
-            { title: "PRICE" },
-            { title: "SELL" },
-            { title: "ROR" },
-            { title: "STATUS" }
+            { title: "時間日期" },
+            { title: "交易策略" },
+            { title: "市場" },
+            { title: "賣出數量" },
+            { title: "賣出價格" },
+            { title: "賣出" },
+            { title: "收益率" },
+            { title: "賣出類型" }
         ]
 } );
 
@@ -96,29 +98,26 @@ ipcRenderer.on("receive_bot",(event,arg)=>{
      * @param ma
      * @param symbol
      */
-    console.log(arg)
     // TODO:
     // Using these 3 element to render the bot_instance.html
     // Also set the edit panel, let user can edit the parameter of these parameter
 
     // --------------BOT PROFIT CHART PANEL GOES HERE----------------
-    // TODO: (Long-term goal)
-    // 獲利曲線 UI（該 bot 的獲利曲線，呈獻其運行到目前的收益情況）
-    // 詳細可以參考後端程式碼： src/model/trade_bot.js 的實作
 
     // EChart initialization
     let chart_dom = document.querySelector('#profit_chart')
     let eChart = echarts.init(chart_dom,'dark');
     let option = null;
-    let fake_profit = [];
+    let profit_res = arg["trade_data"].trade_log;
+    let profit_data = [];
     let xAxisArr = [];
-    // Generate fake profit data
-    for (var i = 0; i < 30; i++) {
-        fake_profit.push((Math.floor(Math.random() * 20.1) - 10.0).toFixed(3));
+    // Generate profit rate data
+    for (var i = 0; i < profit_res.length; i++) {
+        profit_data.push(profit_res[i].profit);
     }
-    // Generate fake x-Axis data
-    for (var i = 0; i < 30; i++) {
-        xAxisArr.push(i+1);
+    // Generate date x-Axis data
+    for (var i = 0; i < profit_res.length; i++) {
+        xAxisArr.push(profit_res[i].trade_date);
     }
     // Setting option variable for eChart
     option = {
@@ -174,7 +173,7 @@ ipcRenderer.on("receive_bot",(event,arg)=>{
             {
                 name:'Profit',
                 type:'line',
-                data: fake_profit,
+                data: profit_data,
                 markPoint: {
                     data: [
                         {type: 'max', name: '最大值', itemStyle: { color: '#00994d'}},
@@ -203,27 +202,15 @@ ipcRenderer.on("receive_bot",(event,arg)=>{
     removeAllSelectItem(bot_symbol_select)
     removeAllSelectItem(bot_ma_unit_select)
 
-    // Insert data into select element
-    $.each(bot_coin_type, function( index, value ) {
-      bot_symbol_select.append($('<option>', { 
-            text : value 
-        }));
-    });
+    initSymbolList(arg['symbol']);
 
-     $.each(bot_ma_unit_type, function( index, value ) {
+    $.each(bot_ma_unit_type, function( index, value ) {
       bot_ma_unit_select.append($('<option>', { 
             text : value 
         }));
     });
 
-    // bot select box initialization
-    bot_symbol_select.selectpicker({
-        styleBase: 'btn',
-        style: 'btn-secondary',
-        dropupAuto: true,
-        size: 'fit'
-    });
-
+    // Initialize ma unit select
     bot_ma_unit_select.selectpicker({
         styleBase: 'btn',
         style: 'btn-secondary',
@@ -231,14 +218,8 @@ ipcRenderer.on("receive_bot",(event,arg)=>{
         size: 'fit'
     });
 
-    bot_symbol_select.selectpicker('setStyle', 'btn-sm', 'add');
-    bot_symbol_select.selectpicker('val', arg['symbol']);
     bot_ma_unit_select.selectpicker('setStyle', 'btn-sm', 'add');
     bot_ma_unit_select.selectpicker('val', processText(arg['ma'])[0][1]);
-
-    // reflesh and rerender ui
-    bot_symbol_select.selectpicker('refresh');
-    bot_symbol_select.selectpicker('render');
     bot_ma_unit_select.selectpicker('refresh');
     bot_ma_unit_select.selectpicker('render');
 
@@ -318,22 +299,31 @@ ipcRenderer.on("receive_bot",(event,arg)=>{
     // --------------BOT STATUS VIEW PANEL GOES END-----------------
 
     // --------------BOT TRADE HISTORY GOES HERE----------------
-    botTradeBuyTable.clear()
-    botTradeSellTable.clear()
+    botTradeBuyTable.clear().draw()
+    botTradeSellTable.clear().draw()
 
     storage.get(arg['id'], function(error, data) {
         if (error) throw error;
         // console.log("Bot "+arg['id']+"local trade record: "+data)
         for(let i in data){
             if(data[i].type == "buy"){
-                let insert_row = [data[i].timeStamp,data[i].symbol,data[i].quantity,data[i].price,data[i].buy];
+                let insert_row = [data[i].timeStamp,data[i].tradePolicy,data[i].symbol,data[i].quantity,data[i].price,data[i].buy];
                 botTradeBuyTable.row.add(insert_row).draw();
             }
             else if(data[i].type == "sell"){
-                let insert_row = [data[i].timeStamp,data[i].symbol,data[i].quantity,data[i].price,data[i].sell,data[i].ror,data[i].status];
+                let insert_row = [data[i].timeStamp,data[i].tradePolicy,data[i].symbol,data[i].quantity,data[i].price,data[i].sell,data[i].ror,data[i].status];
                 botTradeSellTable.row.add(insert_row).draw();
             }
         }
+    });
+
+    // Delete bot history button handle
+    $("#bot-trade-history-delete").bind("click",function(){
+        storage.set(arg['id'], [], function(error) {
+            if (error) throw error;
+            $("#bot-trade-history-delete").unbind( "click" ) // unbind listener to avoid recursive binding
+            ipcRenderer.send("get_bot",{});
+        });
     });
     // --------------BOT TRADE HISTORY GOES END----------------
 })
@@ -422,4 +412,28 @@ function removeAllSelectItem(jqobj){
      * @param jqobj (jquery instance)
      */
     jqobj.find('option').remove().end();
+}
+
+async function initSymbolList(now_symbol){
+    bot_symbol_select.empty()
+    bot_symbol_select.selectpicker({
+        styleBase: 'btn',
+        style: 'btn-default',
+        dropupAuto: true,
+        size: '10'
+    });
+
+    // Get binance exchangeInfo API data 
+    let client = Binance()
+    let exchangeInfo = await client.exchangeInfo();
+    for ( let obj of exchangeInfo.symbols ) {
+        bot_symbol_select.append($('<option>', { 
+            text : obj['symbol'] 
+        }));
+    }
+
+    bot_symbol_select.selectpicker('setStyle', 'btn-sm', 'add');
+    bot_symbol_select.selectpicker('val', now_symbol);
+    bot_symbol_select.selectpicker('refresh');
+    bot_symbol_select.selectpicker('render');
 }

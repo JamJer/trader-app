@@ -23,7 +23,7 @@
     </head>
     <body>
         <!-- ================================================ Top Navbar ================================================ -->
-        <div class="navbar navbar-expand-md navbar-dark bg-dark navbar-fixed-top" id="navbar_top">
+        <div class="navbar navbar-expand-md navbar-dark bg-dark fixed-top border-bottom border-warning" id="navbar_top">
             <div class="navbar-header">
                 <a class="navbar-brand" href="#">
                 <i class="fa fa-copyright"></i>&nbsp;Trader APP</a>
@@ -42,36 +42,37 @@
                 <ul class="list-unstyled components">
                     <div class="brand"><i class="fa fa-copyright"></i>&nbsp;Trader App v 0.0.1</div>
                     <li id="sb_dashboard">
-                      <a><i class="fas fa-chart-bar"></i>&nbsp;Dashboard</a>
+                      <a><i class="fas fa-chart-bar"></i>&nbsp;主頁面</a>
                     </li>
                     <li id="sb_status">
-                      <a><i class="fas fa-robot"></i>&nbsp;Status&nbsp;<span class="badge badge-primary">0</span></a>
+                      <a><i class="fas fa-robot"></i>&nbsp;交易機器人管理&nbsp;<span class="badge badge-primary">0</span></a>
                     </li>
                     <li id="sb_trade">
-                      <a><i class="far fa-hand-paper"></i>&nbsp;Manual Trade</a>
-                    </li>
-                    <li id="sb_backtrack">
-                      <a><i class="fas fa-flag-checkered"></i>&nbsp;Backtracking</a>
+                      <a><i class="far fa-hand-paper"></i>&nbsp;手動交易</a>
                     </li>
                     <li  data-toggle="collapse" data-target="#policy_list" class="collapsed">
-                      <a href="#"><i class="far fa-file-code"></i>&nbsp;Policy <i class="fas fa-caret-down"></i>&nbsp;<span class="badge badge-primary">0</span></a>
+                      <a href="#"><i class="far fa-file-code"></i>&nbsp;交易策略 <i class="fas fa-caret-down"></i>&nbsp;<span class="badge badge-primary">0</span></a>
                     </li>
                     <ul class="sub-menu collapse" id="policy_list">
-                        <li id="sb_list_policy"><a><i class="fas fa-list-ul"></i>List policy(Pull/Push)</a></li>
-                        <li id="sb_create_policy"><a><i class="fas fa-plus"></i>Create policy</a></li>
-                        <li id="sb_edit_policy"><a><i class="far fa-edit"></i>Edit policy</a></li>
+                        <li id="sb_create_policy"><a><i class="fas fa-plus"></i>上傳/編輯交易策略</a></li>
+                        <li id="sb_backtrack">
+                          <a><i class="fas fa-flag-checkered"></i>&nbsp;交易策略回測</a>
+                        </li>
                     </ul>
                     <li id="sb_purchase_policy">
-                      <a><i class="fas fa-shopping-cart"></i>&nbsp;Purchase policy&nbsp;<span class="badge badge-warning">New!</span></a>
+                      <a><i class="fas fa-shopping-cart"></i>&nbsp;購買交易策略&nbsp;<span class="badge badge-warning">New!</span></a>
                     </li>
                     <li id="sb_setting">
-                      <a><i class="fas fa-cog"></i>&nbsp;Setting</a>
+                      <a><i class="fas fa-cog"></i>&nbsp;交易所API設定</a>
                     </li>
                     <li id="sb_help">
-                      <a><i class="fas fa-question"></i>&nbsp;Help</a>
+                      <a><i class="fas fa-question"></i>&nbsp;幫助</a>
                     </li>
                     <li id="sb_about">
-                      <a><i class="fas fa-users"></i>&nbsp;About us</a>
+                      <a><i class="fas fa-users"></i>&nbsp;關於我們</a>
+                    </li>
+                    <li id="sb_logout">
+                      <a><i class="fas fa-sign-out-alt"></i>&nbsp;登出</a>
                     </li>
                 </ul>
             </nav>
@@ -149,11 +150,11 @@
         </div>
         
         <!-- ================================================ Footer ================================================ -->
-        <div class="container-fluid">
-            <p style="text-align:left;">
-                Copyright © 2018 by Kevin Cyu. All rights reserved.
-            <span style="float:right;">EFACANI, Trader App Team</span>
-            </p>
+        <div class="navbar fixed-bottom navbar-expand-md bg-dark navbar-dark text-nowrap border-top border-warning">
+            <span class="hide-phone footer-link">
+                <a class="navbar-brand mx-auto px-5" href="#">Copyright © 2018 by Kevin Cyu. All rights reserved.</a>
+            </span>
+            <span style="float:right;"><font color="white">EFACANI, Trader App Team</font></span>
         </div>
     </body>
 

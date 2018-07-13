@@ -1,5 +1,5 @@
 /**
- * ipcRenderer - control panel
+ * ipcRenderer - side bar manu control
  * 
  */
 const { remote, ipcRenderer } = require('electron');
@@ -57,10 +57,12 @@ $(document).ready(function () {
         // Working on
     });
     $('#sb_edit_policy').on('click', function () {
+        alert("This page is still working on....")
         pageControl('edit')
         // Working on
     });
     $('#sb_purchase_policy').on('click', function () {
+        alert("This page is still working on....")
         pageControl('purchase')
         // Working on
     });
@@ -69,12 +71,21 @@ $(document).ready(function () {
         // Working on
     });
     $('#sb_help').on('click', function () {
+        alert("This page is still working on....")
         pageControl('help')
         // Working on
     });
     $('#sb_about').on('click', function () {
         alert("This page is still working on....")
         // Working on
+    });
+    $('#sb_logout').on('click', function () {
+        var r = confirm("目前版本若登出將終止並刪除執行中的所有機器人 確定要登出?");
+        if (r == true) {
+            ipcRenderer.send('kill_all_bot',{})
+        } else {
+            return
+        }
     });
 });
 
@@ -194,4 +205,9 @@ ipcRenderer.on('backtrack',(event,arg)=>{
 ipcRenderer.on('debug',(event,arg)=>{
     // Enter debug page
     window.location.href="debug.html";
+})
+
+ipcRenderer.on('ready_for_log_out',(event,arg)=>{
+    // Enter back to login page
+    window.location.href="index.html"
 })
