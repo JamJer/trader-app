@@ -47,9 +47,9 @@ class user{
                                 rp.post(res.headers['location'],{form: key_check_arg})
                                     .then((body) => {
                                         // Get response from database 
-                                        // let response = JSON.parse(body);
-                                        console.log(body)
-                                        if(body=="success"){
+                                        let response = JSON.parse(body);
+                                        console.log(response)
+                                        if(response.msg=="success"){
                                             // product key are activated
                                             // Store product key 
                                             console.log("Product key examinate success, store all user's config.")
