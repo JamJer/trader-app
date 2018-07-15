@@ -68,13 +68,13 @@ class user{
                                         }
                                         else{
                                             // send error msg - "not found"/"error id"...
-                                            event.sender.send('login-error', body)
+                                            event.sender.send('login-error', "金鑰尚未啟動！請至官網搜尋管道啟用！")
                                         }
                                     })
                             })
                     }
                     else{
-                        event.sender.send('login-error',res.msg);
+                        event.sender.send('login-error',"帳號或密碼錯誤！");
                     }
                 })
         }) 
