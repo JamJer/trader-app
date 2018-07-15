@@ -67,8 +67,8 @@ class user{
                                                 });
                                         }
                                         else{
-                                            // send error msg
-                                            event.sender.send('login-error', response.msg)
+                                            // send error msg - "not found"/"error id"...
+                                            event.sender.send('login-error', body)
                                         }
                                     })
                             })
