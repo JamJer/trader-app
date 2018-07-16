@@ -93,7 +93,7 @@ ipcRenderer.on('login-error', (event, arg) => {
     // unlock the input & button
     document.getElementById('username').disabled=false;
     document.getElementById('passwd').disabled=false;
-    alert("帳號或密碼錯誤")
+    alert(arg)
 })
 
 function loadingBt(isloading){

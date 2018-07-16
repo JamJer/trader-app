@@ -575,8 +575,9 @@ class trade_bot{
     // 現價是否下跌碰撞 MA
     isPriceDropTouchMA(){
         if(this.price.length > 1){
-            let maBuyRange = this.dataMA[this.dataMA.length - 1].ma * (1 + this.tradingData.buy.range * 0.01); //MA買進點容許範圍
-            if(this.price[this.price.length - 2] > maBuyRange && this.price[this.price.length - 1] <= maBuyRange){  //目前現價與上一個現價碰觸MA
+            let maBuyRangeMax = this.dataMA[this.dataMA.length - 1].ma * (1 + this.tradingData.buy.range * 0.01); //MA買進點容許範圍最大值
+            let maBuyRangeMin = this.dataMA[this.dataMA.length - 1].ma * (1 - this.tradingData.buy.range * 0.01); //MA買進點容許範圍最小值
+            if(this.price[this.price.length - 2] > this.price[this.price.length - 1] && this.price[this.price.length - 1] <= maBuyRangeMax && this.price[this.price.length - 1] >= maBuyRangeMin){ 
                 return true;
             }else{
                 return false;

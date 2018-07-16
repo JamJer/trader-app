@@ -5,7 +5,7 @@ capital: 1000
 ma: 25h
 buy:
     descrip: 
-    range: 8.5
+    range: 100
     volume: 10
     spread: 10
     stoloss: 10
@@ -13,7 +13,7 @@ buy:
 sell:
     descrip:
     magnification: 5
-    range: 10
+    range: 100
     volume:
     belowma: 5 
 ...
