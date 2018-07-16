@@ -25,6 +25,14 @@ bot_trade_recording.pushIntoTradeRecord = function (bot_id ,trade_json) {
 	  }else{
 	  	setBotRecordsToLocal(bot_id,[])
 	  	console.log('Bot id: '+bot_id+ ' local store has been created.')
+	  	storage.get(bot_id, function(error, data) {
+			if (error) throw error;
+			if(data.length >= BOT_RECORD_MAX_ROW_LIMIT){
+				data.shift()
+			}
+			data.push(trade_json)
+			setBotRecordsToLocal(bot_id,data)
+		});
 	  }
 	});
 }

@@ -25,7 +25,7 @@ var trade_func = new trade_op();
 
 // Duration
 // - default setting is 5 min (300 sec = 300,000 ms => For setInterval usage)
-const duration = 30000; 
+const duration = 300000; 
 
 class trade_bot{
     /**
