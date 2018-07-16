@@ -203,6 +203,7 @@ class trade_op {
         let result = {};
         try {
             // let self=this;
+            console.log(this)
             // need to make sure user have setting apikey and apiSecret
             if(this.binance_apiKey==null) {
                 throw "missing binance api key";
@@ -215,20 +216,29 @@ class trade_op {
             const timestamp = Math.floor(dateTime);
             let serverTime = await this.client.time();
             let recvWindow = config.trade.binance_recvWindow;
+            // console.log("Get server time: " + serverTime)
+            // console.log("Get timestamp: " + timestamp)
             if(timestamp < (serverTime+1000) && (serverTime - timestamp) <= recvWindow){
-                return await this.client.order({
+                let order_log = (await this.client.order({
                     symbol: symbol,
-                    side: "BUY",
+                    side: 'BUY',
                     quantity: quantity,
                     price: price
-                })
+                }))
+
+                console.log("Print Buying loginfo (Follow Binance API format):")
+                console.log(order_log)
+
+                return order_log;
             }
             else{
                 throw "伺服器延遲過高或電腦時間不準確"
             }
         } catch(err){
-            result.msg = err.message;
-            return result.msg;
+            console.log("error :")
+            console.log(err)
+            // result.msg = err.message;
+            return msg;
         }
     
     }
@@ -250,19 +260,25 @@ class trade_op {
             let recvWindow = config.trade.binance_recvWindow
     
             if(timestamp < (serverTime + 1000) && (serverTime - timestamp) <= recvWindow){
-                return await this.client.order({
+                let order_log = (await this.client.order({
                     symbol: symbol,
                     side: "SELL",
                     quantity: quantity,
                     price: price
-                })
+                }))
+
+                console.log("Print selling loginfo (Follow Binance API format):")
+                console.log(order_log)
+
+                return order_log;
             }else{
                 throw "伺服器延遲過高或電腦時間不準確"
             }
         }
         catch(err){
-            result.msg = err.message;
-            return result;
+            console.log("error :")
+            console.log(err)
+            return err;
         }
     }
     
