@@ -10,15 +10,22 @@ const dataPath = storage.getDataPath();
 console.log("Bot trade records LocalStorage Path: "+dataPath);
 
 bot_trade_recording.pushIntoTradeRecord = function (bot_id ,trade_json) {
-	storage.get(bot_id, function(error, data) {
-		if (error) throw error;
-		if(data.length >= BOT_RECORD_MAX_ROW_LIMIT){
-			data.shift()
-		}
-		console.log(data)
+	storage.has(bot_id, function(error, hasKey) {
+	  if (error) throw error;
 
-		data.push(trade_json)
-		setBotRecordsToLocal(bot_id,data)
+	  if (hasKey) {
+	    storage.get(bot_id, function(error, data) {
+			if (error) throw error;
+			if(data.length >= BOT_RECORD_MAX_ROW_LIMIT){
+				data.shift()
+			}
+			data.push(trade_json)
+			setBotRecordsToLocal(bot_id,data)
+		});
+	  }else{
+	  	setBotRecordsToLocal(bot_id,[])
+	  	console.log('Bot id: '+bot_id+ ' local store has been created.')
+	  }
 	});
 }
 
