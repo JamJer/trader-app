@@ -366,19 +366,14 @@ class trade_bot{
         switch(this.currentStatus){
             case 'wait':
                 this.log("Waiting...")
-                break;
             case 'sell':
                 this.log("Selling...")
-                break;
             case 'sell_stoloss':
                 this.log("Selling stoloss...")
-                break;
             case 'sell_volume':
                 this.log("Selling volume ...")
-                break;
             case 'sell_mafall':
                 this.log("Selling when detecting MA fall...")
-                break;
             case 'sell_belowma':
                 this.log("Selling when current price below MA ...")
                 //如果交易量沒有爆增
