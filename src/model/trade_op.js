@@ -216,8 +216,6 @@ class trade_op {
             const timestamp = Math.floor(dateTime);
             let serverTime = await this.client.time();
             let recvWindow = config.trade.binance_recvWindow;
-            // console.log("Get server time: " + serverTime)
-            // console.log("Get timestamp: " + timestamp)
             if(timestamp < (serverTime+1000) && (serverTime - timestamp) <= recvWindow){
                 return (await this.client.order({
                     symbol: symbol,

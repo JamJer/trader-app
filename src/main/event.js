@@ -18,9 +18,6 @@ const trade_bot = require('../model/trade_bot');
 var current_bot_id = "";
 const config = require('../config/config.default');
 
-// localStore
-const trade_record_func = require('../model/localStore/bot_trade_record.js')
-
 // ================================================== Trader bot channel ==================================================
 /**
  * 
@@ -73,9 +70,6 @@ ipcMain.on('create_bot',(event,arg)=>{
     tbot.start_by_obj(policy_obj,arg.policy_file.split('.')[0])
     trader.botID_queue.push({id: tbot.get_id(), instance: tbot})
 
-    // Create local storage of thsi bot 
-    trade_record_func.initailizeLocalBotRecord(tbot.get_id())
-
     // resend - receive_bot_status
     let id_queue = [];
     trader.botID_queue.forEach((element)=>{
@@ -101,7 +95,6 @@ ipcMain.on('kill_bot',(event,arg)=>{
     trader.kill_bot(arg.id)
 
     // Delete local storage of this bot 
-    // trade_record_func.deleteBotRecordFromLocal(arg.id)
 
     // resend - receive_bot_status
     let id_queue = [];

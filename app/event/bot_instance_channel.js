@@ -113,7 +113,7 @@ ipcRenderer.on("receive_bot",(event,arg)=>{
     let xAxisArr = [];
     // Generate profit rate data
     for (var i = 0; i < profit_res.length; i++) {
-        profit_data.push(profit_res[i].profit);
+        profit_data.push(profit_res[i].profit.toFixed(6));
     }
     // Generate date x-Axis data
     for (var i = 0; i < profit_res.length; i++) {
@@ -279,7 +279,7 @@ ipcRenderer.on("receive_bot",(event,arg)=>{
     // Warning, current tick need to sync with the update rate in bot_instnace.js
     let isreadable = true
     setInterval(function(){
-        logger = fs.createReadStream(path.join(os.tmpdir(),arg.id+file_ext),'UTF8')
+        logger = fs.createReadStream(path.join(os.tmpdir(),arg['id']+"_debug"+file_ext),'UTF8')
         logger.on('readable',function(){
             if(isreadable){
                 bot_status_view.val('');
@@ -307,11 +307,11 @@ ipcRenderer.on("receive_bot",(event,arg)=>{
         // console.log("Bot "+arg['id']+"local trade record: "+data)
         for(let i in data){
             if(data[i].type == "buy"){
-                let insert_row = [data[i].timeStamp,data[i].tradePolicy,data[i].symbol,data[i].quantity,data[i].price,data[i].buy];
+                let insert_row = [data[i].timeStamp,data[i].tradePolicy,data[i].symbol,data[i].quantity.toFixed(6),data[i].price.toFixed(6),data[i].buy.toFixed(6)];
                 botTradeBuyTable.row.add(insert_row).draw();
             }
             else if(data[i].type == "sell"){
-                let insert_row = [data[i].timeStamp,data[i].tradePolicy,data[i].symbol,data[i].quantity,data[i].price,data[i].sell,data[i].ror,data[i].status];
+                let insert_row = [data[i].timeStamp,data[i].tradePolicy,data[i].symbol,data[i].quantity.toFixed(6),data[i].price.toFixed(6),data[i].sell.toFixed(6),data[i].ror.toFixed(6),data[i].status];
                 botTradeSellTable.row.add(insert_row).draw();
             }
         }
