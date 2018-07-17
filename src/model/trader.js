@@ -130,5 +130,8 @@ class trader{
 }
 
 const t = new trader();
-
 module.exports = t;
+
+/*module.exports = {
+	t : new trader()
+}*/
