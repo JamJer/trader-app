@@ -116,16 +116,23 @@ class trade_bot{
         // this bot id
         this.id = rs.generate(6);
 
-        // debug -
+        // trade operation - buy/sell 
         this.trade_func = trade_func;
         this.trade_func.prepare(username)
-        // console.log("Bot instance created, ID: "+this.id)
+        // logger (for information display)
         this.logger = logger.bot_log(this.id);
+        // debug log - for trade operation
+        this.debug_logger = logger.bot_debug_log(this.id);
         this.log("Bot instance created, ID: "+this.id)
+        this.debug_log("Bot instance created, ID: "+this.id)
     }
 
     log(msg){
         this.logger.write(msg+os.EOL,'UTF8')
+    }
+
+    debug_log(msg){
+        this.debug_logger.write(msg+os.EOL,'UTF8')
     }
 
     /**
@@ -639,7 +646,10 @@ class trade_bot{
         // 儲存交易記錄到local端
         trade_record_func.pushIntoTradeRecord(this.id,newBuyinfo)
         // ------------ execute the buy operation -------------
-        console.log(this.trade_func.buy(newBuyinfo.symbol,newBuyinfo.quantity,newBuyinfo.price))
+        
+        // record 
+        const buy_report = this.trade_func.buy(newBuyinfo.symbol,newBuyinfo.buy,newBuyinfo.price)
+        this.debug_log("Buy info: " + buy_report)
     }
 
     sell(){
@@ -685,7 +695,10 @@ class trade_bot{
         // 儲存交易記錄到local端
         trade_record_func.pushIntoTradeRecord(this.id,newSellInfo)
         //------執行賣出------
-        console.log(this.trade_func.sell(newSellInfo.symbol,newSellInfo.quantity,newSellInfo.price))
+
+        // record 
+        let sell_report = this.trade_func.sell(newSellInfo.symbol,newSellInfo.sell,newSellInfo.price)
+        this.debug_log("Sell operation info:" + sell_report)
         //--------------------
     }
 
