@@ -260,11 +260,11 @@ ipcRenderer.on('receive_bot_status',(event,arg)=>{
             // console.log("Bot "+arg['id']+"local trade record: "+data)
             for(let i in data){
                 if(data[i].type == "buy"){
-                    let insert_row = [keys[k],data[i].timeStamp,data[i].tradePolicy,data[i].symbol,data[i].quantity,data[i].price,data[i].buy];
+                    let insert_row = [keys[k],data[i].timeStamp,data[i].tradePolicy,data[i].symbol,data[i].quantity.toFixed(6),data[i].price.toFixed(6),data[i].buy.toFixed(6)];
                     botsTradeBuyRecordsTable.row.add(insert_row).draw();
                 }
                 else if(data[i].type == "sell"){
-                    let insert_row = [keys[k],data[i].timeStamp,data[i].tradePolicy,data[i].symbol,data[i].quantity,data[i].price,data[i].sell,data[i].ror,data[i].status];
+                    let insert_row = [keys[k],data[i].timeStamp,data[i].tradePolicy,data[i].symbol,data[i].quantity.toFixed(6),data[i].price.toFixed(6),data[i].sell.toFixed(6),data[i].ror.toFixed(6),data[i].status];
                     botsTradeSellRecordsTable.row.add(insert_row).draw();
                 }
             }

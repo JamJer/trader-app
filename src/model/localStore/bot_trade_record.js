@@ -11,26 +11,17 @@ console.log("Bot trade records LocalStorage Path: "+dataPath);
 
 bot_trade_recording.pushIntoTradeRecord = function (bot_id ,trade_json) {
 	storage.has(bot_id, function(error, hasKey) {
-	  if (error) throw error;
-
-	  if (hasKey) {
-	    storage.get(bot_id, function(error, data) {
-			if (error) throw error;
-			if(data.length >= BOT_RECORD_MAX_ROW_LIMIT){
-				data.shift()
-			}
-			data.push(trade_json)
-			setBotRecordsToLocal(bot_id,data)
-		});
-	  }else{
-	  	setBotRecordsToLocal(bot_id,[])
+	  if (!hasKey) {
+	  	setBotRecordsToLocal(bot_id,[trade_json])
 	  	console.log('Bot id: '+bot_id+ ' local store has been created.')
+	  }else{
 	  	storage.get(bot_id, function(error, data) {
-			if (error) throw error;
+	        console.log(data)   			
 			if(data.length >= BOT_RECORD_MAX_ROW_LIMIT){
 				data.shift()
 			}
 			data.push(trade_json)
+			console.log(data)
 			setBotRecordsToLocal(bot_id,data)
 		});
 	  }
@@ -61,7 +52,6 @@ bot_trade_recording.initailizeLocalBotRecord = function(bot_id){
 
 function setBotRecordsToLocal(bot_id,trade_json){
 	storage.set(bot_id, trade_json, function(error) {
-		if (error) throw error;
 	});
 }
 

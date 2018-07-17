@@ -25,7 +25,7 @@ var trade_func = new trade_op();
 
 // Duration
 // - default setting is 5 min (300 sec = 300,000 ms => For setInterval usage)
-const duration = 300000; 
+const duration = 30000; 
 
 class trade_bot{
     /**
@@ -648,8 +648,10 @@ class trade_bot{
         // ------------ execute the buy operation -------------
         
         // record 
-        const buy_report = this.trade_func.buy(newBuyinfo.symbol,newBuyinfo.buy,newBuyinfo.price)
-        this.debug_log("Buy info: " + buy_report)
+        // const buy_report = this.trade_func.buy(newBuyinfo.symbol,newBuyinfo.buy,newBuyinfo.price)
+        this.trade_func.buy(newBuyinfo.symbol,newBuyinfo.buy,newBuyinfo.price).then((value) => {
+            this.debug_log("Buy info: " + value)
+        })
     }
 
     sell(){
@@ -697,8 +699,9 @@ class trade_bot{
         //------執行賣出------
 
         // record 
-        let sell_report = this.trade_func.sell(newSellInfo.symbol,newSellInfo.sell,newSellInfo.price)
-        this.debug_log("Sell operation info:" + sell_report)
+        this.trade_func.sell(newSellInfo.symbol,newSellInfo.sell,newSellInfo.price).then((value) => {
+            this.debug_log("Sell info:" + value)
+        })
         //--------------------
     }
 
