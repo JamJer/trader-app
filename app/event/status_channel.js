@@ -16,13 +16,6 @@ var symbolList = $("#symbol-list")
 const utils = require('../utils/ui')
 const DATA_REFLESH_TIME = 30000
 
-ipcRenderer.send('update_bot_status',{})
-
-setInterval(function(){
-    // send message to update table
-    ipcRenderer.send('update_bot_status',{})
-},DATA_REFLESH_TIME)
-
 // DataTable variable
 var botStatusTable
 var botsTradeBuyRecordsTable
@@ -138,6 +131,21 @@ botsTradeSellRecordsTable = $('#bots_sell_records_table').DataTable( {
         ]
 } );
 
+$( document ).ready(function() {
+    // Select initialization
+    initPolicyList();
+    initSymbolList();
+    initTradeRecords();
+    
+    ipcRenderer.send('update_bot_status',{})
+
+    setInterval(function(){
+        // send message to update table
+        ipcRenderer.send('update_bot_status',{})
+        initTradeRecords();
+    },DATA_REFLESH_TIME)
+});
+
 /**
  * Create bot instance event
  */
@@ -209,12 +217,6 @@ $("#bot-trade-history-delete").bind("click",function(){
     });
 });
 
-$( document ).ready(function() {
-    // Select initialization
-    initPolicyList();
-    initSymbolList();
-});
-
 /**
  * ipc render channel go here
  * 
@@ -230,8 +232,6 @@ ipcRenderer.on('receive_bot_status',(event,arg)=>{
 
     // Clean Bot Table before every update
     botStatusTable.clear().draw()
-    botsTradeBuyRecordsTable.clear().draw()
-    botsTradeSellRecordsTable.clear().draw()
 
     for(let i in arg.id_queue){
         //Delete buttons
@@ -251,26 +251,6 @@ ipcRenderer.on('receive_bot_status',(event,arg)=>{
         // document.getElementById("bot_status_table").appendChild(tr)
         botStatusTable.row.add(dt_arr).draw();
     }
-
-    storage.keys(function(error, keys) {
-      if (error) throw error;
-      for (let k in keys) {
-        storage.get(keys[k], function(error, data) {
-            if (error) throw error;
-            // console.log("Bot "+arg['id']+"local trade record: "+data)
-            for(let i in data){
-                if(data[i].type == "buy"){
-                    let insert_row = [keys[k],data[i].timeStamp,data[i].tradePolicy,data[i].symbol,data[i].quantity.toFixed(6),data[i].price.toFixed(6),data[i].buy.toFixed(6)];
-                    botsTradeBuyRecordsTable.row.add(insert_row).draw();
-                }
-                else if(data[i].type == "sell"){
-                    let insert_row = [keys[k],data[i].timeStamp,data[i].tradePolicy,data[i].symbol,data[i].quantity.toFixed(6),data[i].price.toFixed(6),data[i].sell.toFixed(6),data[i].ror.toFixed(6),data[i].status];
-                    botsTradeSellRecordsTable.row.add(insert_row).draw();
-                }
-            }
-        });
-      }
-    });
 
     //Delete buttons event (Only works here....)
     $('.dt-delete').each(function () {
@@ -315,6 +295,31 @@ function initPolicyList(){
      */
     policyList.empty()
     ipcRenderer.send("policy_list",{})
+}
+
+function initTradeRecords(){
+    botsTradeBuyRecordsTable.clear().draw()
+    botsTradeSellRecordsTable.clear().draw()
+
+    storage.keys(function(error, keys) {
+      if (error) throw error;
+      for (let k in keys) {
+        storage.get(keys[k], function(error, data) {
+            if (error) throw error;
+            // console.log("Bot "+arg['id']+"local trade record: "+data)
+            for(let i in data){
+                if(data[i].type == "buy"){
+                    let insert_row = [keys[k],data[i].timeStamp,data[i].tradePolicy,data[i].symbol,data[i].quantity.toFixed(6),data[i].price.toFixed(6),data[i].buy.toFixed(6)];
+                    botsTradeBuyRecordsTable.row.add(insert_row).draw();
+                }
+                else if(data[i].type == "sell"){
+                    let insert_row = [keys[k],data[i].timeStamp,data[i].tradePolicy,data[i].symbol,data[i].quantity.toFixed(6),data[i].price.toFixed(6),data[i].sell.toFixed(6),data[i].ror.toFixed(6),data[i].status];
+                    botsTradeSellRecordsTable.row.add(insert_row).draw();
+                }
+            }
+        });
+      }
+    });
 }
 
 ipcRenderer.on("response_policy_list",(event,arg)=>{

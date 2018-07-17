@@ -86,6 +86,36 @@ ipcMain.on('create_bot',(event,arg)=>{
     });
 })
 
+ipcMain.on('create_all_bots',(event,arg)=>{
+
+    // New Symbol 
+    let new_symbol = arg.symbol
+    // Policy path
+    let policy_path = config.policy['path']+arg.policy_file
+    let policy_obj = YAML.parse(fs.readFileSync(policy_path).toString())   
+    policy_obj.symbol = new_symbol
+
+    let tbot = new trade_bot(config.username);
+    /** using the policy object to start robot */
+    tbot.start_by_obj(policy_obj,arg.policy_file.split('.')[0])
+    trader.botID_queue.push({id: tbot.get_id(), instance: tbot})
+
+    // resend - receive_bot_status
+    let id_queue = [];
+    trader.botID_queue.forEach((element)=>{
+        id_queue.push({
+            id: element.id,
+            detail: element.instance.tradePolicy,
+            symbol: element.instance.tradingData.symbol,
+            tradeStatus: element.instance.currentStatus
+        })
+    })
+
+    event.sender.send('receive_bot_status',{
+        id_queue: id_queue
+    });
+})
+
 ipcMain.on('kill_bot',(event,arg)=>{
     /**
      * terminate bot instance by id
