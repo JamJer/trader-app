@@ -650,7 +650,10 @@ class trade_bot{
         // record 
         // const buy_report = this.trade_func.buy(newBuyinfo.symbol,newBuyinfo.buy,newBuyinfo.price)
         this.trade_func.buy(newBuyinfo.symbol,newBuyinfo.quantity,newBuyinfo.price).then((value) => {
+            this.debug_log("=====================")
             this.debug_log("Buy info: " + value)
+            this.debug_log(`對應的 symbol: ${newBuyinfo.symbol}, quantity: ${newBuyinfo.quantity}, price: ${newBuyinfo.price}`)
+            this.debug_log("=====================")
         })
     }
 
@@ -700,7 +703,10 @@ class trade_bot{
 
         // record 
         this.trade_func.sell(newSellInfo.symbol,newSellInfo.quantity,newSellInfo.price).then((value) => {
-            this.debug_log("Sell info:" + value)
+            this.debug_log("=====================")
+            this.debug_log("Sell info: " + value)
+            this.debug_log(`對應的 symbol: ${newSellInfo.symbol}, quantity: ${newSellInfo.quantity}, price: ${newSellInfo.price}`)
+            this.debug_log("=====================")
         })
         //--------------------
     }
