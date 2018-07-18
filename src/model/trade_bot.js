@@ -649,7 +649,7 @@ class trade_bot{
         
         // record 
         // const buy_report = this.trade_func.buy(newBuyinfo.symbol,newBuyinfo.buy,newBuyinfo.price)
-        this.trade_func.buy(newBuyinfo.symbol,newBuyinfo.buy,newBuyinfo.price).then((value) => {
+        this.trade_func.buy(newBuyinfo.symbol,newBuyinfo.quantity,newBuyinfo.price).then((value) => {
             this.debug_log("Buy info: " + value)
         })
     }
@@ -699,7 +699,7 @@ class trade_bot{
         //------執行賣出------
 
         // record 
-        this.trade_func.sell(newSellInfo.symbol,newSellInfo.sell,newSellInfo.price).then((value) => {
+        this.trade_func.sell(newSellInfo.symbol,newSellInfo.quantity,newSellInfo.price).then((value) => {
             this.debug_log("Sell info:" + value)
         })
         //--------------------
