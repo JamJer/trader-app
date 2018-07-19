@@ -10,6 +10,7 @@ const os = require('os')
 const fs = require('fs')
 const rs = require('randomstring')
 const YAML = require('yamljs')
+const request = require('request')
 
 // logger 
 const {logger} = require('./logger')
@@ -626,34 +627,53 @@ class trade_bot{
       * 
       */
     buy(){
-        // 針對新版做出修改（tradebot 5~7）-> 買入時間
-        let timeStamp = this.isHistory ? this.currentHistoryTime.toLocaleString():(new Date().toLocaleString());
-        // Create buy info (new version)
-        let newBuyinfo = {
-            tradePolicy: this.tradePolicy,
-            symbol: this.tradingData.symbol, 
-            timeStamp: timeStamp,
-            type: 'buy',
-            quantity: this.tradingData.capital * (this.tradingData.buy.volume/100) / this.price[this.price.length - 1], //買入數量
-            price: this.price[this.price.length - 1], // 買入價格,
-            buy: (this.tradingData.capital * (this.tradingData.buy.volume/100) / this.price[this.price.length - 1]) * this.price[this.price.length - 1]
-        };
+        let self = this;
+        // New version: 透過 request 來呼叫 binance API
+        request.get("https://www.binance.com/api/v1/exchangeInfo", function(err,response,data){
+            // 檢查買入數量最小值
+            let jsonData = JSON.parse(data)
+            let oriQuantity = self.tradingData.capital * (self.tradingData.buy.volume/100) / self.price[self.price.length - 1] // 原始買入數量
+            let currentJson = {}
 
-        // 儲存買入資訊
-        this.buyInfo.push(newBuyinfo);
-        // 儲存交易紀錄
-        this.tradeInfo.push(newBuyinfo);
-        // 儲存交易記錄到local端
-        trade_record_func.pushIntoTradeRecord(this.id,newBuyinfo)
-        // ------------ execute the buy operation -------------
-        
-        // record 
-        // const buy_report = this.trade_func.buy(newBuyinfo.symbol,newBuyinfo.buy,newBuyinfo.price)
-        this.trade_func.buy(newBuyinfo.symbol,newBuyinfo.quantity,newBuyinfo.price).then((value) => {
-            this.debug_log("=====================")
-            this.debug_log("Buy info: " + value)
-            this.debug_log(`對應的 symbol: ${newBuyinfo.symbol}, quantity: ${newBuyinfo.quantity}, price: ${newBuyinfo.price}`)
-            this.debug_log("=====================")
+            // find target
+            for(let i in jsonData['symbols']){
+                if(jsonData['symbols'][i]['symbol'] == self.tradingData.symbol){
+                    currentJson = jsonData['symbols'][i]
+                    break;
+                }
+            }
+
+            let limit = 1 / parseFloat(currentJson['filters'][1]['minQty']);
+            let quantity = Math.round(oriQuantity * limit) / limit;//四捨五入後的買入數量
+            // ts
+            let timeStamp = self.isHistory ? self.currentHistoryTime.toLocaleString() : (new Date().toLocaleString());
+            
+            // buy info
+            let newBuyInfo = {
+                tradePolicy: self.tradePolicy,
+                symbol: self.tradingData.symbol,    //買入交易對符號
+                timeStamp: timeStamp,    //買入時間
+                type: 'buy',
+                quantity: quantity, //買入數量
+                price: self.price[self.price.length - 1],    //買入價格
+                buy: quantity * self.price[self.price.length - 1]
+            };
+
+            // 儲存買入資訊
+            self.buyInfo.push(newBuyInfo);
+            // 儲存交易紀錄
+            self.tradeInfo.push(newBuyInfo);
+            // 儲存交易記錄到local端
+            trade_record_func.pushIntoTradeRecord(self.id,newBuyInfo)
+
+            //------執行買入------
+            self.trade_func.buy(newBuyInfo.symbol,newBuyInfo.quantity,newBuyInfo.price).then((value) => {
+                self.debug_log("=====================")
+                self.debug_log("Buy info: " + value)
+                self.debug_log(`對應的 symbol: ${newBuyInfo.symbol}, quantity: ${newBuyInfo.quantity}, price: ${newBuyInfo.price}`)
+                self.debug_log("=====================")
+            })
+            //--------------------
         })
     }
 
