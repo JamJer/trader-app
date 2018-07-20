@@ -73,14 +73,17 @@ ipcRenderer.on("response_policy_list",(event,arg)=>{
      */
 
     // bot select box initialization
+    policyList.find('option').remove().end()
+    policyList.selectpicker('destroy');
     policyList.selectpicker({
         styleBase: 'btn',
         style: 'btn-default',
         dropupAuto: true,
-        size: 'fit'
+        size: 'fit',
+        deselectAllText: 'Deselect All'
     });
 
-    policyList.append($('<option disabled selected>', { 
+    policyList.append($('<option disabled selected style="display: none;">', { 
         text : "Choose a policy to edit" 
     }))
 
@@ -108,35 +111,34 @@ function refreshPolicyList(){
 }
 
 function setPolicyToSettingPanel(policy_name){
-    var csvRequest = new Request({
-        url:"../.local/policy/"+policy_name,
-        onSuccess:function(response){
-            yaml_obj = YAML.parse(response)
-            ed_policy_name.val(policy_name.split('.')[0])
-            ed_symbol_list.selectpicker('val', yaml_obj.symbol);
-            ed_duration.val(yaml_obj.duration)
-            ed_capital.val(yaml_obj.capital)
-            ed_ma.val(processText(yaml_obj.ma)[0][0])
-            ed_ma_unit_list.selectpicker('val', processText(yaml_obj.ma)[0][1]);
-            ed_buy_descrip.val(yaml_obj.buy.descrip)
-            ed_buy_range.val(yaml_obj.buy.range)
-            ed_buy_volume.val(yaml_obj.buy.volume)
-            ed_buy_spread.val(yaml_obj.buy.spread)
-            ed_buy_stoloss.val(yaml_obj.buy.stoloss)
-            ed_buy_rally.val(yaml_obj.buy.rally)
-            ed_sell_descrip.val(yaml_obj.sell.descrip)
-            ed_sell_magnification.val(yaml_obj.sell.magnification)
-            ed_sell_range.val(yaml_obj.sell.range)
-            ed_sell_volume.val(yaml_obj.sell.volume)
-            ed_sell_belowma.val(yaml_obj.sell.belowma)
-            policyList.selectpicker('val', policy_name);
-            fileEditButtonControl(false,false,false)
-            controlEditPanelOpen(false);
-            editType = 'old';
-            nowFile = policy_name;
-        }
-    }).send();
+    ipcRenderer.send("policy_data",{filename: policy_name})
 }
+
+ipcRenderer.on("response_policy_data",(event,arg)=>{
+    yaml_obj = YAML.parse(arg.data)
+    ed_policy_name.val(arg.filename.split('.')[0])
+    ed_symbol_list.selectpicker('val', yaml_obj.symbol);
+    ed_duration.val(yaml_obj.duration)
+    ed_capital.val(yaml_obj.capital)
+    ed_ma.val(processText(yaml_obj.ma)[0][0])
+    ed_ma_unit_list.selectpicker('val', processText(yaml_obj.ma)[0][1]);
+    ed_buy_descrip.val(yaml_obj.buy.descrip)
+    ed_buy_range.val(yaml_obj.buy.range)
+    ed_buy_volume.val(yaml_obj.buy.volume)
+    ed_buy_spread.val(yaml_obj.buy.spread)
+    ed_buy_stoloss.val(yaml_obj.buy.stoloss)
+    ed_buy_rally.val(yaml_obj.buy.rally)
+    ed_sell_descrip.val(yaml_obj.sell.descrip)
+    ed_sell_magnification.val(yaml_obj.sell.magnification)
+    ed_sell_range.val(yaml_obj.sell.range)
+    ed_sell_volume.val(yaml_obj.sell.volume)
+    ed_sell_belowma.val(yaml_obj.sell.belowma)
+    policyList.selectpicker('val', arg.filename);
+    fileEditButtonControl(false,false,false)
+    controlEditPanelOpen(false);
+    editType = 'old';
+    nowFile = arg.filename;
+})
 
 function saveFiles(file_name,file_data){
     // sending ipc request to backend
@@ -164,6 +166,7 @@ ipcRenderer.on("response_policy_save",(event,arg)=>{
     alert("提示: 交易策略已儲存")
     refreshPolicyList();
     editType = 'old'
+    nowFile = ed_policy_name.val()
     setPolicyToSettingPanel(nowFile)
 })
 
@@ -203,6 +206,7 @@ window.addEvent("domready",function(){
 $( "#file-add" ).click(function() {
     editType = 'new'
     clearEditPanel()
+    refreshPolicyList()
     fileEditButtonControl(false,false,false)
     controlEditPanelOpen(false);
     alert("提示: 可開始填入新的策略內容")
@@ -253,7 +257,7 @@ $( "#file-discard" ).click(function() {
 
 // Used function goese here
 async function inited_symbol_list(){
-    ed_symbol_list.empty()
+    ed_symbol_list.find('option').remove().end()
     ed_symbol_list.selectpicker({
         size: '10'
     });
@@ -274,7 +278,7 @@ async function inited_symbol_list(){
 
 function inited_ma_unit_list(){
     // bot select box initialization
-    ed_ma_unit_list.empty()
+    ed_ma_unit_list.find('option').remove().end()
     ed_ma_unit_list.selectpicker({
         size: '10'   
     });
@@ -296,13 +300,13 @@ function checkEditPanelIsEmpty(){
     if(ed_capital.val() == ''){ alert("本金不得為空"); return false}
     if(ed_ma.val() == ''){ alert("MA不得為空"); return false}
     if(ed_buy_range.val() == ''){ alert("買進Range不得為空"); return false}
-    if(ed_buy_volume.val() == ''){ alert("買進Volumn不得為空"); return false}
+    if(ed_buy_volume.val() == ''){ alert("買進Volume不得為空"); return false}
     if(ed_buy_spread.val() == ''){ alert("買進Spread不得為空"); return false}
     if(ed_buy_stoloss.val() == ''){ alert("買進Stoloss不得為空"); return false}
     if(ed_buy_rally.val() == ''){ alert("買進Rally不得為空"); return false}
     if(ed_sell_magnification.val() == ''){ alert("賣出Magnification不得為空"); return false}
     if(ed_sell_range.val() == ''){ alert("賣出Range不得為空"); return false}
-    if(ed_sell_volume.val() == ''){ alert("賣出Volumn不得為空"); return false}
+    if(ed_sell_volume.val() == ''){ alert("賣出Volume不得為空"); return false}
     if(ed_sell_belowma.val() == ''){ alert("賣出Belowma不得為空"); return false}
     return true
 }

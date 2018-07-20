@@ -41,6 +41,20 @@ class editor{
         })
     }
 
+    policy_data(event,arg){
+        fs.readFile(path.join(config.policy.path,arg.filename), 'utf8', function (err,data) {
+          if (err) {
+            return console.log(err);
+          }else{
+            event.sender.send("response_policy_data",{
+                    msg: "Successfully fetching police data.",
+                    filename: arg.filename,
+                    data: data
+                })
+          }
+        });
+    }
+
     policy_save(event,arg){
         /**
          * @param arg.filename

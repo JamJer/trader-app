@@ -52,7 +52,7 @@
                       <a href="#"><i class="far fa-file-code"></i>&nbsp;交易策略 <i class="fas fa-caret-down"></i>&nbsp;<span class="badge badge-primary">0</span></a>
                     </li>
                     <ul class="sub-menu collapse" id="policy_list">
-                        <li id="sb_create_policy"><a><i class="fas fa-plus"></i>上傳/編輯交易策略</a></li>
+                        <li id="sb_create_policy"><a><i class="fas fa-plus"></i>新增/編輯交易策略</a></li>
                         <li id="sb_backtrack">
                           <a><i class="fas fa-flag-checkered"></i>&nbsp;交易策略回測</a>
                         </li>
@@ -98,13 +98,13 @@
                       <p class="card-text">* `symbol`: 交易對 （ex: BTCUSDT)</p>
                       <p class="card-text">* `duration`: 機器人運作時間（單位: 分鐘, 預設 0: 永久</p>
                       <p class="card-text">* `capital`: 本金</p>
-                      <p class="card-text">* `ma`: 均線，(買進) 、賣出點（ex: 25d, m:分 h:時 d:日 M:月）</p>
+                      <p class="card-text">* `ma`: 均線，買進 、賣出點（ex: 25d, m:分 h:時 d:日 M:月）</p>
                       -------------------------------------------
                       <p class="card-text">自動買入設定</p>
                       <p class="card-text">* `descrip`: 交易敘述（選填）</p>
-                      <p class="card-text">* `range`: (買進) 點的範圍（ex: 2 表示 `+2% ~ -2%`）</p>
-                      <p class="card-text">* `volumn`: 一次交易的量 （ex: 10 表示 10%）</p>
-                      <p class="card-text">* `spread`: (買進) 點之間的價差 （ex: 10 表示比前次高 10%）</p>
+                      <p class="card-text">* `range`: 買進點的範圍（ex: 2 表示 `+2% ~ -2%`）</p>
+                      <p class="card-text">* `volume`: 一次交易的量 （ex: 10 表示 10%）</p>
+                      <p class="card-text">* `spread`: 買進點之間的價差 （ex: 10 表示比前次高 10%）</p>
                       <p class="card-text">* `stoloss`: 止損點（ex: 10 表示價格跌破上次購買價 10%）</p>
                       <p class="card-text">* `rally`: 反彈點（ex: 3.5 表示價格跌破MA以下3.5%）</p>
                       --------------------------------------------
@@ -112,7 +112,7 @@
                       <p class="card-text">* `descrip`: 交易敘述 (選填)</p>
                       <p class="card-text">* `magnification`: 暴增均量的倍數 (ex: 5, 表示賣出點為均線的 5 倍)</p>
                       <p class="card-text">* `range`: 賣出點的範圍（ex: 1 表示 `+1% ~ -1%`）</p>
-                      <p class="card-text">* `volumn`: 一次交易的量 （ex: 10 表示 10%，保留，目前預設全賣出）</p>
+                      <p class="card-text">* `volume`: 一次交易的量 （ex: 10 表示 10%，保留，目前預設全賣出）</p>
                       <p class="card-text">* `belowma`: 現價連續幾次低於MA就賣出（ex: 5 表示連續5次低於MA就賣出）</p>
                     </div>
                   </div>
@@ -187,7 +187,7 @@
                       </div>
                       <div class="input-group mb-3">
                         <div class="input-group-prepend">
-                          <span class="input-group-text">(買進) 一次交易的量(Volumn)</span>
+                          <span class="input-group-text">(買進) 一次交易的量(Volume)</span>
                         </div>
                         <input type="number" id="ed-buy-volumn" class="form-control" aria-label="Buy volumn" placeholder="None">
                         <div class="input-group-append">
@@ -247,7 +247,7 @@
                       </div>
                       <div class="input-group mb-3">
                         <div class="input-group-prepend">
-                          <span class="input-group-text">(賣出) 一次交易的量(Volumn)</span>
+                          <span class="input-group-text">(賣出) 一次交易的量(Volume)</span>
                         </div>
                         <input type="number" id="ed-sell-volumn" class="form-control" aria-label="Sell volumn" placeholder="None">
                         <div class="input-group-append">
