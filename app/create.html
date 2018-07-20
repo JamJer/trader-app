@@ -52,7 +52,7 @@
                       <a href="#"><i class="far fa-file-code"></i>&nbsp;交易策略 <i class="fas fa-caret-down"></i>&nbsp;<span class="badge badge-primary">0</span></a>
                     </li>
                     <ul class="sub-menu collapse" id="policy_list">
-                        <li id="sb_create_policy"><a><i class="fas fa-plus"></i>上傳/編輯交易策略</a></li>
+                        <li id="sb_create_policy"><a><i class="fas fa-plus"></i>新增/編輯交易策略</a></li>
                         <li id="sb_backtrack">
                           <a><i class="fas fa-flag-checkered"></i>&nbsp;交易策略回測</a>
                         </li>
@@ -81,7 +81,6 @@
          <div class="container jumbotron">
           <div class="card text-white bg-dark mb-3" style="max-width: 100%;">
             <div class="card-body">
-              <h1 align="center">交易策略編輯器</h1>
               <br>
               <div class="row">
                 <div class="col-md-6">
@@ -99,12 +98,12 @@
                       <p class="card-text">* `symbol`: 交易對 （ex: BTCUSDT)</p>
                       <p class="card-text">* `duration`: 機器人運作時間（單位: 分鐘, 預設 0: 永久</p>
                       <p class="card-text">* `capital`: 本金</p>
-                      <p class="card-text">* `ma`: 均線，買進、賣出點（ex: 25d, m:分 h:時 d:日 M:月）</p>
+                      <p class="card-text">* `ma`: 均線，買進 、賣出點（ex: 25d, m:分 h:時 d:日 M:月）</p>
                       -------------------------------------------
                       <p class="card-text">自動買入設定</p>
                       <p class="card-text">* `descrip`: 交易敘述（選填）</p>
                       <p class="card-text">* `range`: 買進點的範圍（ex: 2 表示 `+2% ~ -2%`）</p>
-                      <p class="card-text">* `volumn`: 一次交易的量 （ex: 10 表示 10%）</p>
+                      <p class="card-text">* `volume`: 一次交易的量 （ex: 10 表示 10%）</p>
                       <p class="card-text">* `spread`: 買進點之間的價差 （ex: 10 表示比前次高 10%）</p>
                       <p class="card-text">* `stoloss`: 止損點（ex: 10 表示價格跌破上次購買價 10%）</p>
                       <p class="card-text">* `rally`: 反彈點（ex: 3.5 表示價格跌破MA以下3.5%）</p>
@@ -113,36 +112,159 @@
                       <p class="card-text">* `descrip`: 交易敘述 (選填)</p>
                       <p class="card-text">* `magnification`: 暴增均量的倍數 (ex: 5, 表示賣出點為均線的 5 倍)</p>
                       <p class="card-text">* `range`: 賣出點的範圍（ex: 1 表示 `+1% ~ -1%`）</p>
-                      <p class="card-text">* `volumn`: 一次交易的量 （ex: 10 表示 10%，保留，目前預設全賣出）</p>
+                      <p class="card-text">* `volume`: 一次交易的量 （ex: 10 表示 10%，保留，目前預設全賣出）</p>
                       <p class="card-text">* `belowma`: 現價連續幾次低於MA就賣出（ex: 5 表示連續5次低於MA就賣出）</p>
                     </div>
                   </div>
                   </div>
                 </div>
                 <div class="col-md-6">
-                  <h5>編輯面板</h5>
-                  <span class="badge badge-secondary">
-                    <h7>檔案名稱 : </h7>
-                  </span>
-                  <span id="file-name"></span>
-                  <span class="badge badge-secondary">
-                    <h7>擁有者 : </h7>
-                  </span>
-                  <span id="file-owner"></span>
-                  <!-- for resize for editor to fit parent div -->
-                  <div id="editorContainer">
-                     <!-- editor panel -->
-                     <div id="aceEditor">
-                        Do something here...  
-                     </div>
-                     <!-- editor goes here -->
+                  <div class="card text-white border-warning bg-dark mb-3" style="max-width: 100%;">
+                    <div class="card-header"><h1 align="center">交易策略編輯器</h1></div>
+                    <div class="card-body">
+                      <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">交易策略名稱</span>
+                        </div>
+                        <input type="text" id="ed-policy-name" class="form-control" aria-label="Trade policy name without extend name" placeholder="None">
+                        <div class="input-group-append">
+                          <span class="input-group-text">.yaml</span>
+                        </div>
+                      </div>
+                      <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">交易對(Symbol)</span>&nbsp;
+                          <select id="ed-symbol-list" class="selectpicker show-tick form-control" data-live-search="true" data-live-search-placeholder="Search">
+                          <!-- Dynamic select will generate here -->
+                          </select>
+                        </div>  
+                      </div>
+                      <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">運作時間(Duration)</span>
+                        </div>
+                        <input type="number" id="ed-duration" class="form-control" aria-label="Bot execution time" placeholder="None">
+                        <div class="input-group-append">
+                          <span class="input-group-text">分鐘</span>
+                        </div>
+                      </div>
+                      <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">本金(Capital)</span>
+                        </div>
+                        <input type="number" id="ed-capital" class="form-control" aria-label="User's capital" placeholder="None">
+                        <div class="input-group-append">
+                          <span class="input-group-text">$</span>
+                        </div>
+                      </div>
+                      <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">均線(MA)</span>&nbsp;
+                          <input type="number" id="ed-ma" class="form-control" aria-label="Moving Average" placeholder="None">&nbsp;
+                          <span class="input-group-text">MA單位</span>&nbsp;
+                          <select id="ed-ma-unit-list" class="selectpicker show-tick form-control">
+                          <!-- Dynamic select will generate here -->
+                          </select>
+                        </div>  
+                      </div>
+                      <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">(買進) 交易敘述(Descrip)</span>
+                        </div>
+                        <textarea id="ed-buy-descrip" class="form-control" aria-label="With textarea" placeholder="None"></textarea>
+                        <div class="input-group-append">
+                          <span class="input-group-text">(選填)</span>
+                        </div>
+                      </div>
+                      <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">(買進) 買進點(Range)</span>
+                        </div>
+                        <input type="number" id="ed-buy-range" class="form-control" aria-label="Buy range" placeholder="None" step="0.1">
+                        <div class="input-group-append">
+                          <span class="input-group-text">±%</span>
+                        </div>
+                      </div>
+                      <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">(買進) 一次交易的量(Volume)</span>
+                        </div>
+                        <input type="number" id="ed-buy-volumn" class="form-control" aria-label="Buy volumn" placeholder="None">
+                        <div class="input-group-append">
+                          <span class="input-group-text">%</span>
+                        </div>
+                      </div>
+                      <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">(買進) 點之間的價差(Spread)</span>
+                        </div>
+                        <input type="number" id="ed-buy-spread" class="form-control" aria-label="Buy spread" placeholder="None">
+                        <div class="input-group-append">
+                          <span class="input-group-text">%</span>
+                        </div>
+                      </div>
+                      <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">(買進) 止損點(Stoloss)</span>
+                        </div>
+                        <input type="number" id="ed-buy-Stoloss" class="form-control" aria-label="User's capital" placeholder="None">
+                        <div class="input-group-append">
+                          <span class="input-group-text">%</span>
+                        </div>
+                      </div>
+                      <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">(買進) 反彈點(Rally)</span>
+                        </div>
+                        <input type="number" id="ed-buy-Rally" class="form-control" aria-label="Buy Rally" placeholder="None">
+                        <div class="input-group-append">
+                          <span class="input-group-text">%</span>
+                        </div>
+                      </div>
+                      <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">(賣出) 交易敘述(Descrip)</span>
+                        </div>
+                        <textarea id="ed-sell-descrip" class="form-control" aria-label="With textarea" placeholder="None"></textarea>
+                        <div class="input-group-append">
+                          <span class="input-group-text">(選填)</span>
+                        </div>
+                      </div>
+                      <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">(賣出) 暴增均量的倍數(Magnification)</span>
+                        </div>
+                        <input type="number" id="ed-sell-Magnification" class="form-control" aria-label="Sell Magnification" placeholder="None">
+                      </div>
+                      <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">(賣出) 賣出點(Range)</span>
+                        </div>
+                        <input type="number" id="ed-sell-range" class="form-control" aria-label="Sell range" placeholder="None">
+                        <div class="input-group-append">
+                          <span class="input-group-text">±%</span>
+                        </div>
+                      </div>
+                      <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">(賣出) 一次交易的量(Volume)</span>
+                        </div>
+                        <input type="number" id="ed-sell-volumn" class="form-control" aria-label="Sell volumn" placeholder="None">
+                        <div class="input-group-append">
+                          <span class="input-group-text">%</span>
+                        </div>
+                      </div>
+                      <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">(賣出) 現價連續幾次低於MA就賣出(Belowma)</span>
+                        </div>
+                        <input type="number" id="ed-sell-Belowma" class="form-control" aria-label="Sell Belowma" placeholder="None">
+                      </div>
+                    </div>
                   </div>
-                  <div class="fileOpen btn btn-primary btncustom">
-                    <span>上傳策略</span>
-                    <input type="file" id="file-input" class="open" multiple>
-                  </div>
-                  <button type="button" class="btn btn-success btncustom" id="file-save">儲存策略</button>&nbsp;&nbsp;
-                  <button type="button" class="btn btn-danger btncustom" id="file-discard">捨棄策略</button>
+                  <button type="button" class="btn btn-primary btncustom" id="file-add">新增策略</button>&nbsp;&nbsp;
+                  <button type="button" class="btn btn-success btncustom" id="file-save" disabled="true">儲存變更</button>&nbsp;&nbsp;
+                  <button type="button" class="btn btn-danger btncustom" id="file-discard" disabled="true">刪除策略</button>
                   </div>
             </div>
           </div>
@@ -160,7 +282,6 @@
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
 <!-- In Electron, this is the correct way to include jQuery -->
 <script>window.$ = window.jQuery = require('./lib/js/jquery-3.3.1.min.js');</script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.3.3/ace.js" type="text/javascript" charset="utf-8"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mootools/1.6.0/mootools-core.min.js"></script>
 <script type="text/javascript" charset="utf-8" async>require('./event/create_channel.js')</script>
 <script type="text/javascript" src="./lib/custom/Bootstrap-4-Dropdown-Select-Plugin-jQuery/dist/js/bootstrap-select.js"></script>

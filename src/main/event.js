@@ -235,6 +235,7 @@ ipcMain.on('debug',cmder.debug);
 // ================================================== Editor channel ==================================================
 ipcMain.on('policy_list',editor.policy_list);
 ipcMain.on('policy_save',editor.policy_save);
+ipcMain.on('policy_data',editor.policy_data);
 ipcMain.on('policy_delete',editor.policy_delete);
 
 // ================================================== Config panel channel ==================================================

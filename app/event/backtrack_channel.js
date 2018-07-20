@@ -107,7 +107,7 @@ ipcRenderer.on("response_policy_list",(event,arg)=>{
      * @param arg.msg
      * @param arg.data
      */
-    policyList.append($('<option disabled selected>', { 
+    policyList.append($('<option disabled selected style="display: none;">', { 
         text : "Choose a policy to backtrack" 
     }))
     if(arg.data.length != undefined){
