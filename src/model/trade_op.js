@@ -219,9 +219,9 @@ class trade_op {
             if(timestamp < (serverTime+1000) && (serverTime - timestamp) <= recvWindow){
                 return (await this.client.order({
                     symbol: symbol,
-                    side: 'BUY',
+                    side: "BUY",
                     quantity: quantity,
-                    price: price
+                    type: "MARKET"
                 }))
                 //console.log("Print Buying loginfo (Follow Binance API format):")
                 //console.log(order_log)
@@ -259,7 +259,7 @@ class trade_op {
                     symbol: symbol,
                     side: "SELL",
                     quantity: quantity,
-                    price: price
+                    type: "MARKET"
                 }))
 
                 //console.log("Print selling loginfo (Follow Binance API format):")
