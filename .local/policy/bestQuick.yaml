@@ -1,0 +1,17 @@
+symbol: BNBBTC
+duration: '0'
+capital: '1000'
+ma: 25h
+buy:
+    descrip: ""
+    range: '100'
+    volume: '10'
+    spread: '0'
+    stoloss: '5'
+    rally: '100'
+sell:
+    descrip: ""
+    magnification: '5'
+    range: '5'
+    volume: '1'
+    belowma: '5'

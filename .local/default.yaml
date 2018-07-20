@@ -1,0 +1,19 @@
+---
+symbol:
+duration:
+capital:
+ma:
+buy:
+    descrip: 
+    range:
+    volume:
+    spread:
+    stoloss:
+    rally:
+sell:
+    descrip:
+    magnification:
+    range:
+    volume:
+    belowma: 
+...
