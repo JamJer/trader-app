@@ -11,6 +11,7 @@ const fs = require('fs')
 const rs = require('randomstring')
 const YAML = require('yamljs')
 const request = require('request')
+const moment = require('moment')
 
 // logger 
 const {logger} = require('./logger')
@@ -659,19 +660,33 @@ class trade_bot{
                 buy: quantity * self.price[self.price.length - 1]
             };
 
-            // 儲存買入資訊
-            self.buyInfo.push(newBuyInfo);
-            // 儲存交易紀錄
-            self.tradeInfo.push(newBuyInfo);
-            // 儲存交易記錄到local端
-            trade_record_func.pushIntoTradeRecord(self.id,newBuyInfo)
-
             //------執行買入------
             self.trade_func.buy(newBuyInfo.symbol,newBuyInfo.quantity,newBuyInfo.price).then((value) => {
-                self.debug_log("=====================")
-                self.debug_log("Buy info: " + value)
-                self.debug_log(`對應的 symbol: ${newBuyInfo.symbol}, quantity: ${newBuyInfo.quantity}, price: ${newBuyInfo.price}`)
-                self.debug_log("=====================")
+                let returnMsg = JSON.stringify(value)
+                if(returnMsg.includes("Error") == true){
+                    // error occur, do not save trading log 
+                    self.debug_log("=====================")
+                    self.debug_log("[錯誤發生][時間戳記]: " + moment().format('MMMM Do YYYY, h:mm:ss a'))
+                    self.debug_log("[錯誤發生] Buy info: " + JSON.stringify(value))
+                    self.debug_log(`[錯誤發生] 對應的 symbol: ${newBuyInfo.symbol}, quantity: ${newBuyInfo.quantity}, price: ${newBuyInfo.price}`)
+                    self.debug_log("=====================")
+                }
+                else{
+                    // success 
+                    self.debug_log("=====================")
+                    self.debug_log("[時間戳記]: " + moment().format('MMMM Do YYYY, h:mm:ss a'))
+                    self.debug_log("Buy info: " + JSON.stringify(value))
+                    self.debug_log(`對應的 symbol: ${newBuyInfo.symbol}, quantity: ${newBuyInfo.quantity}, price: ${newBuyInfo.price}`)
+                    self.debug_log("=====================")
+
+                    // success, and record trading log
+                    // 儲存買入資訊
+                    self.buyInfo.push(newBuyInfo);
+                    // 儲存交易紀錄
+                    self.tradeInfo.push(newBuyInfo);
+                    // 儲存交易記錄到local端
+                    trade_record_func.pushIntoTradeRecord(self.id,newBuyInfo)
+                }         
             })
             //--------------------
         })
@@ -711,22 +726,33 @@ class trade_bot{
             ror: ( totalQty * this.price[this.price.length - 1] - totalCost ) / totalCost  //收益率
         };
         
-        // this.buyInfo.push(newSellInfo);
-        /** FIXME: this part need to move to the place which after executing selling command */
-        while (this.buyInfo.length > 0) {//清空買入資訊
-            this.buyInfo.pop();
-        }
-        this.tradeInfo.push(newSellInfo);//儲存交易紀錄
-        // 儲存交易記錄到local端
-        trade_record_func.pushIntoTradeRecord(this.id,newSellInfo)
         //------執行賣出------
-
-        // record 
         this.trade_func.sell(newSellInfo.symbol,newSellInfo.quantity,newSellInfo.price).then((value) => {
-            this.debug_log("=====================")
-            this.debug_log("Sell info: " + value)
-            this.debug_log(`對應的 symbol: ${newSellInfo.symbol}, quantity: ${newSellInfo.quantity}, price: ${newSellInfo.price}`)
-            this.debug_log("=====================")
+            let returnMsg = JSON.stringify(value)
+            if(returnMsg.includes("Error") == true){
+                // error occur, do not save trading log
+                this.debug_log("=====================")
+                this.debug_log("[錯誤發生][時間戳記]: " + moment().format('MMMM Do YYYY, h:mm:ss a'))
+                this.debug_log("[錯誤發生] Sell info: " + JSON.stringify(value))
+                this.debug_log(`[錯誤發生] 對應的 symbol: ${newSellInfo.symbol}, quantity: ${newSellInfo.quantity}, price: ${newSellInfo.price}`)
+                this.debug_log("=====================")
+            }
+            else{
+                // success 
+                this.debug_log("=====================")
+                this.debug_log("[時間戳記]: " + moment().format('MMMM Do YYYY, h:mm:ss a'))
+                this.debug_log("Sell info: " + JSON.stringify(value))
+                this.debug_log(`對應的 symbol: ${newSellInfo.symbol}, quantity: ${newSellInfo.quantity}, price: ${newSellInfo.price}`)
+                this.debug_log("=====================")
+                // dealing with logs
+                while (this.buyInfo.length > 0) {//清空買入資訊
+                    this.buyInfo.pop();
+                }
+                this.tradeInfo.push(newSellInfo);//儲存交易紀錄
+                // 儲存交易記錄到local端
+                trade_record_func.pushIntoTradeRecord(this.id,newSellInfo)
+            }
+            
         })
         //--------------------
     }
