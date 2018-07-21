@@ -230,7 +230,7 @@ class trade_op {
                 throw "伺服器延遲過高或電腦時間不準確"
             }
         } catch(err){
-            console.log("error :")
+            console.log("Error :")
             console.log(err)
             // result.msg = err.message;
             return err;
@@ -271,7 +271,7 @@ class trade_op {
             }
         }
         catch(err){
-            console.log("error :")
+            console.log("Error :")
             console.log(err)
             return err;
         }
