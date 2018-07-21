@@ -28,6 +28,7 @@ var trade_func = new trade_op();
 // Duration
 // - default setting is 5 min (300 sec = 300,000 ms => For setInterval usage)
 const duration = 30000; 
+const refresh_rate = 30;
 
 class trade_bot{
     /**
@@ -113,13 +114,19 @@ class trade_bot{
 
         // interval
         this.systemInterval = null;
-        // duration of interval
+        // duration of interval, refresh rate
         this.duration = duration;
+        this.refresh_rate = refresh_rate;
         // this bot id
         this.id = rs.generate(6);
 
+        // record the total running time (ms) 
+        this.running_time = 0;
+
         // trade operation - buy/sell 
         this.trade_func = trade_func;
+        // record username
+        this.username = username;
         this.trade_func.prepare(username)
         // logger (for information display)
         this.logger = logger.bot_log(this.id);
@@ -280,25 +287,17 @@ class trade_bot{
         // run 
         self.load_policy_by_url(url);
         self.systemInterval = setInterval(function(){
-            // console.log(self.id);
             self.load_policy_by_url(url);
+            
+            // increase running time
+            self.running_time += self.duration;
+
+            // reconfigure by period 
+            if(self.running_time >= self.duration*self.refresh_rate ){
+                // reconfigure binance API/Secret
+                self.trade_func.prepare(self.username)
+            }
         },self.duration)
-        // LocalStorafe 測試用
-        // self.systemInterval = setInterval(function(){
-        //     // console.log(self.id);
-        //     self.load_policy_by_url(url);
-        //     // For local store test
-        //     let testBuyinfo = {
-        //         tradePolicy: "trade_strategiy",
-        //         symbol: "BTCUSDT", 
-        //         timeStamp: new Date().toLocaleString(),
-        //         type: 'buy',
-        //         quantity: 10, //買入數量
-        //         price: 1000, // 買入價格,
-        //         buy: 10
-        //     };
-        //     trade_record_func.pushIntoTradeRecord(self.id,testBuyinfo)
-        // },duration)
     }
 
     start_by_obj(obj,policy_name){
@@ -309,8 +308,16 @@ class trade_bot{
         // run 
         self.load_policy_by_obj(obj);
         self.systemInterval = setInterval(function(){
-            // console.log(self.id);
             self.load_policy_by_obj(obj);
+
+            // increase running time
+            self.running_time += self.duration;
+
+            // reconfigure by period 
+            if(self.running_time >= self.duration*self.refresh_rate ){
+                // reconfigure binance API/Secret
+                self.trade_func.prepare(self.username)
+            }
         },self.duration)
     }
     /**
@@ -666,14 +673,19 @@ class trade_bot{
                 if(returnMsg.includes("Error") == true){
                     // error occur, do not save trading log 
                     self.debug_log("=====================")
+                    self.debug_log("[錯誤發生][機器人執行時間(sec)]: " + self.running_time/1000 + " s")
                     self.debug_log("[錯誤發生][時間戳記]: " + moment().format('MMMM Do YYYY, h:mm:ss a'))
                     self.debug_log("[錯誤發生] Buy info: " + JSON.stringify(value))
                     self.debug_log(`[錯誤發生] 對應的 symbol: ${newBuyInfo.symbol}, quantity: ${newBuyInfo.quantity}, price: ${newBuyInfo.price}`)
                     self.debug_log("=====================")
+
+                    // debug - reconfigure
+                    self.trade_func.prepare(self.username)
                 }
                 else{
                     // success 
                     self.debug_log("=====================")
+                    self.debug_log("[機器人執行時間(sec)]: " + self.running_time/1000 + " s")
                     self.debug_log("[時間戳記]: " + moment().format('MMMM Do YYYY, h:mm:ss a'))
                     self.debug_log("Buy info: " + JSON.stringify(value))
                     self.debug_log(`對應的 symbol: ${newBuyInfo.symbol}, quantity: ${newBuyInfo.quantity}, price: ${newBuyInfo.price}`)
@@ -732,14 +744,19 @@ class trade_bot{
             if(returnMsg.includes("Error") == true){
                 // error occur, do not save trading log
                 this.debug_log("=====================")
+                this.debug_log("[錯誤發生][機器人執行時間(sec)]: " + this.running_time/1000 + " s")
                 this.debug_log("[錯誤發生][時間戳記]: " + moment().format('MMMM Do YYYY, h:mm:ss a'))
                 this.debug_log("[錯誤發生] Sell info: " + JSON.stringify(value))
                 this.debug_log(`[錯誤發生] 對應的 symbol: ${newSellInfo.symbol}, quantity: ${newSellInfo.quantity}, price: ${newSellInfo.price}`)
                 this.debug_log("=====================")
+
+                // debug - reconfigure
+                this.trade_func.prepare(this.username)
             }
             else{
                 // success 
                 this.debug_log("=====================")
+                this.debug_log("[機器人執行時間(sec)]: " + this.running_time/1000 + " s")
                 this.debug_log("[時間戳記]: " + moment().format('MMMM Do YYYY, h:mm:ss a'))
                 this.debug_log("Sell info: " + JSON.stringify(value))
                 this.debug_log(`對應的 symbol: ${newSellInfo.symbol}, quantity: ${newSellInfo.quantity}, price: ${newSellInfo.price}`)
