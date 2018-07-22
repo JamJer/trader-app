@@ -374,7 +374,8 @@ class trade_bot{
             console.log("Price: "+data[0])
             self.price.push(data[0]); 
             // 現價最大存放數量
-            if(self.price.length > 10000){
+            // 2018/7/23 Fix: 10000 -> 100000
+            if(self.price.length > 100000){
                 self.price.shift();
             }
             // 填入交易量
@@ -533,7 +534,10 @@ class trade_bot{
 
     isPriceBelowMAXTime(){
         let mhdM = this.tradingData.ma[this.tradingData.ma.length - 1];
-        let d = (mhdM == 'h')? 12 : ((mhdM == 'd') ? 288 : ((mhdM == 'm' ? 1 : 8640)));
+        // FIX: 2018/7/23 
+        let sixty_div_executeInterval = 60 / (this.duration/60000) 
+        // let d = (mhdM == 'h')? 12 : ((mhdM == 'd') ? 288 : ((mhdM == 'm' ? 1 : 8640)));
+        let d = (mhdM == 'h') ? sixty_div_executeInterval : ((mhdM == 'd') ? (sixty_div_executeInterval * 24) : (mhdM == 'm' ? 1 : (sixty_div_executeInterval * 720)));
         let count = 0;
 
         for(let i = this.tradingData.sell.belowma; i > 0; i--){
