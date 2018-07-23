@@ -698,7 +698,7 @@ class trade_bot{
         //------執行買入------
         this.trade_func.buy(newBuyInfo.symbol,newBuyInfo.quantity,newBuyInfo.price).then((value) => {
             let returnMsg = JSON.stringify(value)
-            if(returnMsg.includes("Error") == true){
+            if(returnMsg.includes("Error") == true || value.code != undefined){
                 // error occur, do not save trading log 
                 this.debug_log("=====================")
                 this.debug_log("[錯誤發生][機器人執行時間(sec)]: " + this.running_time/1000 + " s")
@@ -768,7 +768,7 @@ class trade_bot{
         //------執行賣出------
         this.trade_func.sell(newSellInfo.symbol,newSellInfo.quantity,newSellInfo.price).then((value) => {
             let returnMsg = JSON.stringify(value)
-            if(returnMsg.includes("Error") == true){
+            if(returnMsg.includes("Error") == true || value.code != undefined){
                 // error occur, do not save trading log
                 this.debug_log("=====================")
                 this.debug_log("[錯誤發生][機器人執行時間(sec)]: " + this.running_time/1000 + " s")

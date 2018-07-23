@@ -206,7 +206,7 @@ class trade_op {
             // console.log(this)
             // need to make sure user have setting apikey and apiSecret
             if(this.binance_apiKey==null) {
-                throw "missing binance api key";
+                throw "Error: missing binance api key";
             }
             this.client = Binance({
                 apiKey: this.binance_apiKey,
@@ -227,10 +227,9 @@ class trade_op {
                 //console.log(order_log)
             }
             else{
-                throw "伺服器延遲過高或電腦時間不準確"
+                throw "Error: 伺服器延遲過高或電腦時間不準確"
             }
         } catch(err){
-            console.log("Error :")
             console.log(err)
             // result.msg = err.message;
             return err;
@@ -243,7 +242,7 @@ class trade_op {
         try {
             // let self=this;
             if(this.binance_apiKey==null) {
-                throw "missing binance api key";
+                throw "Error: missing binance api key";
             }
             this.client = Binance({
                 apiKey: this.binance_apiKey,
@@ -267,11 +266,10 @@ class trade_op {
 
                 //return order_log;
             }else{
-                throw "伺服器延遲過高或電腦時間不準確"
+                throw "Error: 伺服器延遲過高或電腦時間不準確"
             }
         }
         catch(err){
-            console.log("Error :")
             console.log(err)
             return err;
         }
