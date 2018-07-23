@@ -14,8 +14,7 @@ const dt = require( 'datatables.net' )();
 var policyList = $("#policy-list");
 var symbolList = $("#symbol-list")
 const utils = require('../utils/ui')
-const DATA_REFLESH_TIME = 30000
-
+const DATA_REFLESH_TIME = 30000;
 // DataTable variable
 var botStatusTable
 var botsTradeBuyRecordsTable
@@ -188,31 +187,26 @@ bot.addEventListener("submit",function(event){
     botSelectedTeble.row.add(dt_insert).draw();
 
     //Delete buttons event
-    $('.dt-sleBotDelete').each(function () {
-        $(this).off('click');
-        $(this).on('click', function(evt){
-            var data = botSelectedTeble.row( $(this).parents('tr') ).data();
-            botSelectedTeble.row( $(this).parents('tr') ).remove().draw();
-            handeStartAllButton();
-        });
+    botSelectedTeble.off('click', '.dt-sleBotDelete')
+    botSelectedTeble.on('click', '.dt-sleBotDelete', function(){
+        var data = botSelectedTeble.row( $(this).parents('tr') ).data();
+        botSelectedTeble.row( $(this).parents('tr') ).remove().draw();
+        handeStartAllButton();
     });
 
     //Start bot button event
-    $('.dt-sleBotStart').each(function () {
-        $(this).off('click');
-        $(this).on('click', function(evt){
-            var data = botSelectedTeble.row( $(this).parents('tr') ).data();
-            ipcRenderer.send('create_bot',{
-                //  * TODO: create bot with specified:
-                //  * @param policy_file
-                //  * @param symbol
-                policy_file: policyList.find(':selected').text(),
-                symbol: symbolList.find(':selected').text()
-            })
-            botSelectedTeble.row( $(this).parents('tr') ).remove().draw();
-            handeStartAllButton();
-        });
-
+    botSelectedTeble.off('click', '.dt-sleBotStart')
+    botSelectedTeble.on('click', '.dt-sleBotStart', function(){
+        var data = botSelectedTeble.row( $(this).parents('tr') ).data();
+        ipcRenderer.send('create_bot',{
+            //  * TODO: create bot with specified:
+            //  * @param policy_file
+            //  * @param symbol
+            policy_file: policyList.find(':selected').text(),
+            symbol: symbolList.find(':selected').text()
+        })
+        botSelectedTeble.row( $(this).parents('tr') ).remove().draw();
+        handeStartAllButton();
     });
     handeStartAllButton();
 })
@@ -257,17 +251,16 @@ ipcRenderer.on('receive_bot_status',(event,arg)=>{
 
     // Clean Bot Table before every update
     botStatusTable.clear().draw()
-
     for(let i in arg.id_queue){
         //Delete buttons
         let d_btn = '<button type="button" class="btn btn-danger btn-sm dt-delete"><i class="fas fa-minus-circle" style="font-size: 20px;"></i> 刪除</button>'
         let e_btn = '<button type="button" class="btn btn-primary btn-sm dt-edit"><i class="fas fa-sliders-h" style="font-size: 20px;"></i> 運作狀況</button>'
         let s_btn = ''
-        console.log(arg.id_queue[i].buyInfoLength)
         if(arg.id_queue[i].buyInfoLength > 0){
             s_btn = '<button type="button" class="btn btn-warning btn-sm dt-sell"><i class="fas fa-hand-holding-usd"></i> 立即賣出</button>'
         }else{
-            s_btn = '<button type="button" class="btn btn-warning btn-sm dt-sell" disabled><i class="fas fa-hand-holding-usd"></i> 立即賣出</button>'
+            $("#full_mask").removeClass("is-active")
+            s_btn = '<button type="button" class="btn btn-warning btn-sm dt-sell" disabled="true"><i class="fas fa-hand-holding-usd"></i> 立即賣出</button>'
         }
         let mn_btn = s_btn+"&nbsp;"+e_btn+"&nbsp;"+d_btn
         let profit_res = arg.id_queue[i].trade_data.trade_log
@@ -292,7 +285,7 @@ ipcRenderer.on('receive_bot_status',(event,arg)=>{
         // document.getElementById("bot_status_table").appendChild(tr)
         botStatusTable.row.add(dt_arr).draw();
     }
-
+    botStatusTable.off('click','.dt-delete')
     botStatusTable.on('click', '.dt-delete', function(){
         var data = botStatusTable.row( $(this).parents('tr') ).data();
         if(confirm("Are you sure to delete this bot?")){
@@ -304,7 +297,7 @@ ipcRenderer.on('receive_bot_status',(event,arg)=>{
             })
         }
     });
-
+    botStatusTable.off('click','.dt-edit')
     botStatusTable.on('click', '.dt-edit', function(){
         var data = botStatusTable.row( $(this).parents('tr') ).data();
         // will enter bot instance status
@@ -313,10 +306,12 @@ ipcRenderer.on('receive_bot_status',(event,arg)=>{
             id: data[0]
         })
     });
-
+    botStatusTable.off('click','.dt-sell')
     botStatusTable.on('click', '.dt-sell', function(){
         var data = botStatusTable.row( $(this).parents('tr') ).data();
         // will enter bot instance status
+        console.log("SELL TOUCHED")
+        $("#full_mask").addClass("is-active")
         ipcRenderer.send('sellAll_bot',{
             id: data[0]
         })

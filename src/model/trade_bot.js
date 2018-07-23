@@ -705,7 +705,7 @@ class trade_bot{
                 this.debug_log("[錯誤發生][機器人執行時間(sec)]: " + this.running_time/1000 + " s")
                 this.debug_log("[錯誤發生][時間戳記]: " + moment().format('MMMM Do YYYY, h:mm:ss a'))
                 this.debug_log("[錯誤發生] Buy info: " + JSON.stringify(value))
-                this.debug_log(`[錯誤發生] 對應的 symbol: ${newBuyInfo.symbol}, quantity: ${newBuyInfo.quantity}, price: ${newBuyInfo.price}`)
+                this.debug_log(`[錯誤發生] 當前 Status: ${this.currentStatus}, symbol: ${newBuyInfo.symbol}, quantity: ${newBuyInfo.quantity}, price: ${newBuyInfo.price}`)
                 this.debug_log("=====================")
 
                 // debug - reconfigure
@@ -717,7 +717,7 @@ class trade_bot{
                 this.debug_log("[機器人執行時間(sec)]: " + this.running_time/1000 + " s")
                 this.debug_log("[時間戳記]: " + moment().format('MMMM Do YYYY, h:mm:ss a'))
                 this.debug_log("Buy info: " + JSON.stringify(value))
-                this.debug_log(`對應的 symbol: ${newBuyInfo.symbol}, quantity: ${newBuyInfo.quantity}, price: ${newBuyInfo.price}`)
+                this.debug_log(`當前 Status: ${this.currentStatus}, symbol: ${newBuyInfo.symbol}, quantity: ${newBuyInfo.quantity}, price: ${newBuyInfo.price}`)
                 this.debug_log("=====================")
 
                 // success, and record trading log
@@ -754,6 +754,11 @@ class trade_bot{
          * sell         //
          * ror          //收益率
          */
+        let profit_calcu = totalQty * this.price[this.price.length - 1] - totalCost;
+        let ror_calcu = 0.00000000000001
+        if(profit_calcu != 0){
+            ror_calcu = profit_calcu / totalCost
+        }
         let newSellInfo = {
             tradePolicy: this.tradePolicy,
             symbol: this.tradingData.symbol,	//賣出交易對符號
@@ -763,8 +768,8 @@ class trade_bot{
             quantity: totalQty, //賣出數量
             price: this.price[this.price.length - 1],	//賣出價格
             sell: totalQty * this.price[this.price.length - 1],
-            profit: totalQty * this.price[this.price.length - 1] - totalCost,
-            ror: ( totalQty * this.price[this.price.length - 1] - totalCost ) / totalCost  //收益率
+            profit: profit_calcu,
+            ror: ror_calcu  //收益率
         };
         
         //------執行賣出------
@@ -776,7 +781,7 @@ class trade_bot{
                 this.debug_log("[錯誤發生][機器人執行時間(sec)]: " + this.running_time/1000 + " s")
                 this.debug_log("[錯誤發生][時間戳記]: " + moment().format('MMMM Do YYYY, h:mm:ss a'))
                 this.debug_log("[錯誤發生] Sell info: " + JSON.stringify(value))
-                this.debug_log(`[錯誤發生] 對應的 symbol: ${newSellInfo.symbol}, quantity: ${newSellInfo.quantity}, price: ${newSellInfo.price}`)
+                this.debug_log(`[錯誤發生] 當前 Status: ${this.currentStatus}, symbol: ${newSellInfo.symbol}, quantity: ${newSellInfo.quantity}, price: ${newSellInfo.price}`)
                 this.debug_log("=====================")
 
                 // debug - reconfigure
@@ -788,7 +793,7 @@ class trade_bot{
                 this.debug_log("[機器人執行時間(sec)]: " + this.running_time/1000 + " s")
                 this.debug_log("[時間戳記]: " + moment().format('MMMM Do YYYY, h:mm:ss a'))
                 this.debug_log("Sell info: " + JSON.stringify(value))
-                this.debug_log(`對應的 symbol: ${newSellInfo.symbol}, quantity: ${newSellInfo.quantity}, price: ${newSellInfo.price}`)
+                this.debug_log(`當前 Status: ${this.currentStatus}, symbol: ${newSellInfo.symbol}, quantity: ${newSellInfo.quantity}, price: ${newSellInfo.price}`)
                 this.debug_log("=====================")
                 // dealing with logs
                 while (this.buyInfo.length > 0) {//清空買入資訊

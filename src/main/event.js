@@ -209,20 +209,21 @@ ipcMain.on('sellAll_bot',(event,arg)=>{
             element.instance.sell()
             
             let id_queue = [];
-            trader.botID_queue.forEach((element)=>{
-                id_queue.push({
-                    id: element.id,
-                    detail: element.instance.tradePolicy,
-                    symbol: element.instance.tradingData.symbol,
-                    tradeStatus: element.instance.currentStatus,
-                    trade_data: element.instance.get_log(),
-                    buyInfoLength: element.instance.buyInfo.length
+            setTimeout(function(){
+                trader.botID_queue.forEach((element)=>{
+                    id_queue.push({
+                        id: element.id,
+                        detail: element.instance.tradePolicy,
+                        symbol: element.instance.tradingData.symbol,
+                        tradeStatus: element.instance.currentStatus,
+                        trade_data: element.instance.get_log(),
+                        buyInfoLength: element.instance.buyInfo.length
+                    })
                 })
-            })
-            
-            event.sender.send('receive_bot_status',{
-                id_queue: id_queue
-            }); 
+                event.sender.send('receive_bot_status',{
+                    id_queue: id_queue
+                });
+            }, 2000); 
         }
     })
 })
