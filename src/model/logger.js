@@ -7,8 +7,9 @@
 const os = require('os')
 const fs = require('fs')
 const path = require('path')
-const file_ext = ".ect"
+const moment = require('moment')
 
+const file_ext = ".ect"
 /**
  * 
  * @function logger.bot_log        
@@ -18,6 +19,76 @@ const file_ext = ".ect"
  */
 class logger {
     constructor(){
+        // store some default setting, e.g. syslog name
+        this.syslog_name = 'ect_trader_app';
+        this.file_ext = '.ect';
+
+        // create system log for ectrader app
+        this.syslog = fs.createWriteStream(path.join(os.tmpdir(),this.syslog_name+this.file_ext))
+        this.syslog.on('finish',function(){
+            console.log(`[Syslog] 寫入完成.`)
+        })
+        this.syslog.on('error',function(err){
+            console.log(`[Syslog] 寫入程序現錯誤。錯誤代號： ${err.stack}`)
+        })
+
+    }
+
+    // recording syslog
+    sys_log(data){
+        /**
+         * data format (JSON object)
+         * 
+         * @param type  目前回報的種類 (warning/error/info...)
+         * @param msg   回報內容
+         * 
+         */
+
+        let map = {
+            type: (data.type==undefined ? "Warning" : data.type),
+            msg: (data.msg==undefined ? "Default" : data.msg)
+        }
+
+        // 寫入
+        this.syslog.write("====================="+os.EOL,'UTF8')
+        this.syslog.write("[時間戳記]: "+moment().format('MMMM Do YYYY, h:mm:ss a')+os.EOL,'UTF8')
+        this.syslog.write("[回報類型]: "+map.type+os.EOL,'UTF8')
+        this.syslog.write("[回報內容]: "+map.msg+os.EOL,'UTF8')
+        this.syslog.write("====================="+os.EOL,'UTF8')
+
+        console.log("[Syslog] 系統紀錄寫入程序完成.")
+    }
+
+    /**
+     *  reading syslog - using promise
+     *  example use case: 
+     *      logger.get_sys_log().then((loginfo)=>{
+     *          console.log(loginfo)
+     *      })
+     */
+    get_sys_log(){
+        let self=this;
+        return new Promise((resolve,reject)=>{
+            let log = fs.createReadStream(path.join(os.tmpdir(),self.syslog_name+self.file_ext),'UTF8')
+
+            log.on('readable',function(){
+                resolve(log.read())
+            })
+            log.on('error',function(err){
+                reject(`[Syslog][Error] Reading stream error. error code: ${err}`)
+            })
+        })
+    }
+
+    sys_log_dismiss(){
+        // delete streaming file descriptor
+        fs.unlink(path.join(os.tmpdir(),this.syslog_name+this.file_ext),function(err){
+            if(err)
+                console.log(`[Syslog][Dismiss] 關閉 stream 發生錯誤. 錯誤代號： ${err}`)
+            else{
+                console.log(`[Syslog][Dismiss] 關閉 stream 成功.`)
+            }
+        })
     }
 
     bot_log(bot_id){
