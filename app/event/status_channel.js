@@ -25,26 +25,51 @@ var botsTradeSellRecordsTable
 botStatusTable = $('#bot_status_table').DataTable( {
     "createdRow": function ( row, data, index ) {
                 $('td', row).eq(0).addClass('botid');
-                $('td', row).eq(1).addClass('working');
-                $('td', row).eq(2).addClass('working');
-                $('td', row).eq(3).addClass('strategy');
-                $('td', row).eq(4).addClass('symbol');
+                $('td', row).eq(1).addClass('strategy');
+                $('td', row).eq(2).addClass('symbol');
+                $('td', row).eq(3).addClass('working');
+                if ( data[4] > 0 ) {
+                    $('td', row).eq(4).addClass('gain');
+                }else if( data[4] < 0 ) {
+                    $('td', row).eq(4).addClass('loss');
+                }else{
+                    $('td', row).eq(4).addClass('nothing');
+                }
             },
         "autoWidth": true,
         "paging": true,
         columnDefs: [{ 
             "orderable": false, 
+            "targets": 6 
+        },{ "width": "13%", 
+            "targets": 0 
+        },
+        { "width": "13%", 
+            "targets": 1 
+        },
+        { "width": "8%", 
             "targets": 2 
-        }],
-        fixedColumns: true,
-        autoFill: true,
+        },
+        { "width": "15%", 
+            "targets": 3 
+        },
+        { "width": "10%", 
+            "targets": 4 
+        },
+        { "width": "10%", 
+            "targets": 5 
+        }
+        ],
+        fixedColumns: false,
+        autoFill: false,
         data: [],
         columns: [
-            { title: "機器人編號" },
-            { title: "執行狀態"},
-            { title: "交易動作"},
+            { title: "機器人ID" },
             { title: "交易策略" },
             { title: "市場"},
+            { title: "動作"},
+            { title: "利潤" },
+            { title: "收益率" },
             { title: "管理機器人" }
         ]
 } );
@@ -126,8 +151,8 @@ botsTradeSellRecordsTable = $('#bots_sell_records_table').DataTable( {
             { title: "賣出數量" },
             { title: "賣出價格" },
             { title: "賣出" },
-            { title: "收益率" },
-            { title: "賣出類型" }
+            { title: "利潤" },
+            { title: "收益率" }
         ]
 } );
 
@@ -235,16 +260,32 @@ ipcRenderer.on('receive_bot_status',(event,arg)=>{
 
     for(let i in arg.id_queue){
         //Delete buttons
-        let status = "WORKING"
-        let d_btn = '<button type="button" class="btn btn-danger btn-sm dt-delete"><i class="fas fa-minus-circle" style="font-size: 20px;"></i></button>'
-        let e_btn = '<button type="button" class="btn btn-primary btn-sm dt-edit"><i class="fas fa-sliders-h" style="font-size: 20px;"></i></button>'
-        let mn_btn = e_btn+"&nbsp;"+d_btn
+        let d_btn = '<button type="button" class="btn btn-danger btn-sm dt-delete"><i class="fas fa-minus-circle" style="font-size: 20px;"></i> 刪除</button>'
+        let e_btn = '<button type="button" class="btn btn-primary btn-sm dt-edit"><i class="fas fa-sliders-h" style="font-size: 20px;"></i> 運作狀況</button>'
+        let s_btn = ''
+        console.log(arg.id_queue[i].buyInfoLength)
+        if(arg.id_queue[i].buyInfoLength > 0){
+            s_btn = '<button type="button" class="btn btn-warning btn-sm dt-sell"><i class="fas fa-hand-holding-usd"></i> 立即賣出</button>'
+        }else{
+            s_btn = '<button type="button" class="btn btn-warning btn-sm dt-sell" disabled><i class="fas fa-hand-holding-usd"></i> 立即賣出</button>'
+        }
+        let mn_btn = s_btn+"&nbsp;"+e_btn+"&nbsp;"+d_btn
+        let profit_res = arg.id_queue[i].trade_data.trade_log
+        let profit = 0
+        let profit_rate = 0
+        for (let j = 0; j < profit_res.length; j++) {
+            profit += profit_res[j].profit
+            profit_rate += profit_res[j].profit_rate
+        }
+
+        let profit_percentage = profit_rate*100.0
         let dt_arr = [
             arg.id_queue[i].id,
-            status,
-            arg.id_queue[i].tradeStatus,
             arg.id_queue[i].detail,
             arg.id_queue[i].symbol,
+            arg.id_queue[i].tradeStatus,
+            profit.toFixed(6),
+            profitP(profit_percentage.toFixed(2)),
             mn_btn
         ]
         // append into target
@@ -252,34 +293,33 @@ ipcRenderer.on('receive_bot_status',(event,arg)=>{
         botStatusTable.row.add(dt_arr).draw();
     }
 
-    //Delete buttons event (Only works here....)
-    $('.dt-delete').each(function () {
-        $(this).off('click');
-        $(this).on('click', function(evt){
-            var data = botStatusTable.row( $(this).parents('tr') ).data();
-            if(confirm("Are you sure to delete this bot?")){
-                botStatusTable.row( $(this).parents('tr') ).remove().draw();
-                console.log("Killing ... id=",data[0])
-                // send the killing signal to event.js
-                ipcRenderer.send('kill_bot',{
-                    id: data[0]
-                })
-            }
-        });
-    });
-
-    // Add edit page 
-    $('.dt-edit').each(function () {
-        $(this).off('click');
-        $(this).on('click', function(evt){
-            $this = $(this);
-            var data = botStatusTable.row( $(this).parents('tr') ).data();
-            // will enter bot instance status
-            ipcRenderer.send('edit_bot',{
+    botStatusTable.on('click', '.dt-delete', function(){
+        var data = botStatusTable.row( $(this).parents('tr') ).data();
+        if(confirm("Are you sure to delete this bot?")){
+            botStatusTable.row( $(this).parents('tr') ).remove().draw();
+            console.log("Killing ... id=",data[0])
+            // send the killing signal to event.js
+            ipcRenderer.send('kill_bot',{
                 id: data[0]
             })
-            ipcRenderer.send('update_bot_status',{})
-        });
+        }
+    });
+
+    botStatusTable.on('click', '.dt-edit', function(){
+        var data = botStatusTable.row( $(this).parents('tr') ).data();
+        // will enter bot instance status
+        console.log("Touched")
+        ipcRenderer.send('edit_bot',{
+            id: data[0]
+        })
+    });
+
+    botStatusTable.on('click', '.dt-sell', function(){
+        var data = botStatusTable.row( $(this).parents('tr') ).data();
+        // will enter bot instance status
+        ipcRenderer.send('sellAll_bot',{
+            id: data[0]
+        })
     });
 })
 
@@ -313,7 +353,7 @@ function initTradeRecords(){
                     botsTradeBuyRecordsTable.row.add(insert_row).draw();
                 }
                 else if(data[i].type == "sell"){
-                    let insert_row = [keys[k],data[i].timeStamp,data[i].tradePolicy,data[i].symbol,data[i].quantity.toFixed(6),data[i].price.toFixed(6),data[i].sell.toFixed(6),data[i].ror.toFixed(6),data[i].status];
+                    let insert_row = [keys[k],data[i].timeStamp,data[i].tradePolicy,data[i].symbol,data[i].quantity.toFixed(6),data[i].price.toFixed(6),data[i].sell.toFixed(6),data[i].profit.toFixed(6),data[i].ror.toFixed(6)];
                     botsTradeSellRecordsTable.row.add(insert_row).draw();
                 }
             }
@@ -377,4 +417,14 @@ async function initSymbolList(){
     symbolList.selectpicker('setStyle', 'btn-sm', 'add');
     symbolList.selectpicker('refresh');
     symbolList.selectpicker('render');
+}
+
+function profitP(profit_rate){
+    if(profit_rate > 0){
+        return '<span class="badge badge-success">'+profit_rate+'%</span>';
+    }else if(profit_rate < 0){
+        return '<span class="badge badge-danger">'+profit_rate+'%</span>';
+    }else{
+        return '<span class="badge badge-primary">0.00%</span>';
+    }
 }

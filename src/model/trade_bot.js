@@ -207,7 +207,8 @@ class trade_bot{
                     quantity: this.tradeInfo[i].quantity,
                     price_sell: this.tradeInfo[i].price,
                     price_buyin: avg_buy_price,
-                    profit: this.tradeInfo[i].ror
+                    profit: this.tradeInfo[i].profit,
+                    profit_rate: this.tradeInfo[i].ror
                 })
             }
         }
@@ -735,6 +736,7 @@ class trade_bot{
             quantity: totalQty, //賣出數量
             price: this.price[this.price.length - 1],	//賣出價格
             sell: totalQty * this.price[this.price.length - 1],
+            profit: totalQty * this.price[this.price.length - 1] - totalCost,
             ror: ( totalQty * this.price[this.price.length - 1] - totalCost ) / totalCost  //收益率
         };
         
