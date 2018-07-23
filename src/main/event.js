@@ -40,7 +40,9 @@ ipcMain.on('update_bot_status',(event,arg)=>{
             id: element.id,
             detail: element.instance.tradePolicy,
             symbol: element.instance.tradingData.symbol,
-            tradeStatus: element.instance.currentStatus
+            tradeStatus: element.instance.currentStatus,
+            trade_data: element.instance.get_log(),
+            buyInfoLength: element.instance.buyInfo.length
         })
     })
     
@@ -58,7 +60,7 @@ ipcMain.on('create_bot',(event,arg)=>{
      * 
      */
 
-    // New Symbol 
+    // New Symbol
     let new_symbol = arg.symbol
     // Policy path
     let policy_path = config.policy['path']+arg.policy_file
@@ -77,7 +79,9 @@ ipcMain.on('create_bot',(event,arg)=>{
             id: element.id,
             detail: element.instance.tradePolicy,
             symbol: element.instance.tradingData.symbol,
-            tradeStatus: element.instance.currentStatus
+            tradeStatus: element.instance.currentStatus,
+            trade_data: element.instance.get_log(),
+            buyInfoLength: element.instance.buyInfo.length
         })
     })
 
@@ -107,7 +111,9 @@ ipcMain.on('create_all_bots',(event,arg)=>{
             id: element.id,
             detail: element.instance.tradePolicy,
             symbol: element.instance.tradingData.symbol,
-            tradeStatus: element.instance.currentStatus
+            tradeStatus: element.instance.currentStatus,
+            trade_data: element.instance.get_log(),
+            buyInfoLength: element.instance.buyInfo.length
         })
     })
 
@@ -133,7 +139,9 @@ ipcMain.on('kill_bot',(event,arg)=>{
             id: element.id,
             detail: element.instance.tradePolicy,
             symbol: element.instance.tradingData.symbol,
-            tradeStatus: element.instance.currentStatus
+            tradeStatus: element.instance.currentStatus,
+            trade_data: element.instance.get_log(),
+            buyInfoLength: element.instance.buyInfo.length
         })
     })
 
@@ -176,7 +184,8 @@ ipcMain.on('get_bot',(event,arg)=>{
                 id: current_bot_id,
                 ma: element.instance.tradingData.ma,
                 symbol: element.instance.tradingData.symbol,
-                trade_data: element.instance.get_log()
+                trade_data: element.instance.get_log(),
+                buyInfoLength: element.instance.buyInfo.length
             })
         }
     })
@@ -189,6 +198,32 @@ ipcMain.on('set_bot',(event,arg)=>{
             element.instance.change_all(arg.symbol,arg.ma)
             // this function will restart the bot instance
             return;
+        }
+    })
+})
+
+ipcMain.on('sellAll_bot',(event,arg)=>{
+    trader.botID_queue.forEach((element)=>{
+        if(element.id == arg.id){
+            element.instance.currentStatus = 'wait'
+            element.instance.sell()
+            
+            let id_queue = [];
+            setTimeout(function(){
+                trader.botID_queue.forEach((element)=>{
+                    id_queue.push({
+                        id: element.id,
+                        detail: element.instance.tradePolicy,
+                        symbol: element.instance.tradingData.symbol,
+                        tradeStatus: element.instance.currentStatus,
+                        trade_data: element.instance.get_log(),
+                        buyInfoLength: element.instance.buyInfo.length
+                    })
+                })
+                event.sender.send('receive_bot_status',{
+                    id_queue: id_queue
+                });
+            }, 2000); 
         }
     })
 })

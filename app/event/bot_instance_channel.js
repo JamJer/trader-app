@@ -77,8 +77,8 @@ botTradeSellTable = $('#bot_trade_sell_table').DataTable( {
             { title: "賣出數量" },
             { title: "賣出價格" },
             { title: "賣出" },
-            { title: "收益率" },
-            { title: "賣出類型" }
+            { title: "利潤" },
+            { title: "收益率" }
         ]
 } );
 
@@ -311,7 +311,7 @@ ipcRenderer.on("receive_bot",(event,arg)=>{
                 botTradeBuyTable.row.add(insert_row).draw();
             }
             else if(data[i].type == "sell"){
-                let insert_row = [data[i].timeStamp,data[i].tradePolicy,data[i].symbol,data[i].quantity.toFixed(6),data[i].price.toFixed(6),data[i].sell.toFixed(6),data[i].ror.toFixed(6),data[i].status];
+                let insert_row = [data[i].timeStamp,data[i].tradePolicy,data[i].symbol,data[i].quantity.toFixed(6),data[i].price.toFixed(6),data[i].sell.toFixed(6),data[i].profit.toFixed(6),data[i].ror.toFixed(6)];
                 botTradeSellTable.row.add(insert_row).draw();
             }
         }

@@ -4,7 +4,7 @@
  */
 const storage = require('electron-json-storage');
 const bot_trade_recording = {}
-const BOT_RECORD_MAX_ROW_LIMIT = 10
+const BOT_RECORD_MAX_ROW_LIMIT = 100
 
 const dataPath = storage.getDataPath();
 console.log("Bot trade records LocalStorage Path: "+dataPath);

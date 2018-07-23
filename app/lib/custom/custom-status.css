@@ -1,11 +1,11 @@
 td.gain {
-  color: green;
+  color: #1affa3;
 }
 td.loss {
-  color: red;
+  color: #ff4d4d;
 }
 td.nothing {
-  color: blue;
+  color: #1ad1ff;
 }
 td.market {
   color: #ff6600;
