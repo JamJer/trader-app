@@ -23,7 +23,7 @@ const trade_record_func = require('./localStore/bot_trade_record.js')
 const trade_op = require('./trade_op')
 const trade_bt = require('./trade_backtrack')
 
-var trade_func = new trade_op();
+// var trade_func = new trade_op();
 
 // Duration
 // - default setting is 5 min (300 sec = 300,000 ms => For setInterval usage)
@@ -107,6 +107,8 @@ class trade_bot{
         // data va 
         this.dataVA = null;
         this.dataMA = []
+        // min Quantity 
+        this.minQty = null;
         // loading yamldata (trading policy)
         this.tradePolicy = null;
         this.tradingData = null;
@@ -124,7 +126,7 @@ class trade_bot{
         this.running_time = 0;
 
         // trade operation - buy/sell 
-        this.trade_func = trade_func;
+        this.trade_func =  new trade_op();
         // record username
         this.username = username;
         this.trade_func.prepare(username)
@@ -278,6 +280,29 @@ class trade_bot{
         // logger.bot_log_dismiss(this.id);
     }
 
+    update(){
+        let self = this;
+        // using request to get minQty 
+        request.get("https://www.binance.com/api/v1/exchangeInfo",function(err,response,data){
+            if(err){
+                console.log(`[Update function][獲取 binance API 失敗] error: ${err} ,data: ${JSON.parse(data)}`)
+                self.debug_log(`[Update function][獲取 binance API 失敗] error: ${err} ,data: ${JSON.parse(data)}`)
+            } else {
+                // 檢查交易數量最小值
+                let jsonData = JSON.parse(data);
+                let currentJson = {};
+                for(let i in jsonData['symbols']){
+                    if(jsonData['symbols'][i]['symbol'] == self.tradingData.symbol){
+                        currentJson = jsonData['symbols'][i]
+                        break;
+                    }
+                }
+                // assign minQty
+                self.minQty = parseFloat(currentJson['filters'][1]['minQty'])
+            }
+        })
+    }
+
     start_by_url(url){
         // 新增交易策略名稱屬性
         let policy_name_path = url.split('/')
@@ -329,6 +354,9 @@ class trade_bot{
      * @function load
      */
     load(){
+        // update parameters - minQty
+        this.update();
+
         // reset func 
         this.func = [];
         // 獲取 現價
@@ -340,11 +368,15 @@ class trade_bot{
 
         let self=this;
         Promise.all(this.func).then((data)=>{
+            if(!data[0]){
+                throw "[Load function][Error] Can't get API";
+            }
             // 填入現價
             console.log("Price: "+data[0])
             self.price.push(data[0]); 
             // 現價最大存放數量
-            if(self.price.length > 10000){
+            // 2018/7/23 Fix: 10000 -> 100000
+            if(self.price.length > 100000){
                 self.price.shift();
             }
             // 填入交易量
@@ -355,6 +387,7 @@ class trade_bot{
             self.buy_and_sell();
         }).catch((error)=>{
             // console.log(error)
+            self.debug_log(error)
             self.log(error)
         })
     }
@@ -502,7 +535,10 @@ class trade_bot{
 
     isPriceBelowMAXTime(){
         let mhdM = this.tradingData.ma[this.tradingData.ma.length - 1];
-        let d = (mhdM == 'h')? 12 : ((mhdM == 'd') ? 288 : ((mhdM == 'm' ? 1 : 8640)));
+        // FIX: 2018/7/23 
+        let sixty_div_executeInterval = 60 / (this.duration/60000) 
+        // let d = (mhdM == 'h')? 12 : ((mhdM == 'd') ? 288 : ((mhdM == 'm' ? 1 : 8640)));
+        let d = (mhdM == 'h') ? sixty_div_executeInterval : ((mhdM == 'd') ? (sixty_div_executeInterval * 24) : (mhdM == 'm' ? 1 : (sixty_div_executeInterval * 720)));
         let count = 0;
 
         for(let i = this.tradingData.sell.belowma; i > 0; i--){
@@ -511,9 +547,16 @@ class trade_bot{
                 return false;
             }
             let y = this.price.length - 1 - (d * (this.tradingData.sell.belowma - i));
+            /*
             if(this.dataMA[x].ma > this.price[(y < 0 ? 0 : y)]){
                 count += 1;
             }
+            */
+           if(y >= 0){
+               if(this.dataMA[x].ma > this.price[y]){
+                   count += 1;
+               }
+           }
         }
 
         if(count == this.tradingData.sell.belowma){
@@ -636,73 +679,57 @@ class trade_bot{
       * 
       */
     buy(){
-        let self = this;
-        // New version: 透過 request 來呼叫 binance API
-        request.get("https://www.binance.com/api/v1/exchangeInfo", function(err,response,data){
-            // 檢查買入數量最小值
-            let jsonData = JSON.parse(data)
-            let oriQuantity = self.tradingData.capital * (self.tradingData.buy.volume/100) / self.price[self.price.length - 1] // 原始買入數量
-            let currentJson = {}
-
-            // find target
-            for(let i in jsonData['symbols']){
-                if(jsonData['symbols'][i]['symbol'] == self.tradingData.symbol){
-                    currentJson = jsonData['symbols'][i]
-                    break;
-                }
-            }
-
-            let limit = 1 / parseFloat(currentJson['filters'][1]['minQty']);
-            let quantity = Math.round(oriQuantity * limit) / limit;//四捨五入後的買入數量
-            // ts
-            let timeStamp = self.isHistory ? self.currentHistoryTime.toLocaleString() : (new Date().toLocaleString());
+        let oriQuantity = this.tradingData.capital * (this.tradingData.buy.volume/100) / this.price[this.price.length - 1] // 原始買入數量
+        let limit = 1 / this.minQty
+        let quantity = Math.round(oriQuantity * limit) / limit;//四捨五入後的買入數量
+        // ts
+        let timeStamp = this.isHistory ? this.currentHistoryTime.toLocaleString() : (new Date().toLocaleString());
             
-            // buy info
-            let newBuyInfo = {
-                tradePolicy: self.tradePolicy,
-                symbol: self.tradingData.symbol,    //買入交易對符號
-                timeStamp: timeStamp,    //買入時間
-                type: 'buy',
-                quantity: quantity, //買入數量
-                price: self.price[self.price.length - 1],    //買入價格
-                buy: quantity * self.price[self.price.length - 1]
-            };
+        // buy info
+        let newBuyInfo = {
+            tradePolicy: this.tradePolicy,
+            symbol: this.tradingData.symbol,    //買入交易對符號
+            timeStamp: timeStamp,    //買入時間
+            type: 'buy',
+            quantity: quantity, //買入數量
+            price: this.price[this.price.length - 1],    //買入價格
+            buy: quantity * this.price[this.price.length - 1]
+        };
 
-            //------執行買入------
-            self.trade_func.buy(newBuyInfo.symbol,newBuyInfo.quantity,newBuyInfo.price).then((value) => {
-                let returnMsg = JSON.stringify(value)
-                if(returnMsg.includes("Error") == true){
-                    // error occur, do not save trading log 
-                    self.debug_log("=====================")
-                    self.debug_log("[錯誤發生][機器人執行時間(sec)]: " + self.running_time/1000 + " s")
-                    self.debug_log("[錯誤發生][時間戳記]: " + moment().format('MMMM Do YYYY, h:mm:ss a'))
-                    self.debug_log("[錯誤發生] Buy info: " + JSON.stringify(value))
-                    self.debug_log(`[錯誤發生] 對應的 symbol: ${newBuyInfo.symbol}, quantity: ${newBuyInfo.quantity}, price: ${newBuyInfo.price}`)
-                    self.debug_log("=====================")
+        //------執行買入------
+        this.trade_func.buy(newBuyInfo.symbol,newBuyInfo.quantity,newBuyInfo.price).then((value) => {
+            let returnMsg = JSON.stringify(value)
+            if(returnMsg.includes("Error") == true){
+                // error occur, do not save trading log 
+                this.debug_log("=====================")
+                this.debug_log("[錯誤發生][機器人執行時間(sec)]: " + this.running_time/1000 + " s")
+                this.debug_log("[錯誤發生][時間戳記]: " + moment().format('MMMM Do YYYY, h:mm:ss a'))
+                this.debug_log("[錯誤發生] Buy info: " + JSON.stringify(value))
+                this.debug_log(`[錯誤發生] 對應的 symbol: ${newBuyInfo.symbol}, quantity: ${newBuyInfo.quantity}, price: ${newBuyInfo.price}`)
+                this.debug_log("=====================")
 
-                    // debug - reconfigure
-                    self.trade_func.prepare(self.username)
-                }
-                else{
-                    // success 
-                    self.debug_log("=====================")
-                    self.debug_log("[機器人執行時間(sec)]: " + self.running_time/1000 + " s")
-                    self.debug_log("[時間戳記]: " + moment().format('MMMM Do YYYY, h:mm:ss a'))
-                    self.debug_log("Buy info: " + JSON.stringify(value))
-                    self.debug_log(`對應的 symbol: ${newBuyInfo.symbol}, quantity: ${newBuyInfo.quantity}, price: ${newBuyInfo.price}`)
-                    self.debug_log("=====================")
+                // debug - reconfigure
+                this.trade_func.prepare(this.username)
+            }
+            else{
+                // success 
+                this.debug_log("=====================")
+                this.debug_log("[機器人執行時間(sec)]: " + this.running_time/1000 + " s")
+                this.debug_log("[時間戳記]: " + moment().format('MMMM Do YYYY, h:mm:ss a'))
+                this.debug_log("Buy info: " + JSON.stringify(value))
+                this.debug_log(`對應的 symbol: ${newBuyInfo.symbol}, quantity: ${newBuyInfo.quantity}, price: ${newBuyInfo.price}`)
+                this.debug_log("=====================")
 
-                    // success, and record trading log
-                    // 儲存買入資訊
-                    self.buyInfo.push(newBuyInfo);
-                    // 儲存交易紀錄
-                    self.tradeInfo.push(newBuyInfo);
-                    // 儲存交易記錄到local端
-                    trade_record_func.pushIntoTradeRecord(self.id,newBuyInfo)
-                }         
-            })
-            //--------------------
+                // success, and record trading log
+                // 儲存買入資訊
+                this.buyInfo.push(newBuyInfo);
+                // 儲存交易紀錄
+                this.tradeInfo.push(newBuyInfo);
+                // 儲存交易記錄到local端
+                trade_record_func.pushIntoTradeRecord(this.id,newBuyInfo)
+            }         
         })
+        //--------------------
     }
 
     sell(){

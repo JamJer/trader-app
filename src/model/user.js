@@ -7,6 +7,9 @@ const rp = require('request-promise');
 const {db} = require('../model/db');
 const config = require('../config/config.default');
 
+// logger 
+const {logger} = require('./logger')
+
 // user instance
 class user{
     constructor(){
@@ -21,6 +24,19 @@ class user{
             // redirect to new link
             console.log(res.statusCode)
             console.log(res.headers['location'])
+            /**
+             * Example usage of logger - start
+             */
+            logger.sys_log({
+                type: "Debug",
+                msg: res.headers['location']
+            })
+            logger.get_sys_log().then((msg)=>{
+                console.log(msg)
+            })
+            /**
+             * - end
+             */
 
             rp.post(res.headers['location'],{form: arg})
                 .then((body)=>{
