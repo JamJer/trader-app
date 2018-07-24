@@ -728,6 +728,9 @@ class trade_bot{
                 // 儲存交易記錄到local端
                 trade_record_func.pushIntoTradeRecord(this.id,newBuyInfo)
             }         
+            
+            // Wait for a while ...
+            setTimeout(function(){},2000)
         })
         //--------------------
     }
@@ -804,6 +807,8 @@ class trade_bot{
                 trade_record_func.pushIntoTradeRecord(this.id,newSellInfo)
             }
             
+            // Wait for a while ...
+            setTimeout(function(){},2000)
         })
         //--------------------
     }
