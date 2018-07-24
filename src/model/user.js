@@ -40,8 +40,21 @@ class user{
 
             rp.post(res.headers['location'],{form: arg})
                 .then((body)=>{
+                    let jsondata;
+                    if(body){
+                        try {
+                            jsondata = JSON.parse(body)
+                        } catch (e){
+                            console.log(`[User Login][Body 無法被 JSON.parse 解析] error: ${err} ,data: ${jsondata}`)
+                            // record into system log
+                            logger.sys_log({
+                                type: "Error",
+                                msg: `[User Login][Body 無法被 JSON.parse 解析] error: ${err} ,data: ${jsondata}`
+                            })
+                        }
+                    }
                     // Body will be the result
-                    let res = JSON.parse(body);
+                    let res = jsondata;
                     if(res.msg=="success"){
                         // Store in session 
                         config.store_user(arg.username)
@@ -62,8 +75,21 @@ class user{
                                 // the new location
                                 rp.post(res.headers['location'],{form: key_check_arg})
                                     .then((body) => {
+                                        let jsondata;
+                                        if(body){
+                                            try {
+                                                jsondata = JSON.parse(body)
+                                            } catch (e){
+                                                console.log(`[User Login - Product key check][Body 無法被 JSON.parse 解析] error: ${err} ,data: ${jsondata}`)
+                                                // record into system log
+                                                logger.sys_log({
+                                                    type: "Error",
+                                                    msg: `[User Login - Product key check][Body 無法被 JSON.parse 解析] error: ${err} ,data: ${jsondata}`
+                                                })
+                                            }
+                                        }
                                         // Get response from database 
-                                        let response = JSON.parse(body);
+                                        let response = jsondata;
                                         console.log(response)
                                         if(response.msg=="success"){
                                             // product key are activated

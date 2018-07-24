@@ -284,21 +284,32 @@ class trade_bot{
         let self = this;
         // using request to get minQty 
         request.get("https://www.binance.com/api/v1/exchangeInfo",function(err,response,data){
-            if(err){
-                console.log(`[Update function][獲取 binance API 失敗] error: ${err} ,data: ${JSON.parse(data)}`)
-                self.debug_log(`[Update function][獲取 binance API 失敗] error: ${err} ,data: ${JSON.parse(data)}`)
-            } else {
-                // 檢查交易數量最小值
-                let jsonData = JSON.parse(data);
-                let currentJson = {};
-                for(let i in jsonData['symbols']){
-                    if(jsonData['symbols'][i]['symbol'] == self.tradingData.symbol){
-                        currentJson = jsonData['symbols'][i]
-                        break;
-                    }
+            let jsondata;
+            if(data){
+                try {
+                    jsondata = JSON.parse(data)
+                    
+                } catch (e){
+                    console.log(`[Update function][Data 無法被 JSON.parse 解析] error: ${err} ,data: ${jsondata}`)
+                    self.debug_log(`[Update function][Data 無法被 JSON.parse 解析] error: ${err} ,data: ${jsondata}`)
                 }
-                // assign minQty
-                self.minQty = parseFloat(currentJson['filters'][1]['minQty'])
+                
+                if(err){
+                    console.log(`[Update function][獲取 binance API 失敗] error: ${err} ,data: ${jsondata}`)
+                    self.debug_log(`[Update function][獲取 binance API 失敗] error: ${err} ,data: ${jsondata}`)
+                } else {
+                    // 檢查交易數量最小值
+                    let jsonData = jsondata;
+                    let currentJson = {};
+                    for(let i in jsonData['symbols']){
+                        if(jsonData['symbols'][i]['symbol'] == self.tradingData.symbol){
+                            currentJson = jsonData['symbols'][i]
+                            break;
+                        }
+                    }
+                    // assign minQty
+                    self.minQty = parseFloat(currentJson['filters'][1]['minQty'])
+                }
             }
         })
     }
