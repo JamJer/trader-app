@@ -16,6 +16,17 @@ const cmd_map = {
      * @description List all existed instances of trader bot
      * 
      */
+    "userinfo": {
+        "flag": 1,
+        "placeholder": "userinfo",
+        "description": "List user's bianice API account info"
+    },
+    /**
+     * 
+     * @function status 
+     * @description List all existed instances of trader bot
+     * 
+     */
     "status": {
         "flag": 1,
         "placeholder": "status",
