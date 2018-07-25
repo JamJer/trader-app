@@ -32,8 +32,8 @@ $(document).ready(function () {
         $('a[aria-expanded=true]').attr('aria-expanded', 'false');
     });
 
-    $('#sb_dashboard').on('click', function () {
-        alert("This page is still working on....")
+    $('#sb_userInfo').on('click', function () {
+        pageControl('userinfo')
         // Working on
     });
     $('#sb_status').on('click', function () {
@@ -208,6 +208,11 @@ ipcRenderer.on('debug',(event,arg)=>{
 })
 
 ipcRenderer.on('ready_for_log_out',(event,arg)=>{
-    // Enter back to login page
+    // Enter back to index page
     window.location.href="index.html"
+})
+
+ipcRenderer.on('userinfo',(event,arg)=>{
+    // Enter back to user information page
+    window.location.href="personal.html"
 })
