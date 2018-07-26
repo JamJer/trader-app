@@ -148,6 +148,16 @@ class cmder{
         // page change
         event.sender.send('backtrack',{name: 'backtrack'});
     }
+
+    /**
+     * Enter user infomation mode 
+     * @param {*} event 
+     * @param {*} arg 
+     */
+    userinfo(event,arg){
+        // page change
+        event.sender.send('userinfo',{name: 'userinfo'});
+    }
 }
 
 module.exports = {

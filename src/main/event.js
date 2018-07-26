@@ -13,6 +13,7 @@ const {user} = require('../model/user');
 const {cmder} = require('../model/cmder');
 const {reconf} = require('../model/config');
 const {editor} = require('../model/editor');
+const {account} = require('../model/account');
 const trader = require('../model/trader');
 const trade_bot = require('../model/trade_bot');
 var current_bot_id = "";
@@ -255,6 +256,7 @@ ipcMain.on('api_config',user.api_config);
 /**
  * Send message to (remote server)/(local) to fetch policy, or do other command
  */
+ipcMain.on('userinfo',cmder.userinfo);
 ipcMain.on('status',cmder.status);
 ipcMain.on('create',cmder.create);
 ipcMain.on('list',cmder.list);
@@ -278,7 +280,9 @@ ipcMain.on('get_config',reconf.get_config);
 ipcMain.on('set_config',reconf.set_config);
 ipcMain.on('reset_config',reconf.reset);
 
-
+// ================================================== Account panel channel ==================================================
+ipcMain.on('get_user_account_info',account.accountInfo);
+ipcMain.on('get_user_trades_info',account.accountTradeRecord);
 // Async Example
 /*ipcMain.on('asynchronous-message', (event, arg) => {
     console.log(arg)  // 印出 "ping"
