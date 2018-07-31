@@ -5,6 +5,12 @@
 const Binance = require('binance-api-node').default;
 const {db} = require("./db")
 const config = require('../config/config.default');
+const storage = require('electron-json-storage');
+const request = require('request');
+const rp = require('request-promise');
+
+// logger 
+const {logger} = require('./logger')
 
 class account{
     /**
@@ -32,6 +38,19 @@ class account{
             
             getTradeRecord(event,arg.symbol,data.binance_apikey,data.binance_apisecret)
         })
+    }
+
+    accountGetUserKeyInfo(event,arg){
+      event.sender.send('recieve_account_key_info',{key_info: config.userKeyInfo});
+    }
+
+    accountGetUserFundSegVal(event,arg){
+      event.sender.send('recieve_user_fund_seg_val',{seg_val: config.userFundSegVal});
+    }
+
+    accountSaveUserFundSegVal(event,arg){
+      config.store_fund_seg_val(arg.val)
+      event.sender.send('recieve_user_fund_seg_val',{seg_val: config.userFundSegVal});
     }
 }
 

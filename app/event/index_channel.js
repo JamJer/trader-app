@@ -83,6 +83,8 @@ ipcRenderer.on('login-success', (event, arg) => {
 	// store username to localstorage
 	let username = document.getElementById('username').value;
 	localStorage.setItem('username', username);
+    // Bot fund check activation before enter status page
+    ipcRenderer.send('bot_fund_check_initial',{});
     // Enter next page - control panel
     window.location.href="status.html";
 })

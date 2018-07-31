@@ -69,59 +69,14 @@ ipcMain.on('create_bot',(event,arg)=>{
      */
 
     // New Symbol
-    let new_symbol, policy_path, policy_obj;
-
-    try {
-        new_symbol = arg.symbol
-        // Policy path
-        policy_path = config.policy['path']+arg.policy_file
-        policy_obj = YAML.parse(fs.readFileSync(policy_path).toString())   
-        policy_obj.symbol = new_symbol
-    } catch (err) {
-        // record into system log
-        logger.sys_log({
-            type: "Error",
-            msg: `[Event][Create bot] Read/Parse error, error: ${err}`
-        })
-        return;
-    }
-
-    let tbot = new trade_bot(config.username);
-    /** using the policy object to start robot */
-    tbot.start_by_obj(policy_obj,arg.policy_file.split('.')[0])
-    trader.botID_queue.push({id: tbot.get_id(), instance: tbot})
-
-    // record into system log
-    logger.sys_log({
-        type: "Info",
-        msg: `[Event][Create bot] bot id: ${tbot.id}`
-    })
-
-    // resend - receive_bot_status
-    let id_queue = [];
-    trader.botID_queue.forEach((element)=>{
-        id_queue.push({
-            id: element.id,
-            detail: element.instance.tradePolicy,
-            symbol: element.instance.tradingData.symbol,
-            tradeStatus: element.instance.currentStatus,
-            trade_data: element.instance.get_log(),
-            buyInfoLength: element.instance.buyInfo.length
-        })
-    })
-
-    event.sender.send('receive_bot_status',{
-        id_queue: id_queue
-    });
-})
-
-ipcMain.on('create_all_bots',(event,arg)=>{
-
-    // New Symbol 
     let new_symbol = arg.symbol
-    // Policy path
-    let policy_path = config.policy['path']+arg.policy_file
-    let policy_obj = YAML.parse(fs.readFileSync(policy_path).toString())   
+    let policy_data = ""
+    for(let i in config.userPolicyList){
+        if(config.userPolicyList[i].policy_id == arg.policy_file){
+            policy_data = config.userPolicyList[i]['content']
+        }
+    }
+    let policy_obj = YAML.parse(policy_data)   
     policy_obj.symbol = new_symbol
 
     let tbot = new trade_bot(config.username);
@@ -268,6 +223,10 @@ ipcMain.on('backtrack_bot',(event,arg)=>{
     });
 })
 
+ipcMain.on('bot_fund_check_initial',(event,arg)=>{
+    trader.bot_fund_check_proc()
+})
+
 
 // ================================================== User login channel ==================================================
 /**
@@ -307,6 +266,9 @@ ipcMain.on('reset_config',reconf.reset);
 // ================================================== Account panel channel ==================================================
 ipcMain.on('get_user_account_info',account.accountInfo);
 ipcMain.on('get_user_trades_info',account.accountTradeRecord);
+ipcMain.on('get_user_key_info',account.accountGetUserKeyInfo);
+ipcMain.on('get_user_fund_seg_val',account.accountGetUserFundSegVal);
+ipcMain.on('save_user_fund_seg_val',account.accountSaveUserFundSegVal);
 // Async Example
 /*ipcMain.on('asynchronous-message', (event, arg) => {
     console.log(arg)  // 印出 "ping"
