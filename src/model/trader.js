@@ -96,6 +96,7 @@ class trader{
 				let buyInfo = self.botID_queue[i].instance.buyInfo
 				nowBuyCount += buyInfo.length
 			}
+			config.store_buy_count(nowBuyCount)
 			if(maxBuyCount <= nowBuyCount){
 				config.store_buy_availiable(false)
 			}else{

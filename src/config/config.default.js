@@ -33,6 +33,10 @@ class config{
         this.userPolicyList = policy_list
     }
     
+    store_buy_count(val){
+        this.buyCount = val
+    }
+
     reload(){
         console.log(__dirname);
         let obj = jsfs.readFileSync(path.join(__dirname,"settings.json"));

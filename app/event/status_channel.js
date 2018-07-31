@@ -19,6 +19,8 @@ const DATA_REFLESH_TIME = 30000;
 var botStatusTable
 var botsTradeBuyRecordsTable
 var botsTradeSellRecordsTable
+var isSelling = false
+var sellingBotId = ""
 
 // DataTable initialization
 botStatusTable = $('#bot_status_table').DataTable( {
@@ -160,7 +162,7 @@ $( document ).ready(function() {
     initPolicyList();
     initSymbolList();
     initTradeRecords();
-    
+    getBuyTimesAndBuyLot()
     ipcRenderer.send('update_bot_status',{})
 
     setInterval(function(){
@@ -168,6 +170,10 @@ $( document ).ready(function() {
         ipcRenderer.send('update_bot_status',{})
         initTradeRecords();
     },DATA_REFLESH_TIME)
+
+    setInterval(function(){
+        getBuyTimesAndBuyLot()
+    },10000)
 });
 
 /**
@@ -256,10 +262,18 @@ ipcRenderer.on('receive_bot_status',(event,arg)=>{
         let d_btn = '<button type="button" class="btn btn-danger btn-sm dt-delete"><i class="fas fa-minus-circle" style="font-size: 20px;"></i> 刪除</button>'
         let e_btn = '<button type="button" class="btn btn-primary btn-sm dt-edit"><i class="fas fa-sliders-h" style="font-size: 20px;"></i> 運作狀況</button>'
         let s_btn = ''
+        if(isSelling){
+            if(arg.id_queue[i].id == sellingBotId){
+                if(arg.id_queue[i].buyInfoLength == 0){
+                    $("#full_mask").removeClass("is-active")
+                    isSelling = false
+                    sellingBotId = ""
+                }
+            }
+        }
         if(arg.id_queue[i].buyInfoLength > 0){
             s_btn = '<button type="button" class="btn btn-warning btn-sm dt-sell"><i class="fas fa-hand-holding-usd"></i> 立即賣出</button>'
         }else{
-            $("#full_mask").removeClass("is-active")
             s_btn = '<button type="button" class="btn btn-warning btn-sm dt-sell" disabled="true"><i class="fas fa-hand-holding-usd"></i> 立即賣出</button>'
         }
         let mn_btn = s_btn+"&nbsp;"+e_btn+"&nbsp;"+d_btn
@@ -311,6 +325,9 @@ ipcRenderer.on('receive_bot_status',(event,arg)=>{
         var data = botStatusTable.row( $(this).parents('tr') ).data();
         // will enter bot instance status
         console.log("SELL TOUCHED")
+        isSelling = true
+        sellingBotId = data[0]
+
         $("#full_mask").addClass("is-active")
         ipcRenderer.send('sellAll_bot',{
             id: data[0]
@@ -423,3 +440,16 @@ function profitP(profit_rate){
         return '<span class="badge badge-primary">0.00%</span>';
     }
 }
+
+function getBuyTimesAndBuyLot(){
+    ipcRenderer.send('get_trade_limit_info',{})
+}
+
+ipcRenderer.on("receive_trade_limit_info",(event,arg)=>{
+   if(isNaN(arg.now_buy_times)){
+    $("#current-buy-times").text("Loading...")
+   }else{
+    $("#current-buy-times").text(arg.seg_val - arg.now_buy_times)
+   }
+   $("#current-buy-lot").text(arg.limit_fund.split(" ")[0] / arg.seg_val)
+})

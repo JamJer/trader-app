@@ -138,6 +138,15 @@ ipcMain.on('kill_all_bot',(event,arg)=>{
     event.sender.send("ready_for_log_out",{});
 })
 
+ipcMain.on('kill_all_bot_for_reset',(event,arg)=>{
+    /**
+     * terminate all bots
+     */
+    trader.kill_all_bot();
+    trader.stop_fund_check_proc()
+    trader.bot_fund_check_proc()
+})
+
 ipcMain.on('edit_bot',(event,arg)=>{
     // enter into bot_instance page
     /**
@@ -225,6 +234,14 @@ ipcMain.on('backtrack_bot',(event,arg)=>{
 
 ipcMain.on('bot_fund_check_initial',(event,arg)=>{
     trader.bot_fund_check_proc()
+})
+
+ipcMain.on('get_trade_limit_info',(event,arg)=>{
+    event.sender.send("receive_trade_limit_info",{
+        limit_fund: config.userKeyInfo.limit_fund,
+        seg_val: config.userFundSegVal,
+        now_buy_times: config.buyCount
+    })
 })
 
 

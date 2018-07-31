@@ -26,6 +26,9 @@ const trade_record_func = require('./localStore/bot_trade_record.js')
 const trade_op = require('./trade_op')
 const trade_bt = require('./trade_backtrack')
 
+// curreny convertor
+const curreny_convertor = require('./currency_convert')
+
 // var trade_func = new trade_op();
 
 // Duration
@@ -139,6 +142,8 @@ class trade_bot{
         this.debug_logger = logger.bot_debug_log(this.id);
         this.log("Bot instance created, ID: "+this.id)
         this.debug_log("Bot instance created, ID: "+this.id)
+
+        this.currenyConvertor = new curreny_convertor()
 
         // init (minQty)
         this.init();
@@ -696,70 +701,74 @@ class trade_bot{
       * 
       */
     buy(){
-        let oriQuantity = this.tradingData.capital * (this.tradingData.buy.volume/100) / this.price[this.price.length - 1] // 原始買入數量
-        let limit = 1 / this.minQty
-        let quantity = Math.round(oriQuantity * limit) / limit;//四捨五入後的買入數量
-        // ts
-        let timeStamp = this.isHistory ? this.currentHistoryTime.toLocaleString() : (new Date().toLocaleString());
-            
-        // buy info
-        let newBuyInfo = {
-            tradePolicy: this.tradePolicy,
-            symbol: this.tradingData.symbol,    //買入交易對符號
-            timeStamp: timeStamp,    //買入時間
-            type: 'buy',
-            quantity: quantity, //買入數量
-            price: this.price[this.price.length - 1],    //買入價格
-            buy: quantity * this.price[this.price.length - 1]
-        };
+        let buyBTC = config.userKeyInfo.limit_fund.split(" ")[0]/config.userFundSegVal 
+        this.currenyConvertor.convertLimitBTCToBuyVolumne(buyBTC,this.tradingData.symbol,this.price[this.price.length - 1]).then((value) => {
+            let oriQuantity = value
+            let limit = 1 / this.minQty
+            let quantity = Math.round(oriQuantity * limit) / limit;//四捨五入後的買入數量
+            // ts
+            let timeStamp = this.isHistory ? this.currentHistoryTime.toLocaleString() : (new Date().toLocaleString());
+                
+            // buy info
+            let newBuyInfo = {
+                tradePolicy: this.tradePolicy,
+                symbol: this.tradingData.symbol,    //買入交易對符號
+                timeStamp: timeStamp,    //買入時間
+                type: 'buy',
+                quantity: quantity, //買入數量
+                price: this.price[this.price.length - 1],    //買入價格
+                buy: quantity * this.price[this.price.length - 1]
+            };
 
-        if(!config.buyAvailiable){
-            this.debug_log("=====================")
-            this.debug_log("[無法買入][機器人執行時間(sec)]: " + this.running_time/1000 + " s")
-            this.debug_log("[無法買入][時間戳記]: " + moment().format('MMMM Do YYYY, h:mm:ss a'))
-            this.debug_log("[無法買入] Buy info: 已超過買入次數最大數值，請手動執行賣出或等待機器人賣出")
-            this.debug_log(`[無法買入] 當前 Status: ${this.currentStatus}, symbol: ${newBuyInfo.symbol}, quantity: ${newBuyInfo.quantity}, price: ${newBuyInfo.price}`)
-            this.debug_log("=====================")
-            return
-        }
-
-        //------執行買入------
-        this.trade_func.buy(newBuyInfo.symbol,newBuyInfo.quantity,newBuyInfo.price).then((value) => {
-            let returnMsg = JSON.stringify(value)
-            if(returnMsg.includes("Error") == true || value.code != undefined){
-                // error occur, do not save trading log 
+            if(!config.buyAvailiable){
                 this.debug_log("=====================")
-                this.debug_log("[錯誤發生][機器人執行時間(sec)]: " + this.running_time/1000 + " s")
-                this.debug_log("[錯誤發生][時間戳記]: " + moment().format('MMMM Do YYYY, h:mm:ss a'))
-                this.debug_log("[錯誤發生] Buy info: " + JSON.stringify(value))
-                this.debug_log(`[錯誤發生] 當前 Status: ${this.currentStatus}, symbol: ${newBuyInfo.symbol}, quantity: ${newBuyInfo.quantity}, price: ${newBuyInfo.price}`)
+                this.debug_log("[無法買入][機器人執行時間(sec)]: " + this.running_time/1000 + " s")
+                this.debug_log("[無法買入][時間戳記]: " + moment().format('MMMM Do YYYY, h:mm:ss a'))
+                this.debug_log("[無法買入] Buy info: 已超過買入次數最大數值，請手動執行賣出或等待機器人賣出")
+                this.debug_log(`[無法買入] 當前 Status: ${this.currentStatus}, symbol: ${newBuyInfo.symbol}, quantity: ${newBuyInfo.quantity}, price: ${newBuyInfo.price}`)
                 this.debug_log("=====================")
-
-                // debug - reconfigure
-                this.trade_func.prepare(this.username)
+                return
             }
-            else{
-                // success 
-                this.debug_log("=====================")
-                this.debug_log("[機器人執行時間(sec)]: " + this.running_time/1000 + " s")
-                this.debug_log("[時間戳記]: " + moment().format('MMMM Do YYYY, h:mm:ss a'))
-                this.debug_log("Buy info: " + JSON.stringify(value))
-                this.debug_log(`當前 Status: ${this.currentStatus}, symbol: ${newBuyInfo.symbol}, quantity: ${newBuyInfo.quantity}, price: ${newBuyInfo.price}`)
-                this.debug_log("=====================")
 
-                // success, and record trading log
-                // 儲存買入資訊
-                this.buyInfo.push(newBuyInfo);
-                // 儲存交易紀錄
-                this.tradeInfo.push(newBuyInfo);
-                // 儲存交易記錄到local端
-                trade_record_func.pushIntoTradeRecord(this.id,newBuyInfo)
-            }         
-            
-            // Wait for a while ...
-            setTimeout(function(){},2000)
-        })
-        //--------------------
+            //------執行買入------
+            this.trade_func.buy(newBuyInfo.symbol,newBuyInfo.quantity,newBuyInfo.price).then((value) => {
+                let returnMsg = JSON.stringify(value)
+                if(returnMsg.includes("Error") == true || value.code != undefined){
+                    // error occur, do not save trading log 
+                    this.debug_log("=====================")
+                    this.debug_log("[錯誤發生][機器人執行時間(sec)]: " + this.running_time/1000 + " s")
+                    this.debug_log("[錯誤發生][時間戳記]: " + moment().format('MMMM Do YYYY, h:mm:ss a'))
+                    this.debug_log("[錯誤發生] Buy info: " + JSON.stringify(value))
+                    this.debug_log(`[錯誤發生] 當前 Status: ${this.currentStatus}, symbol: ${newBuyInfo.symbol}, quantity: ${newBuyInfo.quantity}, price: ${newBuyInfo.price}`)
+                    this.debug_log("=====================")
+
+                    // debug - reconfigure
+                    this.trade_func.prepare(this.username)
+                }
+                else{
+                    // success 
+                    this.debug_log("=====================")
+                    this.debug_log("[機器人執行時間(sec)]: " + this.running_time/1000 + " s")
+                    this.debug_log("[時間戳記]: " + moment().format('MMMM Do YYYY, h:mm:ss a'))
+                    this.debug_log("Buy info: " + JSON.stringify(value))
+                    this.debug_log(`當前 Status: ${this.currentStatus}, symbol: ${newBuyInfo.symbol}, quantity: ${newBuyInfo.quantity}, price: ${newBuyInfo.price}`)
+                    this.debug_log("=====================")
+
+                    // success, and record trading log
+                    // 儲存買入資訊
+                    this.buyInfo.push(newBuyInfo);
+                    // 儲存交易紀錄
+                    this.tradeInfo.push(newBuyInfo);
+                    // 儲存交易記錄到local端
+                    trade_record_func.pushIntoTradeRecord(this.id,newBuyInfo)
+                }         
+                
+                // Wait for a while ...
+                setTimeout(function(){},2000)
+            })
+            //--------------------
+        }) // 替換原始買入數量為限額數量
+        
     }
 
     sell(){
@@ -801,7 +810,7 @@ class trade_bot{
             profit: profit_calcu,
             ror: ror_calcu  //收益率
         };
-        
+                
         //------執行賣出------
         this.trade_func.sell(newSellInfo.symbol,newSellInfo.quantity,newSellInfo.price).then((value) => {
             let returnMsg = JSON.stringify(value)
