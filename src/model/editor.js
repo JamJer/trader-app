@@ -25,34 +25,30 @@ class editor{
         /**
          * @param null
          */
-        fs.readdir(path.join(config.policy.path),(err,files)=>{
-            if(err){
-                event.sender.send("response_policy_list",{
-                    msg: "Error occur when fetching policies.",
-                    data: err
-                })
-            }
-            else{
-                event.sender.send("response_policy_list",{
-                    msg: "Successfully fetching policies.",
-                    data: files
-                })
-            }
+        let policy_list = []
+        for(let i in config.userPolicyList){
+            policy_list.push(config.userPolicyList[i].policy_id)
+        }
+
+        event.sender.send("response_policy_list",{
+            msg: "Successfully fetching policies.",
+            data: policy_list
         })
     }
 
     policy_data(event,arg){
-        fs.readFile(path.join(config.policy.path,arg.filename), 'utf8', function (err,data) {
-          if (err) {
-            return console.log(err);
-          }else{
-            event.sender.send("response_policy_data",{
-                    msg: "Successfully fetching police data.",
-                    filename: arg.filename,
-                    data: data
-                })
-          }
-        });
+        let policy_data = ""
+        for(let i in config.userPolicyList){
+            if(config.userPolicyList[i].policy_id == arg.policy_file){
+                policy_data = config.userPolicyList[i]['content']
+            }
+        }
+        console.log("Policy data:"+policy_data)
+        event.sender.send("response_policy_data",{
+            msg: "Successfully fetching police data.",
+            filename: arg.policy_file,
+            data: policy_data
+        })
     }
 
     policy_save(event,arg){

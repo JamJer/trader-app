@@ -4,6 +4,9 @@
         "register": "/api/v1/user/register",
         "key_activate": "/api/v1/user/key/activate",
         "key_deactivate": "/api/v1/user/key/deactivate",
-        "key_check": "/api/v1/user/key/check"
+        "key_check": "/api/v1/user/key/check",
+        "key_fetch": "/api/v1/user/key/fetch",
+        "policy_get": "/api/v1/trade/policy/get",
+        "policy_list": "/api/v1/trade/policy/list"
     }
 }

@@ -9,12 +9,30 @@ const path = require("path")
 class config{
     constructor(){
         this.reload();
+        this.userFundSegVal = 1000 // 基本金額分割額度1000份
+        this.buyAvailiable = true
     }
 
     store_user(user){
         this.username = user;
     }
 
+    store_user_key_info(data){
+        this.userKeyInfo = data
+    }
+
+    store_fund_seg_val(val){
+        this.userFundSegVal = val
+    }
+
+    store_buy_availiable(bool){
+        this.buyAvailiable = bool
+    }
+
+    store_user_policy_list(policy_list){
+        this.userPolicyList = policy_list
+    }
+    
     reload(){
         console.log(__dirname);
         let obj = jsfs.readFileSync(path.join(__dirname,"settings.json"));

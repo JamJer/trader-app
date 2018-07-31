@@ -56,15 +56,15 @@ $("#bot-backtrack-btn").bind("click",function(){
 });
 
 function setPolicyToView(policy_name){
-    var csvRequest = new Request({
-        url:"../.local/policy/"+policy_name,
-        onSuccess:function(response){
-            policy_view.val('');
-            policy_view.val(response);
-            handleSubmitBtn()
-        }
-    }).send();
+    ipcRenderer.send("policy_data",{policy_file: policy_name})
 }
+
+ipcRenderer.on("response_policy_data",(event,arg)=>{
+    policy_view.val('');
+    console.log("AAA")
+    policy_view.val(arg["data"]);
+    handleSubmitBtn()
+})
 
 function goBackTrack(yaml_string, start_time, end_time){
     loadingBt(true);

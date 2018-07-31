@@ -13,6 +13,9 @@ const YAML = require('yamljs')
 const request = require('request')
 const moment = require('moment')
 
+// configuration
+const config = require("../config/config.default");
+
 // logger 
 const {logger} = require('./logger')
 
@@ -706,6 +709,16 @@ class trade_bot{
             price: this.price[this.price.length - 1],    //買入價格
             buy: quantity * this.price[this.price.length - 1]
         };
+
+        if(!config.buyAvailiable){
+            this.debug_log("=====================")
+            this.debug_log("[無法買入][機器人執行時間(sec)]: " + this.running_time/1000 + " s")
+            this.debug_log("[無法買入][時間戳記]: " + moment().format('MMMM Do YYYY, h:mm:ss a'))
+            this.debug_log("[無法買入] Buy info: 已超過買入次數最大數值，請手動執行賣出或等待機器人賣出")
+            this.debug_log(`[無法買入] 當前 Status: ${this.currentStatus}, symbol: ${newBuyInfo.symbol}, quantity: ${newBuyInfo.quantity}, price: ${newBuyInfo.price}`)
+            this.debug_log("=====================")
+            return
+        }
 
         //------執行買入------
         this.trade_func.buy(newBuyInfo.symbol,newBuyInfo.quantity,newBuyInfo.price).then((value) => {

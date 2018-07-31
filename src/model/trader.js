@@ -19,6 +19,8 @@ const trade_bot = require('./trade_bot');
 // database 
 const {db} = require('./db');
 
+const FUND_CHECK_INTERVAL = 10000
+
 /**
  * Main trader channel instance
  */
@@ -26,6 +28,7 @@ class trader{
 	constructor(){
 		// Need to maintain all trader bot's instance
 		this.botID_queue = []
+		this.fund_check
 	}
 
 	/**
@@ -65,6 +68,30 @@ class trader{
 			id: newbot.get_id(),
 			instance: newbot
 		});
+	}
+
+	bot_fund_check_proc(){
+		clearInterval(this.fund_check);
+		console.log("BOT FUND CHECK PROCESS ACTIVATED")
+		let self = this;
+		this.fund_check = setInterval(function(){
+			let maxBuyCount = config.userFundSegVal
+			let nowBuyCount = 0
+			for(let i in self.botID_queue){
+				let buyInfo = self.botID_queue[i].instance.buyInfo
+				nowBuyCount += buyInfo.length
+			}
+			if(maxBuyCount <= nowBuyCount){
+				config.store_buy_availiable(false)
+			}else{
+				config.store_buy_availiable(true)
+			}
+			console.log("[FUND CHECK PROCESS] TOTAL MAX BUY COUNT: "+maxBuyCount+" | NOW TOTAL BUY COUNT: "+nowBuyCount)
+		},FUND_CHECK_INTERVAL);
+	}
+
+	stop_fund_check_proc(){
+		clearInterval(this.fund_check);
 	}
 
 	/**

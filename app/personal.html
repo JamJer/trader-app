@@ -86,15 +86,33 @@
                   <div class="card bg-dark border-warning mb-3" style="width: 50%;">
                     <div class="card-body text-light">
                       <h5 class="card-title text-warning">我的個人帳戶信息(Account Infomation)</h5>
-                      <p class="card-text text-warning">Maker Commission: &nbsp;<font id="maker-cms" color="#00ffff"></font>&nbsp;&nbsp;&nbsp;&nbsp;Can Trade: &nbsp;<font id="can-trade" color="#00ffff"></font></p>
-                      <p class="card-text text-warning">Taker Commission: &nbsp;<font id="taker-cms" color="#00ffff"></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Can Withdraw: &nbsp;<font id="can-withdraw" color="#00ffff"></font></p>
-                      <p class="card-text text-warning">Seller Commission: &nbsp;<font id="seller-cms" color="#00ffff"></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Can Deposit: &nbsp;<font id="can-deposit" color="#00ffff"></font></p>
-                      <p class="card-text text-warning">Update Time: &nbsp;<font id="updateTime" color="#00ffff"></font></p></p>
+                      <p class="card-text text-warning">Maker Commission : &nbsp;<font id="maker-cms" color="#00ffff"></font>&nbsp;&nbsp;&nbsp;&nbsp;Can Trade : &nbsp;<font id="can-trade" color="#00ffff"></font></p>
+                      <p class="card-text text-warning">Taker Commission : &nbsp;<font id="taker-cms" color="#00ffff"></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Can Withdraw : &nbsp;<font id="can-withdraw" color="#00ffff"></font></p>
+                      <p class="card-text text-warning">Seller Commission : &nbsp;<font id="seller-cms" color="#00ffff"></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Can Deposit : &nbsp;<font id="can-deposit" color="#00ffff"></font></p>
+                      <p class="card-text text-warning">Trader APP金鑰到期時間 : &nbsp;<br><font id="key-exp-time" color="#00ffff"></font></p>
+                      <p class="card-text text-warning">帳戶買入最大額度 : &nbsp;<font id="max-buy-vol" color="#00ffff"></font>&nbsp;BTC</p>
+                      <p class="card-text text-warning">當前剩餘買入額度 : &nbsp;<font id="current-buy-vol" color="#00ffff"></font>&nbsp;BTC</p>
+                        <div class="progress">
+                          <div class="progress-bar bg-warning progress-bar-striped progress-bar-animated" style="width:60%"></div>
+                        </div>
+                      <br>
+                      <p class="card-text text-warning">機器人買入等份額度設定(每個機器人每次以&nbsp;<font id="current-bot-buy" color="#00ffff"></font>&nbsp;BTC買入)
+                        <div class="input-group mb-3">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text">設定為</span>
+                          </div>
+                          <input type="number" id="fund-segment" class="form-control" min="0" step="1" aria-label="Trade policy name without extend name" placeholder="None">
+                          <div class="input-group-append">
+                            <span class="input-group-text">等份</span>
+                          </div>&nbsp;
+                          <button id="fund-segment-save" class='btn btn-warning' disabled="true"><i class="fas fa-save"></i>&nbsp;儲存變更</button>
+                        </div>
+                      </p>
                     </div>
                   </div>
                   <div class="card bg-dark border-warning mb-3" style="width: 50%;">
                     <div class="card-body">
-                      <h5 class="card-title text-warning">結餘(BALANCE)</h5>
+                      <h5 class="card-title text-warning">帳戶結餘(BALANCE)</h5>
                       <!-- Display current bot - and create button -->
                       <table class="table table-striped table-bordered" id="user_balance" style="width:100%">
                       <!-- Dynamic data goes here -->
