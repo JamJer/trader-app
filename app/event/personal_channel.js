@@ -54,9 +54,14 @@ user_trades = $('#user_trades').DataTable( {
 // Event goes here
 $( document ).ready(function() {
 	initSymbolList()
+    getBuyTimesAndBuyLot()
     ipcRenderer.send("get_user_account_info",{})
     ipcRenderer.send("get_user_key_info",{})
     ipcRenderer.send("get_user_fund_seg_val",{})
+
+    setInterval(function(){
+        getBuyTimesAndBuyLot()
+    },10000)
 });
 
 // Handle fund-segment value be digit only
@@ -82,7 +87,11 @@ $("#fund-segment-save").bind("click",function(){
                 alert("買入等份額度不得小於1份")
             }
         }else{
-            ipcRenderer.send("save_user_fund_seg_val",{val: seg_val})
+            var r = confirm("確定要重新設定買入等份額度? 重設將刪除所有運行中的機器人");
+            if (r == true) {
+                ipcRenderer.send("save_user_fund_seg_val",{val: seg_val})
+                ipcRenderer.send("kill_all_bot_for_reset",{val: seg_val})
+            }
         }
     }else{
         if(seg_val == ''){
@@ -110,7 +119,7 @@ ipcRenderer.on("recieve_account_info",(event,arg)=>{
 })
 
 ipcRenderer.on("recieve_account_key_info",(event,arg)=>{
-    $("#max-buy-vol").text(arg.key_info.limit_fund.split(" ")[0]+".00")
+    $("#max-buy-vol").text(Number(arg.key_info.limit_fund.split(" ")[0]).toFixed(6))
     $("#key-exp-time").text(new Date(arg.key_info.end_time))
 })
 
@@ -157,6 +166,21 @@ async function initSymbolList(){
     symbolList.selectpicker('refresh');
     symbolList.selectpicker('render');
 }
+
+function getBuyTimesAndBuyLot(){
+    ipcRenderer.send('get_trade_limit_info',{})
+}
+
+ipcRenderer.on("receive_trade_limit_info",(event,arg)=>{
+   if(isNaN(arg.now_buy_times)){
+    $("#current-buy-vol").text("Loading...")
+   }else{
+    $("#current-buy-vol").text((((arg.limit_fund.split(" ")[0]+".00") / arg.seg_val) * (arg.seg_val - arg.now_buy_times)).toFixed(6))
+   } 
+   $("#current-buy-bar").text(((((arg.limit_fund.split(" ")[0]+".00") / arg.seg_val) * (arg.seg_val - arg.now_buy_times))/arg.limit_fund.split(" ")[0])*100+"%")
+   $("#current-buy-bar").css("width", ((((arg.limit_fund.split(" ")[0]+".00") / arg.seg_val) * (arg.seg_val - arg.now_buy_times))/arg.limit_fund.split(" ")[0])*100+"%");
+})
+
 
 /**
  * function to check your input is number
