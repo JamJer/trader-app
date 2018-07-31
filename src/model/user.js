@@ -68,64 +68,34 @@ class user{
                                 passwd: arg.passwd,
                                 key_id: product_key
                             }
-                            rp.post(config.server.url+config.api.user.key_check,{simple: false, resolveWithFullResponse: true, form: key_check_arg })
-                                .then((res,body) => {
-                                    // redirect to new link 
-                                    console.log(res.statusCode)
-                                    console.log(res.headers['location'])
-                                    // the new location
-                                    rp.post(res.headers['location'],{form: key_check_arg})
-                                        .then((body) => {
-                                            let jsondata;
-                                            if(body){
-                                                try {
-                                                    jsondata = JSON.parse(body)
-                                                } catch (err){
-                                                    console.log(`[User Login - Product key check][Body 無法被 JSON.parse 解析] error: ${err} ,data: ${jsondata}`)
-                                                    // record into system log
-                                                    logger.sys_log({
-                                                        type: "Error",
-                                                        msg: `[User Login - Product key check][Body 無法被 JSON.parse 解析] error: ${err} ,data: ${jsondata}`
-                                                    })
-                                                }
-                                            }
-                                            // Get response from database 
-                                            let response = jsondata;
-                                            console.log(response)
-                                            if(response.msg=="success"){
-                                                // product key are activated
-                                                // Store product key 
-                                                console.log("Product key examinate success, store all user's config.")
-                                                db.store_product_key(arg.username,arg.passwd,product_key,
-                                                    (err,msg)=>{
-                                                        if(err)
-                                                            console.log(err);
-                                                        // Send back
-                                                        // if res.msg == OK, then represent this user is legal
-                                                        // FIXME: In debug mode, all msg will return OK, without compare user data
-                                                        // And when this user login success, it will get a unique key of this user to activate trade bot
-                                                        event.sender.send('login-success',product_key);
-                                                        
-                                                        // trader.prepare(arg.username);
-                                                    });
-                                            }
-                                            else{
-                                                // send error msg - "not found"/"error id"...
-                                                event.sender.send('login-error', "金鑰尚未啟動！請至官網搜尋管道啟用！")
+                            // ============================================ Another process: product key fetch =======================================
+                            console.log("Now starting the product key's fetching.")
+                            rp.post(config.server.url+config.api.user.key_fetch, {simple: false, resolveWithFullResponse: true,form: key_check_arg})
+                            .then((res,body)=>{
+                                // redirect to new link
+                                console.log(res.statusCode)
+                                console.log(res.headers['location'])
+
+                                rp.post(res.headers['location'],{form: key_check_arg})
+                                    .then((body)=>{
+                                        let jsondata;
+                                        if(body){
+                                            try {
+                                                jsondata = JSON.parse(body)
+                                            } catch (e){
+                                                console.log(`[User Key Fetch][Body 無法被 JSON.parse 解析] error: ${err} ,data: ${jsondata}`)
                                                 // record into system log
                                                 logger.sys_log({
-                                                    type: "Login-Error",
-                                                    msg: "金鑰尚未啟動！請至官網搜尋管道啟用！"
+                                                    type: "Error",
+                                                    msg: `[User Key Fetch][Body 無法被 JSON.parse 解析] error: ${err} ,data: ${jsondata}`
                                                 })
                                             }
                                         }
-                                        // Get response from database 
-                                        let response = jsondata;
-                                        console.log(response)
-                                        if(response.msg=="success"){
-                                            // product key are activated
-                                            // Store product key 
-                                            console.log("Product key examinate success, store all user's config.")
+                                        // Body will be the result
+                                        let res = jsondata;
+                                        if(res.msg=="success"){
+                                            config.store_user_key_info(res)
+                                            console.log("User key information has been stored in config.default")
                                             db.store_product_key(arg.username,arg.passwd,product_key,
                                                 (err,msg)=>{
                                                     if(err)
@@ -134,102 +104,76 @@ class user{
                                                     // if res.msg == OK, then represent this user is legal
                                                     // FIXME: In debug mode, all msg will return OK, without compare user data
                                                     // And when this user login success, it will get a unique key of this user to activate trade bot
-                                                    event.sender.send('login-success',product_key);
+                                                    // event.sender.send('login-success',product_key);
+                                                    
                                                     // trader.prepare(arg.username);
                                                 });
                                         }
                                         else{
-                                            // send error msg - "not found"/"error id"...
-                                            event.sender.send('login-error', "金鑰尚未啟動！請至官網搜尋管道啟用！")
+                                            console.log(`[User Key Info Fetch][取得使用者limit fund資訊 失敗] ,data: ${JSON.stringify(jsondata)}`)
+                                            // record into system log
+                                            logger.sys_log({
+                                                type: "Error",
+                                                msg: `[User Key Info Fetch][取得使用者limit fund資訊 失敗] ,data: ${jsondata}`
+                                            })
                                         }
                                     })
                             })
-                        // ============================================ Another process: product key fetch =======================================
-                        console.log("Now starting the product key's fetching.")
-                        rp.post(config.server.url+config.api.user.key_fetch, {simple: false, resolveWithFullResponse: true,form: key_check_arg})
-                        .then((res,body)=>{
-                            // redirect to new link
-                            console.log(res.statusCode)
-                            console.log(res.headers['location'])
+                            // ============================================ Another process: User's own policy list fetch =======================================
+                            console.log("Now starting the user's own policy list fetching.")
+                            rp.post(config.server.url+config.api.user.policy_list, {simple: false, resolveWithFullResponse: true,form: {username: arg.username,
+                                passwd: arg.passwd}})
+                            .then((res,body)=>{
+                                // redirect to new link
+                                console.log(res.statusCode)
+                                console.log(res.headers['location'])
 
-                            rp.post(res.headers['location'],{form: key_check_arg})
-                                .then((body)=>{
-                                    let jsondata;
-                                    if(body){
-                                        try {
-                                            jsondata = JSON.parse(body)
-                                        } catch (e){
-                                            console.log(`[User Key Fetch][Body 無法被 JSON.parse 解析] error: ${err} ,data: ${jsondata}`)
+                                rp.post(res.headers['location'],{form: key_check_arg})
+                                    .then((body)=>{
+                                        let jsondata;
+                                        if(body){
+                                            try {
+                                                jsondata = JSON.parse(body)
+                                            } catch (e){
+                                                console.log(`[User policy list Fetch][Body 無法被 JSON.parse 解析] error: ${err} ,data: ${jsondata}`)
+                                                // record into system log
+                                                logger.sys_log({
+                                                    type: "Error",
+                                                    msg: `[User policy list Fetch][Body 無法被 JSON.parse 解析] error: ${err} ,data: ${jsondata}`
+                                                })
+                                            }
+                                        }
+                                        // Body will be the result
+                                        let res = jsondata;
+                                        if(res.msg=="found"){
+                                            // console.log(JSON.stringify(res))
+                                            config.store_user_policy_list(res.policy_list)
+                                            console.log("User's own policy information has been stored in config.default")
+                                            
+                                            // FIXME:
+                                            // send to front-end 
+                                            // telling app the entire login process finished
+                                            event.sender.send('login-success',product_key);
+                                        }
+                                        else{
+                                            console.log(`[User policy list Fetch][使用者無交易策略可提取] ,data: ${JSON.stringify(jsondata)}`)
                                             // record into system log
                                             logger.sys_log({
                                                 type: "Error",
-                                                msg: `[User Key Fetch][Body 無法被 JSON.parse 解析] error: ${err} ,data: ${jsondata}`
+                                                msg: `[User policy list Fetch][使用者無交易策略可提取] ,data: ${jsondata}`
                                             })
                                         }
-                                    }
-                                    // Body will be the result
-                                    let res = jsondata;
-                                    if(res.msg=="success"){
-                                        config.store_user_key_info(res)
-                                        console.log("User key information has been stored in config.default")
-                                    }
-                                    else{
-                                        console.log(`[User Key Info Fetch][取得使用者limit fund資訊 失敗] ,data: ${JSON.stringify(jsondata)}`)
-                                        // record into system log
-                                        logger.sys_log({
-                                            type: "Error",
-                                            msg: `[User Key Info Fetch][取得使用者limit fund資訊 失敗] ,data: ${jsondata}`
-                                        })
-                                    }
-                                })
-                        })
-                        // ============================================ Another process: User's own policy list fetch =======================================
-                        console.log("Now starting the user's own policy list fetching.")
-                        rp.post(config.server.url+config.api.user.policy_list, {simple: false, resolveWithFullResponse: true,form: {username: arg.username,
-                            passwd: arg.passwd}})
-                        .then((res,body)=>{
-                            // redirect to new link
-                            console.log(res.statusCode)
-                            console.log(res.headers['location'])
-
-                            rp.post(res.headers['location'],{form: key_check_arg})
-                                .then((body)=>{
-                                    let jsondata;
-                                    if(body){
-                                        try {
-                                            jsondata = JSON.parse(body)
-                                        } catch (e){
-                                            console.log(`[User policy list Fetch][Body 無法被 JSON.parse 解析] error: ${err} ,data: ${jsondata}`)
-                                            // record into system log
-                                            logger.sys_log({
-                                                type: "Error",
-                                                msg: `[User policy list Fetch][Body 無法被 JSON.parse 解析] error: ${err} ,data: ${jsondata}`
-                                            })
-                                        }
-                                    }
-                                    // Body will be the result
-                                    let res = jsondata;
-                                    if(res.msg=="found"){
-                                        // console.log(JSON.stringify(res))
-                                        config.store_user_policy_list(res.policy_list)
-                                        console.log("User's own policy information has been stored in config.default")
-                                    }
-                                    else{
-                                        console.log(`[User policy list Fetch][使用者無交易策略可提取] ,data: ${JSON.stringify(jsondata)}`)
-                                        // record into system log
-                                        logger.sys_log({
-                                            type: "Error",
-                                            msg: `[User policy list Fetch][使用者無交易策略可提取] ,data: ${jsondata}`
-                                        })
-                                    }
-                                })
-                        })
-                    }
-                    else{
-                        event.sender.send('login-error',"帳號或密碼錯誤！");
-                    }
-                })
+                                    })
+                            })
+                        }
+                        else{
+                            event.sender.send('login-error',"帳號或密碼錯誤！");
+                        }
+                    })
         }) 
+        }catch(err){
+
+        }
     }
 
     api_config(event,arg){
