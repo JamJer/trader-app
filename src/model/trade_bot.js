@@ -139,6 +139,9 @@ class trade_bot{
         this.debug_logger = logger.bot_debug_log(this.id);
         this.log("Bot instance created, ID: "+this.id)
         this.debug_log("Bot instance created, ID: "+this.id)
+
+        // init (minQty)
+        this.init();
     }
 
     log(msg){
@@ -283,7 +286,7 @@ class trade_bot{
         // logger.bot_log_dismiss(this.id);
     }
 
-    update(){
+    init(){
         let self = this;
         // using request to get minQty 
         request.get("https://www.binance.com/api/v1/exchangeInfo",function(err,response,data){
@@ -368,9 +371,6 @@ class trade_bot{
      * @function load
      */
     load(){
-        // update parameters - minQty
-        this.update();
-
         // reset func 
         this.func = [];
         // 獲取 現價
@@ -519,13 +519,16 @@ class trade_bot{
         this.log("目前交易動作: " + this.currentStatus)
         this.log("=====================================")
         this.log("目前時間: " + new Date().toLocaleString())
+        this.log('上個現價: ' + this.price[this.price.length - 2]); 
         this.log("目前現價: " + this.price[this.price.length - 1])
+        this.log('上個 MA: ' + this.dataMA[this.dataMA.length - 2].ma + ' ' + new Date(this.dataMA[this.dataMA.length - 2].timestamp).toLocaleString());
         this.log("目前 MA: " + this.dataMA[this.dataMA.length - 1].ma + ' ' + new Date(this.dataMA[this.dataMA.length - 1].timestamp).toLocaleString())
         this.log('目前交易量倍數: ' + this.dataVA.pastOneHourVolume / this.dataVA.pastTenHoursVA);
-        // this.log('買入資訊: ');
-        // this.log(this.buyInfo);
-        // this.log('總交易資訊: ');
-        // this.log(this.tradeInfo);
+        this.log('目前狀態: ' + this.currentStatus);
+        this.log('買入資訊: ');
+        this.log(JSON.stringify(this.buyInfo));
+        this.log('總交易資訊: ');
+        this.log(JSON.stringify(this.tradeInfo));
         this.log("=====================================")
     }
 

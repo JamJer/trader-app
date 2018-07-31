@@ -14,6 +14,7 @@ const {cmder} = require('../model/cmder');
 const {reconf} = require('../model/config');
 const {editor} = require('../model/editor');
 const {account} = require('../model/account');
+const {logger} = require('../model/logger');
 const trader = require('../model/trader');
 const trade_bot = require('../model/trade_bot');
 var current_bot_id = "";
@@ -50,6 +51,12 @@ ipcMain.on('update_bot_status',(event,arg)=>{
     event.sender.send('receive_bot_status',{
         id_queue: id_queue
     });
+
+    // record into system log
+    logger.sys_log({
+        type: "Info",
+        msg: `[Event][Update Bot status]`
+    })
 })
 
 ipcMain.on('create_bot',(event,arg)=>{

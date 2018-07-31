@@ -12,8 +12,8 @@ const rp = require('request-promise');
 
 // configuration
 const config = require("../config/config.default");
-// operation 
-const {op} = require('./trade_op');
+// logger 
+const {logger} = require('./logger')
 // bot instance
 const trade_bot = require('./trade_bot');
 // database 
@@ -43,6 +43,11 @@ class trader{
 	kill_all_bot(){
 		this.botID_queue.forEach(element => {
 			element.instance.stop();
+			// record into system log
+			logger.sys_log({
+				type: "Info",
+				msg: `[Trader][Kill all Bot] bot id: ${element.instance.id}`
+			})
 		});
 		this.botID_queue = []
 	}
@@ -53,6 +58,11 @@ class trader{
 				this.botID_queue[i].instance.stop();
 				// splice current element
 				this.botID_queue.splice(i,1)
+				// record into system log
+				logger.sys_log({
+					type: "Info",
+					msg: `[Trader][Kill Bot] bot id: ${id}`
+				})
 				return;
 			}
 		}
@@ -68,6 +78,11 @@ class trader{
 			id: newbot.get_id(),
 			instance: newbot
 		});
+		// record into system log
+		logger.sys_log({
+			type: "Info",
+			msg: `[Trader][Create Bot] bot id: ${id}`
+		})
 	}
 
 	bot_fund_check_proc(){
@@ -129,8 +144,9 @@ class trader{
 				// calculate profit
 				let profit = parseFloat(arg.quantity)*(parseFloat(arg.price_sell)-parseFloat(arg.price_buyin));
 
-				// store in database
-				db.store_deal_log(trade_id,trade_date,arg.market,arg.quantity,arg.price_sell,arg.price_buyin,profit,"Completed",
+				try{
+					// store in database
+					db.store_deal_log(trade_id,trade_date,arg.market,arg.quantity,arg.price_sell,arg.price_buyin,profit,"Completed",
 					(err,msg)=>{
 						// Get all the trading log from database
 						db.list_deal_log((err,rows)=>{
@@ -140,17 +156,34 @@ class trader{
 						})
 						
 					});
+				}catch(err){
+					// record into system log
+					logger.sys_log({
+						type: "Error",
+						msg: `[Trader][Trade] Error when storing deal log to db, error: ${err}`
+					})
+				}
+				
 
 				break;
 			/**
 			 * ==================== cmd: trade_log ====================
 			 */
 			case "trade_log":
-				db.list_deal_log((err,rows)=>{
-					event.sender.send('update_trading_chart',{
-						rows: rows
-					});
-				})
+				try{
+					db.list_deal_log((err,rows)=>{
+						event.sender.send('update_trading_chart',{
+							rows: rows
+						});
+					})
+				}catch(err){
+					// record into system log
+					logger.sys_log({
+						type: "Error",
+						msg: `[Trader][Trade log] Error when fetching from db, error: ${err}`
+					})
+				}
+				
 				break;
 		}
 	}

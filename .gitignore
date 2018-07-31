@@ -4,3 +4,4 @@ trader-app-linux-x64/
 trader-app-win32-x64/
 *.zip
 *.rar
+myapi.json
