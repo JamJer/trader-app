@@ -69,7 +69,7 @@ class trader{
 
 	}
 
-	create_bot(url){
+	/*create_bot(url){
 		// create new instance
 		let newbot = new trade_bot(config.username);
 		// run !
@@ -83,7 +83,7 @@ class trader{
 			type: "Info",
 			msg: `[Trader][Create Bot] bot id: ${id}`
 		})
-	}
+	}*/
 
 	bot_fund_check_proc(){
 		clearInterval(this.fund_check);

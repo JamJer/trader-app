@@ -24,7 +24,15 @@ class user{
             // Send message to remote server enroll 
             // Using new api call
             requester.redirect(config.server.url+config.api.user.login, arg, arg)
-                .then((res)=> {
+                .then((response)=> {
+                    let res;
+                    if(response){
+                        try {
+                            res = JSON.parse(response)
+                        } catch (err){
+                            console.log(`[User Login][Body 無法被 JSON.parse 解析] error: ${err} ,data: ${res}`)
+                        }
+                    }
                     if(res.msg=="success"){
                         // Store in session 
                         config.store_user(arg.username,res["title"])
@@ -41,7 +49,15 @@ class user{
                         console.log("Now starting the product key's fetching.")
 
                         requester.redirect(config.server.url+config.api.user.key_fetch, key_check_arg, key_check_arg)
-                            .then((res) => {
+                            .then((response)=> {
+                                let res;
+                                if(response){
+                                    try {
+                                        res = JSON.parse(response)
+                                    } catch (err){
+                                        console.log(`[User Login][Body 無法被 JSON.parse 解析] error: ${err} ,data: ${res}`)
+                                    }
+                                }
                                 if(res.msg=="success"){
                                     config.store_user_key_info(res)
                                     console.log("User key information has been stored in config.default")
@@ -71,7 +87,15 @@ class user{
                         console.log("Now starting the user's own policy list fetching.")
                         
                         requester.redirect(config.server.url+config.api.user.policy_list, {username: arg.username, passwd: arg.passwd}, key_check_arg)
-                            .then((res)=>{
+                            .then((response)=> {
+                                let res;
+                                if(response){
+                                    try {
+                                        res = JSON.parse(response)
+                                    } catch (err){
+                                        console.log(`[User Login][Body 無法被 JSON.parse 解析] error: ${err} ,data: ${res}`)
+                                    }
+                                }
                                 if(res.msg=="found"){
                                     // console.log(JSON.stringify(res))
                                     config.store_user_policy_list(res.policy_list)

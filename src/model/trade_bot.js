@@ -19,6 +19,9 @@ const config = require("../config/config.default");
 // logger 
 const {logger} = require('./logger')
 
+// requester
+const requester = require('./requester')
+
 // localStore
 const trade_record_func = require('./localStore/bot_trade_record.js')
 
@@ -430,8 +433,9 @@ class trade_bot{
      * 
      * @function buy_and_sell 
      */
-    buy_and_sell(){
+    async buy_and_sell(){
         //console.log(this)
+        let self=this;
         switch(this.currentStatus){
             case 'wait':
                 this.log("Waiting...")
@@ -446,19 +450,48 @@ class trade_bot{
             case 'sell_belowma':
                 this.log("Selling when current price below MA ...")
                 //如果交易量沒有爆增
-                if(!this.isVolumeExIncrease()){
+                /*if(!this.isVolumeExIncrease()){
                     //如果MA上揚且現價下跌碰觸MA
                     if(this.isMAUp() && this.isPriceDropTouchMA()){ 
                         //執行買入
                         this.buy();								
                         this.currentStatus = 'buy';
                     }
-                }
+                }*/
+                this.isVolumeExIncrease().then((res)=>{
+                    this.log(`isVolumeExIncrease state: ${res}`)
+                    if(res){
+                        // do nothing
+                    } else {
+                        self.isMAUp().then((res)=>{
+                            this.log(`isVolumeExIncrease-isMAUp state: ${res}`)
+                            if(res){
+                                self.isPriceDropTouchMA().then((res)=>{
+                                    this.log(`isVolumeExIncrease-isMAUp-isPriceDropTouchMA state: ${res}`)
+                                    if(res){
+                                        self.buy();
+                                        self.currentStatus = 'buy'
+                                    } else {
+                                        // TODO
+                                    }
+                                })
+                            } else {
+                                // TODO
+                            }
+                            
+                        }).catch((err)=>{
+                            // TODO
+                            console.log(`isVolumeExIncrease-isMAUp error: ${err}`)
+                        })
+                    }
+                }).catch((err)=>{
+                    this.log(`isVolumeExIncrease error: ${err}`)
+                })
                 break;
             case 'buy':
                 this.log("Buying...")
                 //如果交易量爆增
-                if(this.isVolumeExIncrease()){		
+                /*if(this.isVolumeExIncrease()){		
                     this.currentStatus = 'sell_volume';
                     //執行賣出   
                     this.sell();						
@@ -483,12 +516,75 @@ class trade_bot{
                         //執行加碼
                         this.buy();					
                     }
-                }
+                }*/
+                this.isVolumeExIncrease().then((res)=>{
+                    if(res){
+                        self.currentStatus = 'sell_volume'
+                        self.sell();
+                    } else {
+                        self.isPriceBelowMAXTime().then((res)=>{
+                            if(res){
+                                self.currentStatus = 'sell_belowma'
+                                self.sell();
+                            }
+                            else{
+                                self.isPriceDropStop().then((res)=>{
+                                    if(res){
+                                        self.currentStatus = 'sell_stoloss'
+                                        self.sell();
+                                    }
+                                    else {
+                                        self.isPriceDropMARally().then((res)=>{
+                                            if(res)
+                                                self.currentStatus = 'buy_rally'
+                                            else{
+                                                self.isMAUp().then((res)=>{
+                                                    if(res){
+                                                        self.isPriceDropTouchMA().then((res)=>{
+                                                            if(res){
+                                                                self.isFirstOrUpXPerThanLast().then((res)=>{
+                                                                    if(res)
+                                                                        self.buy();
+                                                                    else{
+                                                                        //TODO
+                                                                    }
+                                                                }).catch((err)=>{
+                                                                    // TODO
+                                                                })
+                                                            } else {
+                                                                // TODO
+                                                            }
+                                                        }).catch((err)=>{
+                                                            // TODO
+                                                        })
+                                                    }
+                                                    else{
+                                                        // TODO
+                                                    }
+                                                }).catch((err)=>{
+                                                    // TODO
+                                                })
+                                            }
+                                        }).catch((err)=>{
+                                            // TODO
+                                        })
+                                    }
+                                }).catch((err)=>{
+                                    // TODO
+                                })
+                            }
+                        }).catch((err)=>{
+                            // TODO
+                        })
+                    }
+                }).catch((err)=>{
+                    // TODO
+                })
                 break;
             case 'buy_rally': 						
                 //現價已下跌至 MA 的反彈點、等待賣出
                 this.log("Buying Rally...")
-                if(this.isVolumeExIncrease()){		
+                /*if(this.isVolumeExIncrease()){		
                     //如果交易量爆增
                     this.currentStatus = 'sell_volume';
                     this.sell();						
@@ -513,7 +609,52 @@ class trade_bot{
                         this.currentStatus = 'sell';
                         this.sell();
                     }
-                }
+                }*/
+                this.isVolumeExIncrease().then((res)=>{
+                    if(res){
+                        self.currentStatus = 'sell_volume'
+                        self.sell();
+                    }
+                    else{
+                        self.isPriceBelowMAXTime().then((res)=>{
+                            if(res){
+                                self.currentStatus = 'sell_belowma'
+                                self.sell();
+                            }
+                            else{
+                                self.isMAFallThreeTime().then((res)=>{
+                                    if(res){
+                                        self.currentStatus = 'sell_mafall'
+                                        self.sell();
+                                    }
+                                    else{
+                                        self.isPriceDropStop().then((res)=>{
+                                            if(res){
+                                                self.currentStatus = 'sell_stoloss'
+                                                self.sell();
+                                            } else {
+                                                self.isPriceUpTouchMA().then((res)=>{
+                                                    if(res){
+                                                        self.currentStatus = 'sell'
+                                                        self.sell();
+                                                    }
+                                                })
+                                            }
+                                        }).catch((err)=>{
+                                            // TODO
+                                        })
+                                    }
+                                }).catch((err)=>{
+                                    // TODO
+                                })
+                            }
+                        }).catch((err)=>{
+                            // TODO
+                        })
+                    }
+                }).catch((err)=>{
+                    // TODO
+                })
                 break;
             default:
                 // statements_def
@@ -555,141 +696,173 @@ class trade_bot{
      * 
      */
 
-    isPriceBelowMAXTime(){
-        let mhdM = this.tradingData.ma[this.tradingData.ma.length - 1];
-        // FIX: 2018/7/23 
-        let sixty_div_executeInterval = 60 / (this.duration/60000) 
-        // let d = (mhdM == 'h')? 12 : ((mhdM == 'd') ? 288 : ((mhdM == 'm' ? 1 : 8640)));
-        let d = (mhdM == 'h') ? sixty_div_executeInterval : ((mhdM == 'd') ? (sixty_div_executeInterval * 24) : (mhdM == 'm' ? 1 : (sixty_div_executeInterval * 720)));
-        let count = 0;
-
-        for(let i = this.tradingData.sell.belowma; i > 0; i--){
-            let x = this.dataMA.length - i;
-            if(x < 0){
-                return false;
-            }
-            let y = this.price.length - 1 - (d * (this.tradingData.sell.belowma - i));
-            /*
-            if(this.dataMA[x].ma > this.price[(y < 0 ? 0 : y)]){
-                count += 1;
-            }
-            */
-           if(y >= 0){
-               if(this.dataMA[x].ma > this.price[y]){
-                   count += 1;
-               }
-           }
+    async isPriceBelowMAXTime(){
+        let arg = {
+            tradingData: JSON.stringify(this.tradingData),
+            duration: this.duration.toString(),
+            dataMA: JSON.stringify(this.dataMA),
+            price: JSON.stringify(this.price)
         }
 
-        if(count == this.tradingData.sell.belowma){
-            return true;
-        }else{
-            return false;
-        }
-    }
-
-    isMAFallThreeTime(){
-        let count=0;
-        for(let i=5;i>0;i--){
-            let maLast = this.dataMA[((this.dataMA.length - 1 - i) < 0 ? 0 : (this.dataMA.length - 1 - i))].ma;
-            let maNext = this.dataMA[((this.dataMA.length - i) < 0 ? 0 : (this.dataMA.length - i))].ma;
-            if(maNext < maLast){
-                count += 1;
-            }
-        }
-
-        if(count >= 3){
-            return true;
-        }else{
-            return false;
-        }
-    }
-
-    isPriceDropMARally(){
-        if(this.price[this.price.length - 1] < this.dataMA[this.dataMA.length - 1].ma * (1 - this.tradingData.buy.rally * 0.01)){
-            return true;
-        }else{
-            return false;
-        }
-    }
-
-    isPriceDropStop(){
-        if(this.buyInfo.length == 0){
-            return false;
-        }
-        else{
-            if(this.price[this.price.length - 1] < this.buyInfo[this.buyInfo.length - 1].price * (1 - this.tradingData.buy.stoloss * 0.01)){
+        // using try/catch on await/async 
+        try {
+            const result = await requester.direct(config.server.db_url+config.api.bot.ipbmt, arg)
+            if(result == "true")
                 return true;
-            }else{
+            else 
                 return false;
-            }
+        } catch(err){
+            // TODO:
+            // syslog record!
+            return false;
         }
     }
 
-    // Detect if there has burst increasement
-    isVolumeExIncrease(){
-        // 一小時內 是否交易量暴增
-        if(this.dataVA.pastOneHourVolume >= this.dataVA.pastTenHoursVA * this.tradingData.sell.magnification){
-            return true;
-        }else{
+    async isMAFallThreeTime(){
+        let arg = {
+            dataMA: JSON.stringify(this.dataMA)
+        }
+
+        try {
+            const result = await requester.direct(config.server.db_url+config.api.bot.imftt, arg)
+            if(result == "true")
+                return true;
+            else 
+                return false;
+        } catch (err) {
             return false;
         }
+    }
+
+    async isPriceDropMARally(){
+        let arg = {
+            tradingData: JSON.stringify(this.tradingData),
+            dataMA: JSON.stringify(this.dataMA),
+            price: JSON.stringify(this.price)
+        }
+        try {
+            const result = await requester.direct(config.server.db_url+config.api.bot.ipdmr, arg)
+            if(result == "true")
+                return true;
+            else 
+                return false;
+        } catch (err) {
+            return false;
+        }
+    }
+
+    async isPriceDropStop(){
+        let arg = {
+            tradingData: JSON.stringify(this.tradingData),
+            buyInfo: JSON.stringify(this.buyInfo),
+            price: JSON.stringify(this.price)
+        }
+
+        try{
+            const result = await requester.direct(config.server.db_url+config.api.bot.ipdst, arg)
+            if(result == "true")
+                return true;
+            else 
+                return false;
+        } catch (err){
+            return false;
+        }
+        
+    }
+
+    async isVolumeExIncrease(){
+        let arg = {
+            tradingData: JSON.stringify(this.tradingData),
+            dataVA: JSON.stringify(this.dataVA)
+        }
+
+        console.log("isVolumeExIncrease")
+        
+        try{
+            const result = await requester.direct(config.server.db_url+config.api.bot.ivexi, arg)
+            if(result == "true")
+                return true;
+            else 
+                return false;
+        } catch (err) {
+            return false;
+        }
+        
     }
 
     // Detect whether if MA is increased 
-    isMAUp(){
-        // 偵測 MA 是否上揚
-        if(this.dataMA.length < 2){ // 針對新版做出修改（tradebot 5~7）
-            return false;
-        }else if(this.dataMA[this.dataMA.length - 1].ma > this.dataMA[this.dataMA.length - 2].ma){
-            return true;
-        }else{
+    async isMAUp(){
+        let arg = {
+            dataMA: JSON.stringify(this.dataMA)
+        }
+
+        try {
+            const result = await requester.direct(config.server.db_url+config.api.bot.ismau, arg)
+            if(result == "true")
+                return true;
+            else 
+                return false;
+        } catch (err) {
             return false;
         }
     }
 
     // decreasing point detection
     // 現價是否下跌碰撞 MA
-    isPriceDropTouchMA(){
-        if(this.price.length > 1){
-            let maBuyRangeMax = this.dataMA[this.dataMA.length - 1].ma * (1 + this.tradingData.buy.range * 0.01); //MA買進點容許範圍最大值
-            let maBuyRangeMin = this.dataMA[this.dataMA.length - 1].ma * (1 - this.tradingData.buy.range * 0.01); //MA買進點容許範圍最小值
-            if(this.price[this.price.length - 2] > this.price[this.price.length - 1] && this.price[this.price.length - 1] <= maBuyRangeMax && this.price[this.price.length - 1] >= maBuyRangeMin){ 
+    async isPriceDropTouchMA(){
+        let arg = {
+            tradingData: JSON.stringify(this.tradingData),
+            dataMA: JSON.stringify(this.dataMA),
+            price: JSON.stringify(this.price)
+        }
+
+        try {
+            const result = await requester.direct(config.server.db_url+config.api.bot.ipdtm, arg)
+            if(result == "true")
                 return true;
-            }else{
+            else 
                 return false;
-            }
-        }else{
+        } catch (err) {
             return false;
         }
     }
 
     // increasing point detection
     // 現價是否上漲碰觸 MA 
-    isPriceUpTouchMA(){
-        if(this.price.length > 1){
-            let maSellPoint = this.dataMA[this.dataMA.length - 1].ma * (1 - this.tradingData.sell.range * 0.01);
-            //目前現價與上一個現價碰觸MA
-            if(this.price[this.price.length - 2] < maSellPoint && this.price[this.price.length - 1] >= maSellPoint){  
+    async isPriceUpTouchMA(){
+        let arg = {
+            tradingData: JSON.stringify(this.tradingData),
+            dataMA: JSON.stringify(this.dataMA),
+            price: JSON.stringify(this.price)
+        }
+
+        try{
+            const result = await requester.direct(config.server.db_url+config.api.bot.iputm, arg)
+            if(result == "true")
                 return true;
-            }else{
+            else 
                 return false;
-            }
-        }else{
+        } catch (err) {
             return false;
         }
     }
 
     // 第一次購買或是現價比上次購買高X
-    isFirstOrUpXPerThanLast(){
-        if(this.buyInfo.length == 0){
-            return true;
-        }else{
-            if(this.price[this.price.length - 1] > this.buyInfo[this.buyInfo.length - 1].price * (1 + this.tradingData.buy.spread * 0.01)){
+    async isFirstOrUpXPerThanLast(){
+        let arg = {
+            tradingData: JSON.stringify(this.tradingData),
+            buyInfo: JSON.stringify(this.buyInfo),
+            price: JSON.stringify(this.price)
+        }
+
+        try{
+            const result = await requester.redirect(config.server.db_url+config.api.bot.ifupl, arg, arg)
+            if(result == "true")
                 return true;
-            }else{
+            else 
                 return false;
-            }
+        } catch (err) {
+            return false;
         }
     }
 
