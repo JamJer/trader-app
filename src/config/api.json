@@ -8,5 +8,16 @@
         "key_fetch": "/api/v1/user/key/fetch",
         "policy_get": "/api/v1/trade/policy/get",
         "policy_list": "/api/v1/trade/policy/list"
+    },
+    "bot": {
+        "ipbmt": "/api/v1/strategy/bot/ipbmt",
+        "imftt": "/api/v1/strategy/bot/imftt",
+        "ipdmr": "/api/v1/strategy/bot/ipdmr",
+        "ipdst": "/api/v1/strategy/bot/ipdst",
+        "ivexi": "/api/v1/strategy/bot/ivexi",
+        "ismau": "/api/v1/strategy/bot/ismau",
+        "ipdtm": "/api/v1/strategy/bot/ipdtm",
+        "iputm": "/api/v1/strategy/bot/iputm",
+        "ifupl": "/api/v1/strategy/bot/ifupl"
     }
 }

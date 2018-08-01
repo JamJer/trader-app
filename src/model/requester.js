@@ -19,17 +19,8 @@ requester.redirect = function(url,form_data_1, form_data_2){
             // second call
             rp.post(res.headers['location'], {form: form_data_2})
                 .then((body)=>{
-                    let jsondata;
-                    if(body){
-                        try {
-                            jsondata = JSON.parse(body)
-                        } catch (err){
-                            console.log(`[User Login][Body 無法被 JSON.parse 解析] error: ${err} ,data: ${jsondata}`)
-                        }
-                    }
-
                     // return res 
-                    resolve(jsondata)
+                    resolve(body)
                 })
         })
     })
