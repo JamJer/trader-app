@@ -450,29 +450,44 @@ class trade_bot{
             case 'sell_belowma':
                 this.log("Selling when current price below MA ...")
                 //如果交易量沒有爆增
-                if(!this.isVolumeExIncrease()){
+                /*if(!this.isVolumeExIncrease()){
                     //如果MA上揚且現價下跌碰觸MA
                     if(this.isMAUp() && this.isPriceDropTouchMA()){ 
                         //執行買入
                         this.buy();								
                         this.currentStatus = 'buy';
                     }
-                }
-                /*this.isVolumeExIncrease().then((result)=>{
-                    // do nothing
-                }).catch((err)=>{
-                    self.isMAUp().then((result)=>{
-                        self.isPriceDropTouchMA().then((result)=>{
-                            self.buy();
-                            self.currentStatus = 'buy'
+                }*/
+                this.isVolumeExIncrease().then((res)=>{
+                    if(res){
+                        // do nothing
+                    } else {
+                        self.isMAUp().then((res)=>{
+                            if(res){
+                                self.isPriceDropTouchMA().then((res)=>{
+                                    if(res){
+                                        self.buy();
+                                        self.currentStatus = 'buy'
+                                    } else {
+                                        // TODO
+                                    }
+                                })
+                            } else {
+                                // TODO
+                            }
+                            
+                        }).catch((err)=>{
+                            // TODO
                         })
-                    })
-                })*/
+                    }
+                }).catch((err)=>{
+                    // TODO
+                })
                 break;
             case 'buy':
                 this.log("Buying...")
                 //如果交易量爆增
-                if(this.isVolumeExIncrease()){		
+                /*if(this.isVolumeExIncrease()){		
                     this.currentStatus = 'sell_volume';
                     //執行賣出   
                     this.sell();						
@@ -497,39 +512,75 @@ class trade_bot{
                         //執行加碼
                         this.buy();					
                     }
-                }
-                /*
+                }*/
                 this.isVolumeExIncrease().then((res)=>{
-                    self.currentStatus = 'sell_volume'
-                    self.sell();
-                }).catch((err)=>{
-                    self.isPriceBelowMAXTime().then((res)=>{
-                        self.currentStatus = 'sell_belowma'
+                    if(res){
+                        self.currentStatus = 'sell_volume'
                         self.sell();
-                    }).catch((err)=>{
-                        self.isPriceDropStop().then((res)=>{
-                            self.currentStatus = 'sell_stoloss'
-                            selfl.sell();
-                        }).catch((err)=>{
-                            self.isPriceDropMARally().then((res)=>{
-                                self.currentStatus = 'buy_rally'
-                            }).catch((err)=>{
-                                self.isMAUp().then((res)=>{
-                                    self.isPriceDropTouchMA().then((res)=>{
-                                        self.isFirstOrUpXPerThanLast().then((res)=>{
-                                            self.buy();
+                    } else {
+                        self.isPriceBelowMAXTime().then((res)=>{
+                            if(res){
+                                self.currentStatus = 'sell_belowma'
+                                self.sell();
+                            }
+                            else{
+                                self.isPriceDropStop().then((res)=>{
+                                    if(res){
+                                        self.currentStatus = 'sell_stoloss'
+                                        self.sell();
+                                    }
+                                    else {
+                                        self.isPriceDropMARally().then((res)=>{
+                                            if(res)
+                                                self.currentStatus = 'buy_rally'
+                                            else{
+                                                self.isMAUp().then((res)=>{
+                                                    if(res){
+                                                        self.isPriceDropTouchMA().then((res)=>{
+                                                            if(res){
+                                                                self.isFirstOrUpXPerThanLast().then((res)=>{
+                                                                    if(res)
+                                                                        self.buy();
+                                                                    else{
+                                                                        //TODO
+                                                                    }
+                                                                }).catch((err)=>{
+                                                                    // TODO
+                                                                })
+                                                            } else {
+                                                                // TODO
+                                                            }
+                                                        }).catch((err)=>{
+                                                            // TODO
+                                                        })
+                                                    }
+                                                    else{
+                                                        // TODO
+                                                    }
+                                                }).catch((err)=>{
+                                                    // TODO
+                                                })
+                                            }
+                                        }).catch((err)=>{
+                                            // TODO
                                         })
-                                    })
+                                    }
+                                }).catch((err)=>{
+                                    // TODO
                                 })
-                            })
+                            }
+                        }).catch((err)=>{
+                            // TODO
                         })
-                    })
-                })*/
+                    }
+                }).catch((err)=>{
+                    // TODO
+                })
                 break;
             case 'buy_rally': 						
                 //現價已下跌至 MA 的反彈點、等待賣出
                 this.log("Buying Rally...")
-                if(this.isVolumeExIncrease()){		
+                /*if(this.isVolumeExIncrease()){		
                     //如果交易量爆增
                     this.currentStatus = 'sell_volume';
                     this.sell();						
@@ -554,31 +605,52 @@ class trade_bot{
                         this.currentStatus = 'sell';
                         this.sell();
                     }
-                }
-                /*this.isVolumeExIncrease().then((res)=>{
-                    self.currentStatus = 'sell_volume'
-                    self.sell();
-                }).catch((err)=>{
-                    self.isPriceBelowMAXTime().then((res)=>{
-                        self.currentStatus = 'sell_belowma'
+                }*/
+                this.isVolumeExIncrease().then((res)=>{
+                    if(res){
+                        self.currentStatus = 'sell_volume'
                         self.sell();
-                    }).catch((err)=>{
-                        self.isMAFallThreeTime().then((res)=>{
-                            self.currentStatus = 'sell_mafall'
-                            selfl.sell();
-                        }).catch((err)=>{
-                            self.isPriceDropStop().then((res)=>{
-                                self.currentStatus = 'sell_stoloss'
+                    }
+                    else{
+                        self.isPriceBelowMAXTime().then((res)=>{
+                            if(res){
+                                self.currentStatus = 'sell_belowma'
                                 self.sell();
-                            }).catch((err)=>{
-                                self.isPriceUpTouchMA().then((res)=>{
-                                    self.currentStatus = 'sell'
-                                    self.sell();
+                            }
+                            else{
+                                self.isMAFallThreeTime().then((res)=>{
+                                    if(res){
+                                        self.currentStatus = 'sell_mafall'
+                                        self.sell();
+                                    }
+                                    else{
+                                        self.isPriceDropStop().then((res)=>{
+                                            if(res){
+                                                self.currentStatus = 'sell_stoloss'
+                                                self.sell();
+                                            } else {
+                                                self.isPriceUpTouchMA().then((res)=>{
+                                                    if(res){
+                                                        self.currentStatus = 'sell'
+                                                        self.sell();
+                                                    }
+                                                })
+                                            }
+                                        }).catch((err)=>{
+                                            // TODO
+                                        })
+                                    }
+                                }).catch((err)=>{
+                                    // TODO
                                 })
-                            })
+                            }
+                        }).catch((err)=>{
+                            // TODO
                         })
-                    })
-                })*/
+                    }
+                }).catch((err)=>{
+                    // TODO
+                })
                 break;
             default:
                 // statements_def
@@ -627,24 +699,35 @@ class trade_bot{
             dataMA: JSON.stringify(this.dataMA),
             price: JSON.stringify(this.price)
         }
-        const result = await requester.redirect(config.server.url+config.api.bot.ipbmt, arg, arg)
 
-        if(result == "true")
-            return true;
-        else 
+        // using try/catch on await/async 
+        try {
+            const result = await requester.direct(config.server.db_url+config.api.bot.ipbmt, arg)
+            if(result == "true")
+                return true;
+            else 
+                return false;
+        } catch(err){
+            // TODO:
+            // syslog record!
             return false;
+        }
     }
 
     async isMAFallThreeTime(){
         let arg = {
             dataMA: JSON.stringify(this.dataMA)
         }
-        const result = await requester.redirect(config.server.url+config.api.bot.imftt, arg, arg)
 
-        if(result == "true")
-            return true;
-        else 
+        try {
+            const result = await requester.direct(config.server.db_url+config.api.bot.imftt, arg)
+            if(result == "true")
+                return true;
+            else 
+                return false;
+        } catch (err) {
             return false;
+        }
     }
 
     async isPriceDropMARally(){
@@ -653,12 +736,15 @@ class trade_bot{
             dataMA: JSON.stringify(this.dataMA),
             price: JSON.stringify(this.price)
         }
-        const result = await requester.redirect(config.server.url+config.api.bot.ipdmr, arg, arg)
-
-        if(result == "true")
-            return true;
-        else 
+        try {
+            const result = await requester.direct(config.server.db_url+config.api.bot.ipdmr, arg)
+            if(result == "true")
+                return true;
+            else 
+                return false;
+        } catch (err) {
             return false;
+        }
     }
 
     async isPriceDropStop(){
@@ -667,12 +753,17 @@ class trade_bot{
             buyInfo: JSON.stringify(this.buyInfo),
             price: JSON.stringify(this.price)
         }
-        const result = await requester.redirect(config.server.url+config.api.bot.ipdst, arg, arg)
 
-        if(result == "true")
-            return true;
-        else 
+        try{
+            const result = await requester.direct(config.server.db_url+config.api.bot.ipdst, arg)
+            if(result == "true")
+                return true;
+            else 
+                return false;
+        } catch (err){
             return false;
+        }
+        
     }
 
     async isVolumeExIncrease(){
@@ -680,12 +771,17 @@ class trade_bot{
             tradingData: JSON.stringify(this.tradingData),
             dataVA: JSON.stringify(this.dataVA)
         }
-        const result = await requester.redirect(config.server.url+config.api.bot.ivexi, arg, arg)
-
-        if(result == "true")
-            return true;
-        else 
+        
+        try{
+            const result = await requester.direct(config.server.url+config.api.bot.ivexi, arg)
+            if(result == "true")
+                return true;
+            else 
+                return false;
+        } catch (err) {
             return false;
+        }
+        
     }
 
     // Detect whether if MA is increased 
@@ -693,12 +789,16 @@ class trade_bot{
         let arg = {
             dataMA: JSON.stringify(this.dataMA)
         }
-        const result = await requester.redirect(config.server.url+config.api.bot.ismau, arg, arg)
 
-        if(result == "true")
-            return true;
-        else 
+        try {
+            const result = await requester.direct(config.server.url+config.api.bot.ismau, arg)
+            if(result == "true")
+                return true;
+            else 
+                return false;
+        } catch (err) {
             return false;
+        }
     }
 
     // decreasing point detection
@@ -709,12 +809,16 @@ class trade_bot{
             dataMA: JSON.stringify(this.dataMA),
             price: JSON.stringify(this.price)
         }
-        const result = await requester.redirect(config.server.url+config.api.bot.ipdtm, arg, arg)
 
-        if(result == "true")
-            return true;
-        else 
+        try {
+            const result = await requester.direct(config.server.url+config.api.bot.ipdtm, arg)
+            if(result == "true")
+                return true;
+            else 
+                return false;
+        } catch (err) {
             return false;
+        }
     }
 
     // increasing point detection
@@ -725,12 +829,16 @@ class trade_bot{
             dataMA: JSON.stringify(this.dataMA),
             price: JSON.stringify(this.price)
         }
-        const result = await requester.redirect(config.server.url+config.api.bot.iputm, arg, arg)
 
-        if(result == "true")
-            return true;
-        else 
+        try{
+            const result = await requester.direct(config.server.url+config.api.bot.iputm, arg)
+            if(result == "true")
+                return true;
+            else 
+                return false;
+        } catch (err) {
             return false;
+        }
     }
 
     // 第一次購買或是現價比上次購買高X
@@ -740,12 +848,16 @@ class trade_bot{
             buyInfo: JSON.stringify(this.buyInfo),
             price: JSON.stringify(this.price)
         }
-        const result = await requester.redirect(config.server.url+config.api.bot.ifupl, arg, arg)
 
-        if(result == "true")
-            return true;
-        else 
+        try{
+            const result = await requester.redirect(config.server.url+config.api.bot.ifupl, arg, arg)
+            if(result == "true")
+                return true;
+            else 
+                return false;
+        } catch (err) {
             return false;
+        }
     }
 
      /**
