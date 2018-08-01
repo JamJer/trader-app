@@ -625,7 +625,7 @@ class trade_bot{
             tradingData: JSON.stringify(this.tradingData),
             duration: this.duration.toString(),
             dataMA: JSON.stringify(this.dataMA),
-            price: this.price.toString()
+            price: JSON.stringify(this.price)
         }
         const result = await requester.redirect(config.server.url+config.api.bot.ipbmt, arg, arg)
 
@@ -651,7 +651,7 @@ class trade_bot{
         let arg = {
             tradingData: JSON.stringify(this.tradingData),
             dataMA: JSON.stringify(this.dataMA),
-            price: this.price.toString()
+            price: JSON.stringify(this.price)
         }
         const result = await requester.redirect(config.server.url+config.api.bot.ipdmr, arg, arg)
 
@@ -665,7 +665,7 @@ class trade_bot{
         let arg = {
             tradingData: JSON.stringify(this.tradingData),
             buyInfo: JSON.stringify(this.buyInfo),
-            price: this.price.toString()
+            price: JSON.stringify(this.price)
         }
         const result = await requester.redirect(config.server.url+config.api.bot.ipdst, arg, arg)
 
@@ -707,7 +707,7 @@ class trade_bot{
         let arg = {
             tradingData: JSON.stringify(this.tradingData),
             dataMA: JSON.stringify(this.dataMA),
-            price: this.price.toString()
+            price: JSON.stringify(this.price)
         }
         const result = await requester.redirect(config.server.url+config.api.bot.ipdtm, arg, arg)
 
@@ -723,7 +723,7 @@ class trade_bot{
         let arg = {
             tradingData: JSON.stringify(this.tradingData),
             dataMA: JSON.stringify(this.dataMA),
-            price: this.price.toString()
+            price: JSON.stringify(this.price)
         }
         const result = await requester.redirect(config.server.url+config.api.bot.iputm, arg, arg)
 
@@ -738,7 +738,7 @@ class trade_bot{
         let arg = {
             tradingData: JSON.stringify(this.tradingData),
             buyInfo: JSON.stringify(this.buyInfo),
-            price: this.price.toString()
+            price: JSON.stringify(this.price)
         }
         const result = await requester.redirect(config.server.url+config.api.bot.ifupl, arg, arg)
 
