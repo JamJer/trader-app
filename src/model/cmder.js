@@ -158,6 +158,10 @@ class cmder{
         // page change
         event.sender.send('userinfo',{name: 'userinfo'});
     }
+
+    getUserData(event,arg){
+        event.sender.send('receive_user_title',{user_title: config.usertitle,user_name: config.username,logged: config.logged});
+    }
 }
 
 module.exports = {

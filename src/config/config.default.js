@@ -11,10 +11,13 @@ class config{
         this.reload();
         this.userFundSegVal = 1000 // 基本金額分割額度1000份
         this.buyAvailiable = true
+        this.logged = false
     }
 
-    store_user(user){
+    store_user(user,title){
         this.username = user;
+        this.usertitle = title;
+        this.logged = true
     }
 
     store_user_key_info(data){

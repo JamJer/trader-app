@@ -268,7 +268,7 @@ ipcMain.on('purchase',cmder.purchase);
 ipcMain.on('trade',cmder.trade);
 ipcMain.on('backtrack',cmder.backtrack);
 ipcMain.on('debug',cmder.debug);
-
+ipcMain.on('get_user_title',cmder.getUserData);
 // ================================================== Editor channel ==================================================
 ipcMain.on('policy_list',editor.policy_list);
 ipcMain.on('policy_save',editor.policy_save);
