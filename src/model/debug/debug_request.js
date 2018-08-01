@@ -4,7 +4,7 @@
  * - async/await
  */
 
-const requester = require('./requester')
+const requester = require('../requester')
 const YAML = require('yamljs')
 const config = require("../config/config.default");
 

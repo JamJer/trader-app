@@ -459,12 +459,15 @@ class trade_bot{
                     }
                 }*/
                 this.isVolumeExIncrease().then((res)=>{
+                    this.log(`isVolumeExIncrease state: ${res}`)
                     if(res){
                         // do nothing
                     } else {
                         self.isMAUp().then((res)=>{
+                            this.log(`isVolumeExIncrease-isMAUp state: ${res}`)
                             if(res){
                                 self.isPriceDropTouchMA().then((res)=>{
+                                    this.log(`isVolumeExIncrease-isMAUp-isPriceDropTouchMA state: ${res}`)
                                     if(res){
                                         self.buy();
                                         self.currentStatus = 'buy'
@@ -478,10 +481,11 @@ class trade_bot{
                             
                         }).catch((err)=>{
                             // TODO
+                            console.log(`isVolumeExIncrease-isMAUp error: ${err}`)
                         })
                     }
                 }).catch((err)=>{
-                    // TODO
+                    this.log(`isVolumeExIncrease error: ${err}`)
                 })
                 break;
             case 'buy':
@@ -771,6 +775,8 @@ class trade_bot{
             tradingData: JSON.stringify(this.tradingData),
             dataVA: JSON.stringify(this.dataVA)
         }
+
+        console.log("isVolumeExIncrease")
         
         try{
             const result = await requester.direct(config.server.db_url+config.api.bot.ivexi, arg)
