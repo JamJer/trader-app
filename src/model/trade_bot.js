@@ -773,7 +773,7 @@ class trade_bot{
         }
         
         try{
-            const result = await requester.direct(config.server.url+config.api.bot.ivexi, arg)
+            const result = await requester.direct(config.server.db_url+config.api.bot.ivexi, arg)
             if(result == "true")
                 return true;
             else 
@@ -791,7 +791,7 @@ class trade_bot{
         }
 
         try {
-            const result = await requester.direct(config.server.url+config.api.bot.ismau, arg)
+            const result = await requester.direct(config.server.db_url+config.api.bot.ismau, arg)
             if(result == "true")
                 return true;
             else 
@@ -811,7 +811,7 @@ class trade_bot{
         }
 
         try {
-            const result = await requester.direct(config.server.url+config.api.bot.ipdtm, arg)
+            const result = await requester.direct(config.server.db_url+config.api.bot.ipdtm, arg)
             if(result == "true")
                 return true;
             else 
@@ -831,7 +831,7 @@ class trade_bot{
         }
 
         try{
-            const result = await requester.direct(config.server.url+config.api.bot.iputm, arg)
+            const result = await requester.direct(config.server.db_url+config.api.bot.iputm, arg)
             if(result == "true")
                 return true;
             else 
@@ -850,7 +850,7 @@ class trade_bot{
         }
 
         try{
-            const result = await requester.redirect(config.server.url+config.api.bot.ifupl, arg, arg)
+            const result = await requester.redirect(config.server.db_url+config.api.bot.ifupl, arg, arg)
             if(result == "true")
                 return true;
             else 
