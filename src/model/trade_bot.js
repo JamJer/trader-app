@@ -36,7 +36,7 @@ const curreny_convertor = require('./currency_convert')
 
 // Duration
 // - default setting is 5 min (300 sec = 300,000 ms => For setInterval usage)
-const duration = 30000; 
+const duration = 300000; 
 const refresh_rate = 30;
 
 class trade_bot{
@@ -449,15 +449,7 @@ class trade_bot{
                 this.log("Selling when detecting MA fall...")
             case 'sell_belowma':
                 this.log("Selling when current price below MA ...")
-                //如果交易量沒有爆增
-                /*if(!this.isVolumeExIncrease()){
-                    //如果MA上揚且現價下跌碰觸MA
-                    if(this.isMAUp() && this.isPriceDropTouchMA()){ 
-                        //執行買入
-                        this.buy();								
-                        this.currentStatus = 'buy';
-                    }
-                }*/
+                
                 this.isVolumeExIncrease().then((res)=>{
                     this.log(`isVolumeExIncrease state: ${res}`)
                     if(res){
@@ -491,32 +483,6 @@ class trade_bot{
             case 'buy':
                 this.log("Buying...")
                 //如果交易量爆增
-                /*if(this.isVolumeExIncrease()){		
-                    this.currentStatus = 'sell_volume';
-                    //執行賣出   
-                    this.sell();						
-                }
-                else if(this.isPriceBelowMAXTime()){ 
-                    // 如果現價連續數次都低於 MA 就賣出
-                    this.currentStatus = 'sell_belowma';
-                    // 執行賣出
-                    this.sell();
-                }
-                else if(this.isPriceDropStop()){	
-                    //如果現價下跌至止損點
-                    this.currentStatus = 'sell_stoloss';
-                    this.sell();						
-                }else if(this.isPriceDropMARally()){	
-                    //如果現價下跌至 MA 的反彈點以下
-                    this.currentStatus = 'buy_rally';	
-                    //不加碼，等待賣出
-                }else{
-                    if(this.isMAUp() && this.isPriceDropTouchMA() && this.isFirstOrUpXPerThanLast()){
-                        //如果MA上揚且現價下跌碰觸MA且現價比上次買入價高10%
-                        //執行加碼
-                        this.buy();					
-                    }
-                }*/
                 this.isVolumeExIncrease().then((res)=>{
                     if(res){
                         self.currentStatus = 'sell_volume'
@@ -584,32 +550,7 @@ class trade_bot{
             case 'buy_rally': 						
                 //現價已下跌至 MA 的反彈點、等待賣出
                 this.log("Buying Rally...")
-                /*if(this.isVolumeExIncrease()){		
-                    //如果交易量爆增
-                    this.currentStatus = 'sell_volume';
-                    this.sell();						
-                }
-                else if(this.isPriceBelowMAXTime()){
-                    // 如果現價連續數次都低於 MA 就賣出
-                    this.currentStatus = 'sell_belowma';
-                    this.sell();
-                }
-                else if(this.isMAFallThreeTime()){
-                    // 如果最近 5 次 MA，累積三次呈現下跌
-                    this.currentStatus = 'sell_mafall';
-                    this.sell();
-                }
-                else if(this.isPriceDropStop()){	
-                    //如果現價下跌至止損點
-                    this.currentStatus = 'sell_stoloss';
-                    this.sell();						
-                }else{
-                    if(this.isPriceUpTouchMA()){		
-                        //如果現價上漲碰觸MA
-                        this.currentStatus = 'sell';
-                        this.sell();
-                    }
-                }*/
+
                 this.isVolumeExIncrease().then((res)=>{
                     if(res){
                         self.currentStatus = 'sell_volume'
