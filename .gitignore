@@ -7,3 +7,4 @@ trader-app-win32-x64/
 *.7z
 myapi.json
 .local/
+src/config/settings.json

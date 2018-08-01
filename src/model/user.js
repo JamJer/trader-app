@@ -35,7 +35,7 @@ class user{
                     }
                     if(res.msg=="success"){
                         // Store in session 
-                        config.store_user(arg.username)
+                        config.store_user(arg.username,res["title"])
                         // examine product key
                         console.log("Now starting the product key's examinate.")
                         let product_key = res.key;

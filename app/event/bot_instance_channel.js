@@ -255,17 +255,18 @@ ipcRenderer.on("receive_bot",(event,arg)=>{
     });
 
     // Reflesh button handle
+    $("#bot-reflesh-btn").unbind("click")
     $("#bot-reflesh-btn").bind("click",function(){
         ipcRenderer.send("get_bot",{})
         $("#bot-reflesh-btn").unbind( "click" ) // unbind listener to avoid recursive binding
     });
 
     // Save button send out changed data
+    $("#bot-save-btn").unbind("click")
     $("#bot-save-btn").bind("click",function(){
         console.log("Update bot: id:"+arg['id']+" ma: "+$("#bot-ma-val").val()+bot_ma_unit_select.val()+" symbol: "+bot_symbol_select.val())
         send_changes(arg['id'],$("#bot-ma-val").val()+bot_ma_unit_select.val(),bot_symbol_select.val())
         alert("Successfully changed bot parameter.")
-        $("#bot-save-btn").unbind("click") // unbind listener to avoid recursive binding
     });
 
     $("#bot-back-btn").bind("click",function(){
@@ -318,6 +319,7 @@ ipcRenderer.on("receive_bot",(event,arg)=>{
     });
 
     // Delete bot history button handle
+    $("#bot-trade-history-delete").unbind("click")
     $("#bot-trade-history-delete").bind("click",function(){
         storage.set(arg['id'], [], function(error) {
             if (error) throw error;

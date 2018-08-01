@@ -242,7 +242,7 @@ class trade_bot{
         this.stop();
         // console.log("Bot id: "+ this.id + ", already to be restart...");
         this.log("[Change symbol]Bot id: "+ this.id + ", already to be restart...")
-        this.start_by_obj(this.tradingData)
+        this.start_by_obj(this.tradingData,this.tradePolicy)
     }
 
     change_ma(new_ma){
@@ -251,7 +251,7 @@ class trade_bot{
         this.stop();
         // console.log("Bot id: "+ this.id + ", already to be restart...");
         this.log("[Change ma]Bot id: "+ this.id + ", already to be restart...");
-        this.start_by_obj(this.tradingData)
+        this.start_by_obj(this.tradingData,this.tradePolicy)
     }
 
     change_all(new_symbol,new_ma){
@@ -262,7 +262,7 @@ class trade_bot{
         // console.log("Bot id: "+ this.id + ", already to be restart...");
         this.log("[Change symbol + ma]Bot id: "+ this.id + ", already to be restart...");
         // restart
-        this.start_by_obj(this.tradingData)
+        this.start_by_obj(this.tradingData,this.tradePolicy)
     }
 
     change_inv_duration(new_duration){
@@ -271,7 +271,7 @@ class trade_bot{
         this.stop();
         this.log("[Change Duration]Bot id: "+ this.id + ", already to be restart...");
         // restart
-        this.start_by_obj(this.tradingData)
+        this.start_by_obj(this.tradingData,this.tradePolicy)
     }
 
     change_policy_by_url(new_policy_url){

@@ -87,7 +87,25 @@ $(document).ready(function () {
             return
         }
     });
+    ipcRenderer.send("get_user_title",{});
 });
+
+ipcRenderer.on('receive_user_title',(event,arg)=>{
+    console.log(arg)
+    if(arg.logged){
+        if(arg.user_title == "admin"){
+            $("#sb_trade").show()
+            $("#policy_list").show()
+            $("#policy_head").show()
+        }else if(arg.user_title == "normal"){
+            $("#sb_trade").hide()
+            $("#policy_list").hide()
+            $("#policy_head").hide()
+        }else{
+            alert("[CONTROL CHANNEL] ERROR: 未知的會員身分")
+        }
+    }
+})
 
 function pageControl(user_cmd){
     // split command
