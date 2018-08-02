@@ -135,6 +135,7 @@ ipcMain.on('kill_all_bot',(event,arg)=>{
      * terminate all bots
      */
     trader.kill_all_bot();
+    config.logged = false
     event.sender.send("ready_for_log_out",{});
 })
 
@@ -274,7 +275,8 @@ ipcMain.on('policy_list',editor.policy_list);
 ipcMain.on('policy_save',editor.policy_save);
 ipcMain.on('policy_data',editor.policy_data);
 ipcMain.on('policy_delete',editor.policy_delete);
-
+ipcMain.on('get_policy_template',editor.get_policy_template);
+ipcMain.on('check_policy_name_duplicate',editor.check_policy_name_duplicate);
 // ================================================== Config panel channel ==================================================
 ipcMain.on('get_config',reconf.get_config);
 ipcMain.on('set_config',reconf.set_config);

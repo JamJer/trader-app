@@ -345,6 +345,7 @@ function initPolicyList(){
     /**
      * need to send signal to backend, let backend do the file handling process
      */
+    $("#policy_mask").addClass("is-active")
     policyList.empty()
     ipcRenderer.send("policy_list",{})
 }
@@ -398,6 +399,7 @@ ipcRenderer.on("response_policy_list",(event,arg)=>{
     policyList.selectpicker('setStyle', 'btn-sm', 'add');
     policyList.selectpicker('refresh');
     policyList.selectpicker('render');
+    $("#policy_mask").removeClass("is-active")
 })
 
 function handeStartAllButton(){

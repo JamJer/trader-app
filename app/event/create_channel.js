@@ -19,6 +19,8 @@ var nowFile = "";
 const fs = require('fs');
 var editType = ''
 var yaml_obj
+var policy_template_string = 'error'
+var afterNew = false
 
 // edit panel jquery instances
 var ed_policy_name = $("#ed-policy-name")
@@ -63,6 +65,7 @@ function initPolicyList(){
     /**
      * need to send signal to backend, let backend do the file handling process
      */
+    $("#full_mask").addClass("is-active")
     ipcRenderer.send("policy_list",{})
 }
 
@@ -79,7 +82,7 @@ ipcRenderer.on("response_policy_list",(event,arg)=>{
         styleBase: 'btn',
         style: 'btn-default',
         dropupAuto: true,
-        size: 'fit',
+        size: '10',
         deselectAllText: 'Deselect All'
     });
 
@@ -102,6 +105,11 @@ ipcRenderer.on("response_policy_list",(event,arg)=>{
     policyList.on('changed.bs.select', function (e) {
         setPolicyToSettingPanel(e.target.value)
     });
+    if(afterNew){
+        afterNew = false
+        setPolicyToSettingPanel(nowFile)
+    }
+    $("#full_mask").removeClass("is-active")
 })
 
 
@@ -111,12 +119,12 @@ function refreshPolicyList(){
 }
 
 function setPolicyToSettingPanel(policy_name){
-    ipcRenderer.send("policy_data",{filename: policy_name})
+    ipcRenderer.send("policy_data",{policy_file: policy_name})
 }
 
 ipcRenderer.on("response_policy_data",(event,arg)=>{
     yaml_obj = YAML.parse(arg.data)
-    ed_policy_name.val(arg.filename.split('.')[0])
+    ed_policy_name.val(arg.filename)
     ed_symbol_list.selectpicker('val', yaml_obj.symbol);
     ed_duration.val(yaml_obj.duration)
     ed_capital.val(yaml_obj.capital)
@@ -140,22 +148,13 @@ ipcRenderer.on("response_policy_data",(event,arg)=>{
     nowFile = arg.filename;
 })
 
-function saveFiles(file_name,file_data){
-    // sending ipc request to backend
-    if(nowFile != file_name){
-        ipcRenderer.send("policy_delete",{
-            filename: nowFile
-        })
-        ipcRenderer.send('policy_save',{
+function saveFiles(file_name,file_data,editType){
+    ipcRenderer.send('policy_save',{
             filename: file_name,
-            filedata: file_data
+            filedata: file_data,
+            editType: editType,
+            nowfilename: nowFile
         })
-    }else{
-        ipcRenderer.send('policy_save',{
-            filename: file_name,
-            filedata: file_data
-        })
-    }
 }
 
 ipcRenderer.on("response_policy_save",(event,arg)=>{
@@ -163,16 +162,22 @@ ipcRenderer.on("response_policy_save",(event,arg)=>{
      * @param arg.msg
      * @param arg.data
      */
-    alert("提示: 交易策略已儲存")
-    refreshPolicyList();
-    editType = 'old'
-    nowFile = ed_policy_name.val()
-    setPolicyToSettingPanel(nowFile)
+    if(arg.msg == "success"){
+        afterNew = true
+        nowFile = arg.policy_id
+        editType = 'old'
+        $("#full_mask").removeClass("is-active")
+        alert("提示: 交易策略已儲存")
+        refreshPolicyList()
+    }else{
+        alert("交易策略儲存失敗 錯誤訊息:"+arg.msg)
+    }
 })
 
 function deleteFiles(file_name){
-    if (confirm("確定要刪除此交易策略檔案?")) {
+    if (confirm("確定要刪除在伺服器上的 "+file_name+" 交易策略檔案?")) {
         // sending request to backend
+        $("#full_mask").addClass("is-active")
         ipcRenderer.send("policy_delete",{
             filename: file_name
         })
@@ -184,7 +189,8 @@ ipcRenderer.on("response_policy_delete",(event,arg)=>{
      * @param arg.msg
      * @param arg.data error code
      */
-    if(nowFile != (ed_policy_name.val()+'.yaml')){return}
+    alert("檔案刪除成功")
+    $("#full_mask").removeClass("is-active")
     refreshPolicyList();
     clearEditPanel();
     inited_symbol_list();
@@ -204,31 +210,40 @@ window.addEvent("domready",function(){
 });
 
 $( "#file-add" ).click(function() {
-    editType = 'new'
-    clearEditPanel()
-    refreshPolicyList()
-    fileEditButtonControl(false,false,false)
-    controlEditPanelOpen(false);
-    alert("提示: 可開始填入新的策略內容")
+    $("#full_mask").addClass("is-active")
+    ipcRenderer.send("get_policy_template",{})
 });
+
+ipcRenderer.on("receive_policy_template",(event,arg)=>{
+    if(arg.msg == "success"){
+        editType = 'new'
+        clearEditPanel()
+        refreshPolicyList()
+        fileEditButtonControl(false,false,false)
+        controlEditPanelOpen(false);
+        policy_template_string = arg.data
+        $("#full_mask").removeClass("is-active")
+        alert("提示: 可開始填入新的策略內容")
+    }else{
+        editType = ''
+        clearEditPanel()
+        refreshPolicyList()
+        fileEditButtonControl(false,true,true)
+        controlEditPanelOpen(true);
+        alert("[RRCEIVE POLICY TEMPLATE] 取得策略模板失敗")
+        policy_template_string = "error"
+    }
+})
 
 $( "#file-save" ).click(function() {
     if(checkEditPanelIsEmpty()){
+        $("#full_mask").addClass("is-active")
         switch(editType){
             case 'new':
-                var csvRequest = new Request({
-                    url:"../.local/default.yaml",
-                    onSuccess:function(response){
-                        yaml_obj = YAML.parse(response)
-                        setEditedDataToYAMLObj();
-                        nowFile = ed_policy_name.val()+".yaml";
-                        saveFiles(ed_policy_name.val()+".yaml",YAML.stringify(yaml_obj));
-                    }
-                }).send();
+                checkPolicyNameIsDuplicate(ed_policy_name.val(),'new')                
                 break;
             case 'old':
-                setEditedDataToYAMLObj();
-                saveFiles(ed_policy_name.val()+".yaml",YAML.stringify(yaml_obj));
+                checkPolicyNameIsDuplicate(ed_policy_name.val(),'old')
                 break;
             default:
                 alert("Edit Type ERROR");
@@ -236,6 +251,39 @@ $( "#file-save" ).click(function() {
         }
     }
 });
+
+function checkPolicyNameIsDuplicate(policy_name,editTypeVal){
+    ipcRenderer.send("check_policy_name_duplicate",{policy_id: policy_name,editType: editTypeVal,nowfilename: nowFile})
+}
+
+ipcRenderer.on("receive_check_policy_name_duplicate",(event,arg)=>{
+    if(arg.editType == 'new'){
+        if(arg.data){
+            $("#full_mask").removeClass("is-active")
+            alert("策略名稱已存在、請選擇其他名稱")
+        }else{
+            if(policy_template_string != "error"){
+                yaml_obj = YAML.parse(policy_template_string)
+                setEditedDataToYAMLObj();
+                nowFile = ed_policy_name.val()+".yaml"
+                saveFiles(ed_policy_name.val()+".yaml",YAML.stringify(yaml_obj),arg.editType);
+            }else{
+                $("#full_mask").removeClass("is-active")
+                alert("尚未取得策略模板，新增失敗")
+            }
+        }
+    }else if(arg.editType == 'old'){
+        if(arg.data){
+            $("#full_mask").removeClass("is-active")
+            alert("策略名稱已存在、請選擇其他名稱")
+        }else{
+            setEditedDataToYAMLObj();
+            saveFiles(ed_policy_name.val()+".yaml",YAML.stringify(yaml_obj),arg.editType);
+        }
+    }else{
+        alert("檢查檔案名稱重複失敗")
+    }
+})
 
 $( "#file-discard" ).click(function() {
     if(editType == 'old'){
@@ -339,20 +387,20 @@ function fileEditButtonControl(a,b,c){
 
 function setEditedDataToYAMLObj(){
     yaml_obj.symbol = ed_symbol_list.find(':selected').text()
-    yaml_obj.duration = ed_duration.val()
-    yaml_obj.capital = ed_capital.val()
+    yaml_obj.duration = Number(ed_duration.val())
+    yaml_obj.capital = Number(ed_capital.val())
     yaml_obj.ma = ed_ma.val() + ed_ma_unit_list.find(':selected').text()
     yaml_obj.buy.descrip = ed_buy_descrip.val()
-    yaml_obj.buy.range = ed_buy_range.val()
-    yaml_obj.buy.volume = ed_buy_volume.val()
-    yaml_obj.buy.spread = ed_buy_spread.val()
-    yaml_obj.buy.stoloss = ed_buy_stoloss.val()
-    yaml_obj.buy.rally = ed_buy_rally.val()
+    yaml_obj.buy.range = Number(ed_buy_range.val())
+    yaml_obj.buy.volume = Number(ed_buy_volume.val())
+    yaml_obj.buy.spread = Number(ed_buy_spread.val())
+    yaml_obj.buy.stoloss = Number(ed_buy_stoloss.val())
+    yaml_obj.buy.rally = Number(ed_buy_rally.val())
     yaml_obj.sell.descrip = ed_sell_descrip.val()
-    yaml_obj.sell.magnification = ed_sell_magnification.val()
-    yaml_obj.sell.range = ed_sell_range.val()
-    yaml_obj.sell.volume = ed_sell_volume.val()
-    yaml_obj.sell.belowma = ed_sell_belowma.val()  
+    yaml_obj.sell.magnification = Number(ed_sell_magnification.val())
+    yaml_obj.sell.range = Number(ed_sell_range.val())
+    yaml_obj.sell.volume = Number(ed_sell_volume.val())
+    yaml_obj.sell.belowma = Number(ed_sell_belowma.val())
 }
 
 function controlEditPanelOpen(isOpen){

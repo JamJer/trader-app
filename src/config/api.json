@@ -7,7 +7,12 @@
         "key_check": "/api/v1/user/key/check",
         "key_fetch": "/api/v1/user/key/fetch",
         "policy_get": "/api/v1/trade/policy/get",
-        "policy_list": "/api/v1/trade/policy/list"
+        "policy_list": "/api/v1/trade/policy/list",
+        "policy_template": "/api/v1/trade/policy/template",
+        "policy_create": "/api/v1/trade/policy/create",
+        "policy_content": "/api/v1/trade/policy/content",
+        "policy_name": "/api/v1/trade/policy/id",
+        "policy_delete": "/api/v1/trade/policy/delete"
     },
     "bot": {
         "ipbmt": "/api/v1/strategy/bot/ipbmt",
