@@ -1,1 +1,1 @@
-{"server":{"url":"https://ectrader.herokuapp.com","port":80,"db_url": "https://ectrader-db.herokuapp.com"},"policy":{"path":".local/policy/"},"trade":{"binance_apiKey":"","binance_apiSecret":"","binance_recvWindow":"5000"}}
+{"server":{"url":"https://ectrader.herokuapp.com","port":80,"db_url":"https://ectrader-db.herokuapp.com"},"policy":{"path":".local/policy/"},"trade":{"binance_apiKey":"ZXrqmzDqIcuaZ0BrN4hLFWeh7DBPNwTVdtL4z3Opo6iyWcuAueOipxDWPD07tXFX","binance_apiSecret":"Pva7vqiCsyK50iKQHrKhhDuVPitHDgvzZy69kobLQ2i9yvBVfiVKTrCxbq1U7EJg","binance_recvWindow":"5000"}}

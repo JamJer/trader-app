@@ -14,10 +14,12 @@ class config{
         this.logged = false
     }
 
-    store_user(user,title){
+    store_user(user,pw,title,key){
         this.username = user;
+        this.passwd = pw;
         this.usertitle = title;
-        this.logged = true
+        this.productkey = key;
+        this.logged = true;
     }
 
     store_user_key_info(data){
