@@ -6,7 +6,7 @@
 
 const requester = require('../requester')
 const YAML = require('yamljs')
-const config = require("../config/config.default");
+const config = require("../../config/config.default");
 
 duration = 5000;
 teststr = "---\

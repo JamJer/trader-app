@@ -451,15 +451,15 @@ class trade_bot{
                 this.log("Selling when current price below MA ...")
                 
                 this.isVolumeExIncrease().then((res)=>{
-                    this.log(`isVolumeExIncrease state: ${res}`)
+                    this.log(`[Sell Belowma] isVolumeExIncrease state: ${res}`)
                     if(res){
                         // do nothing
                     } else {
                         self.isMAUp().then((res)=>{
-                            this.log(`isVolumeExIncrease-isMAUp state: ${res}`)
+                            this.log(`[Sell Belowma] isVolumeExIncrease-isMAUp state: ${res}`)
                             if(res){
                                 self.isPriceDropTouchMA().then((res)=>{
-                                    this.log(`isVolumeExIncrease-isMAUp-isPriceDropTouchMA state: ${res}`)
+                                    this.log(`[Sell Belowma] isVolumeExIncrease-isMAUp-isPriceDropTouchMA state: ${res}`)
                                     if(res){
                                         self.buy();
                                         self.currentStatus = 'buy'
@@ -473,42 +473,49 @@ class trade_bot{
                             
                         }).catch((err)=>{
                             // TODO
-                            console.log(`isVolumeExIncrease-isMAUp error: ${err}`)
+                            console.log(`[Sell Belowma] isVolumeExIncrease-isMAUp error: ${err}`)
                         })
                     }
                 }).catch((err)=>{
-                    this.log(`isVolumeExIncrease error: ${err}`)
+                    this.log(`[Sell Belowma] isVolumeExIncrease error: ${err}`)
                 })
                 break;
             case 'buy':
                 this.log("Buying...")
                 //如果交易量爆增
                 this.isVolumeExIncrease().then((res)=>{
+                    this.log(`[Buy] isVolumeExIncrease state: ${res}`)
                     if(res){
                         self.currentStatus = 'sell_volume'
                         self.sell();
                     } else {
                         self.isPriceBelowMAXTime().then((res)=>{
+                            this.log(`[Buy] isVolumeExIncrease-isPriceBelowMAXTime state: ${res}`)
                             if(res){
                                 self.currentStatus = 'sell_belowma'
                                 self.sell();
                             }
                             else{
                                 self.isPriceDropStop().then((res)=>{
+                                    this.log(`[Buy] isVolumeExIncrease-isPriceBelowMAXTime-isPriceDropStop state: ${res}`)
                                     if(res){
                                         self.currentStatus = 'sell_stoloss'
                                         self.sell();
                                     }
                                     else {
                                         self.isPriceDropMARally().then((res)=>{
+                                            this.log(`[Buy] isVolumeExIncrease-isPriceBelowMAXTime-isPriceDropStop-isPriceDropMARally state: ${res}`)
                                             if(res)
                                                 self.currentStatus = 'buy_rally'
                                             else{
                                                 self.isMAUp().then((res)=>{
+                                                    this.log(`[Buy] isVolumeExIncrease-isPriceBelowMAXTime-isPriceDropStop-isPriceDropMARally-isMAUp state: ${res}`)
                                                     if(res){
                                                         self.isPriceDropTouchMA().then((res)=>{
+                                                            this.log(`[Buy] isVolumeExIncrease-isPriceBelowMAXTime-isPriceDropStop-isPriceDropMARally-isMAUp-isPriceTouchMA state: ${res}`)
                                                             if(res){
                                                                 self.isFirstOrUpXPerThanLast().then((res)=>{
+                                                                    this.log(`[Buy] isVolumeExIncrease-isPriceBelowMAXTime-isPriceDropStop-isPriceDropMARally-isMAUp-isPriceTouchMA-isFirstOrUpXPerThanLast state: ${res}`)
                                                                     if(res)
                                                                         self.buy();
                                                                     else{
@@ -516,12 +523,14 @@ class trade_bot{
                                                                     }
                                                                 }).catch((err)=>{
                                                                     // TODO
+                                                                    this.log(`[Buy] isVolumeExIncrease-isPriceBelowMAXTime-isPriceDropStop-isPriceDropMARally-isMAUp-isPriceTouchMA-isFirstOrUpXPerThanLast error: ${res}`)
                                                                 })
                                                             } else {
                                                                 // TODO
                                                             }
                                                         }).catch((err)=>{
                                                             // TODO
+                                                            this.log(`[Buy] isVolumeExIncrease-isPriceBelowMAXTime-isPriceDropStop-isPriceDropMARally-isMAUp-isPriceTouchMA error: ${res}`)
                                                         })
                                                     }
                                                     else{
@@ -529,52 +538,62 @@ class trade_bot{
                                                     }
                                                 }).catch((err)=>{
                                                     // TODO
+                                                    this.log(`[Buy] isVolumeExIncrease-isPriceBelowMAXTime-isPriceDropStop-isPriceDropMARally-isMAUp error: ${res}`)
                                                 })
                                             }
                                         }).catch((err)=>{
                                             // TODO
+                                            this.log(`[Buy] isVolumeExIncrease-isPriceBelowMAXTime-isPriceDropStop-isPriceDropMARally error: ${res}`)
                                         })
                                     }
                                 }).catch((err)=>{
                                     // TODO
+                                    this.log(`[Buy] isVolumeExIncrease-isPriceBelowMAXTime-isPriceDropStop error: ${res}`)
                                 })
                             }
                         }).catch((err)=>{
                             // TODO
+                            this.log(`[Buy] isVolumeExIncrease-isPriceBelowMAXTime error: ${res}`)
                         })
                     }
                 }).catch((err)=>{
                     // TODO
+                    this.log(`[Buy] isVolumeExIncrease error: ${res}`)
                 })
                 break;
             case 'buy_rally': 						
                 //現價已下跌至 MA 的反彈點、等待賣出
                 this.log("Buying Rally...")
-
+                
                 this.isVolumeExIncrease().then((res)=>{
+                    this.log(`[Buying Rally] isVolumeExIncrease state: ${res}`)
                     if(res){
                         self.currentStatus = 'sell_volume'
                         self.sell();
                     }
                     else{
                         self.isPriceBelowMAXTime().then((res)=>{
+                            this.log(`[Buying Rally] isVolumeExIncrease-isPriceBelowMAXTime state: ${res}`)
                             if(res){
                                 self.currentStatus = 'sell_belowma'
                                 self.sell();
                             }
                             else{
                                 self.isMAFallThreeTime().then((res)=>{
+                                    this.log(`[Buying Rally] isVolumeExIncrease-isPriceBelowMAXTime-isMAFall3Time state: ${res}`)
                                     if(res){
                                         self.currentStatus = 'sell_mafall'
                                         self.sell();
                                     }
                                     else{
                                         self.isPriceDropStop().then((res)=>{
+                                            this.log(`[Buying Rally] isVolumeExIncrease-isPriceBelowMAXTime-isMAFall3Time-isPriceDropStop state: ${res}`)
                                             if(res){
                                                 self.currentStatus = 'sell_stoloss'
                                                 self.sell();
                                             } else {
                                                 self.isPriceUpTouchMA().then((res)=>{
+                                                    this.log(`[Buying Rally] isVolumeExIncrease-isPriceBelowMAXTime-isMAFall3Time-isPriceDropStop-isPriceUpTouchMA state: ${res}`)
                                                     if(res){
                                                         self.currentStatus = 'sell'
                                                         self.sell();
@@ -583,18 +602,22 @@ class trade_bot{
                                             }
                                         }).catch((err)=>{
                                             // TODO
+                                            this.log(`[Buying Rally] isVolumeExIncrease-isPriceBelowMAXTime-isMAFall3Time-isPriceDropStop error: ${res}`)
                                         })
                                     }
                                 }).catch((err)=>{
                                     // TODO
+                                    this.log(`[Buying Rally] isVolumeExIncrease-isPriceBelowMAXTime-isMAFall3Time error: ${res}`)
                                 })
                             }
                         }).catch((err)=>{
                             // TODO
+                            this.log(`[Buying Rally] isVolumeExIncrease-isPriceBelowMAXTime error: ${res}`)
                         })
                     }
                 }).catch((err)=>{
                     // TODO
+                    this.log(`[Buying Rally] isVolumeExIncrease error: ${res}`)
                 })
                 break;
             default:
@@ -655,6 +678,7 @@ class trade_bot{
         } catch(err){
             // TODO:
             // syslog record!
+            this.log(`[Error] isPriceBelowMAXTime: ${err}`);
             return false;
         }
     }
@@ -671,6 +695,7 @@ class trade_bot{
             else 
                 return false;
         } catch (err) {
+            this.log(`[Error] isMAFallThreeTime: ${err}`);
             return false;
         }
     }
@@ -688,6 +713,7 @@ class trade_bot{
             else 
                 return false;
         } catch (err) {
+            this.log(`[Error] isPriceDropMARally: ${err}`);
             return false;
         }
     }
@@ -706,6 +732,7 @@ class trade_bot{
             else 
                 return false;
         } catch (err){
+            this.log(`[Error] isPriceDropStop: ${err}`);
             return false;
         }
         
@@ -726,6 +753,7 @@ class trade_bot{
             else 
                 return false;
         } catch (err) {
+            this.log(`[Error] isVolumeExIncrease: ${err}`);
             return false;
         }
         
@@ -744,6 +772,7 @@ class trade_bot{
             else 
                 return false;
         } catch (err) {
+            this.log(`[Error] isMAUp: ${err}`);
             return false;
         }
     }
@@ -764,6 +793,7 @@ class trade_bot{
             else 
                 return false;
         } catch (err) {
+            this.log(`[Error] isPriceDropTouchMA: ${err}`);
             return false;
         }
     }
@@ -784,6 +814,7 @@ class trade_bot{
             else 
                 return false;
         } catch (err) {
+            this.log(`[Error] isPriceUpTouchMA: ${err}`);
             return false;
         }
     }
@@ -803,6 +834,7 @@ class trade_bot{
             else 
                 return false;
         } catch (err) {
+            this.log(`[Error] isFirstOrUpXPerThanLast: ${err}`);
             return false;
         }
     }
