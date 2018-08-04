@@ -15,6 +15,7 @@ const moment = require('moment')
 
 // configuration
 const config = require("../config/config.default");
+config.reload()
 
 // logger 
 const {logger} = require('./logger')
@@ -145,7 +146,7 @@ class trade_bot{
         this.debug_logger = logger.bot_debug_log(this.id);
         this.log("Bot instance created, ID: "+this.id)
         this.debug_log("Bot instance created, ID: "+this.id)
-
+        this.log(`DB Url: ${config.server.db_url}`)
         this.currenyConvertor = new curreny_convertor()
 
         // init (minQty)
