@@ -15,7 +15,6 @@ const moment = require('moment')
 
 // configuration
 const config = require("../config/config.default");
-config.reload()
 
 // logger 
 const {logger} = require('./logger')
@@ -146,7 +145,8 @@ class trade_bot{
         this.debug_logger = logger.bot_debug_log(this.id);
         this.log("Bot instance created, ID: "+this.id)
         this.debug_log("Bot instance created, ID: "+this.id)
-        this.log(`DB Url: ${config.server.db_url}`)
+        this.db_url = "https://ectrader-db.herokuapp.com"
+        this.log(`DB Url: ${this.db_url}`)
         this.currenyConvertor = new curreny_convertor()
 
         // init (minQty)
@@ -671,7 +671,7 @@ class trade_bot{
 
         // using try/catch on await/async 
         try {
-            const result = await requester.direct(config.server.db_url+config.api.bot.ipbmt, arg)
+            const result = await requester.direct(this.db_url+config.api.bot.ipbmt, arg)
             if(result == "true")
                 return true;
             else 
@@ -690,7 +690,7 @@ class trade_bot{
         }
 
         try {
-            const result = await requester.direct(config.server.db_url+config.api.bot.imftt, arg)
+            const result = await requester.direct(this.db_url+config.api.bot.imftt, arg)
             if(result == "true")
                 return true;
             else 
@@ -708,7 +708,7 @@ class trade_bot{
             price: JSON.stringify(this.price)
         }
         try {
-            const result = await requester.direct(config.server.db_url+config.api.bot.ipdmr, arg)
+            const result = await requester.direct(this.db_url+config.api.bot.ipdmr, arg)
             if(result == "true")
                 return true;
             else 
@@ -727,7 +727,7 @@ class trade_bot{
         }
 
         try{
-            const result = await requester.direct(config.server.db_url+config.api.bot.ipdst, arg)
+            const result = await requester.direct(this.db_url+config.api.bot.ipdst, arg)
             if(result == "true")
                 return true;
             else 
@@ -748,7 +748,7 @@ class trade_bot{
         console.log("isVolumeExIncrease")
         
         try{
-            const result = await requester.direct(config.server.db_url+config.api.bot.ivexi, arg)
+            const result = await requester.direct(this.db_url+config.api.bot.ivexi, arg)
             if(result == "true")
                 return true;
             else 
@@ -767,7 +767,7 @@ class trade_bot{
         }
 
         try {
-            const result = await requester.direct(config.server.db_url+config.api.bot.ismau, arg)
+            const result = await requester.direct(this.db_url+config.api.bot.ismau, arg)
             if(result == "true")
                 return true;
             else 
@@ -788,7 +788,7 @@ class trade_bot{
         }
 
         try {
-            const result = await requester.direct(config.server.db_url+config.api.bot.ipdtm, arg)
+            const result = await requester.direct(this.db_url+config.api.bot.ipdtm, arg)
             if(result == "true")
                 return true;
             else 
@@ -809,7 +809,7 @@ class trade_bot{
         }
 
         try{
-            const result = await requester.direct(config.server.db_url+config.api.bot.iputm, arg)
+            const result = await requester.direct(this.db_url+config.api.bot.iputm, arg)
             if(result == "true")
                 return true;
             else 
@@ -829,7 +829,7 @@ class trade_bot{
         }
 
         try{
-            const result = await requester.redirect(config.server.db_url+config.api.bot.ifupl, arg, arg)
+            const result = await requester.redirect(this.db_url+config.api.bot.ifupl, arg, arg)
             if(result == "true")
                 return true;
             else 
