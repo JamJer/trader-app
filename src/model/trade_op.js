@@ -98,7 +98,7 @@ class trade_op {
 
             let result = [];
             // fetch the target data
-            this.client = Binance({apiKey: this.binance_apikey, apiSecret: this.binance_apisecret})
+            this.client = Binance({apiKey: this.binance_apiKey, apiSecret: this.binance_apiSecret})
             let data = await this.client.candles({ symbol: symbol, interval: interval})
             await data.map((day, index) => {
                 let ary = {}
@@ -128,7 +128,7 @@ class trade_op {
     async price(symbol){
         console.log("Request Price ...")
         try{
-            this.client = Binance({apiKey: this.binance_apikey, apiSecret: this.binance_apisecret})
+            this.client = Binance({apiKey: this.binance_apiKey, apiSecret: this.binance_apiSecret})
             let price = await this.client.prices();
             return parseFloat(price[symbol]);
         }
@@ -151,7 +151,7 @@ class trade_op {
             let interval = '5m'
             let tempVA=[]
             // fetch the data
-            this.client = Binance({apiKey: this.binance_apikey, apiSecret: this.binance_apisecret})
+            this.client = Binance({apiKey: this.binance_apiKey, apiSecret: this.binance_apiSecret})
             let data = await this.client.candles({symbol: symbol, interval:interval})
             await data.map((day,index) => {
                 let ary = {};
