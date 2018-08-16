@@ -46,23 +46,6 @@ ulogin_reset.addEventListener("click",function(event){
     document.getElementById('username').value="";
     document.getElementById('passwd').value="";
 });
-// User login - skip event
-let uskip = document.querySelector("#skip");
-uskip.addEventListener("click",function(event){
-    console.log(__dirname);
-    // go to command line mode
-    // Enter next page - control panel
-    window.location.href="status.html";
-});
-
-// Config event
-let uconfig = document.querySelector("#config");
-uconfig.addEventListener("click",function(event){
-    console.log(__dirname);
-    // go to command line mode
-    // Enter next page - config
-    window.location.href="config.html";
-});
 
 // Sign up event
 let uSignUp = document.querySelector("#uSignUp");
